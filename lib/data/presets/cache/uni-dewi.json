@@ -1,0 +1,12 @@
+{
+  "insight": {
+    "ringkasan": "Data Uni Dewi tercatat rapi dengan pemasukan dominan QRIS dan hasil usaha yang lebih stabil.",
+    "risiko": ["Keterangan ING masih perlu dicek.", "Barcode GS1 belum tersedia."],
+    "saran": ["Cek format ING ke BPOM dan siapkan barcode GS1 untuk ritel."]
+  },
+  "labelFix": {
+    "label_belakang": "Komposisi: [ISI: konfirmasi komposisi]\nBaik digunakan sebelum: [ISI: tanggal]",
+    "deskripsi_marketplace": "Rendang kemasan dengan informasi produk yang disusun rapi.",
+    "placeholder": ["[ISI: konfirmasi komposisi]", "[ISI: tanggal]"]
+  }
+}

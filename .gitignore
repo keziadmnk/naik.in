@@ -1,0 +1,36 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing & results
+/coverage
+/test-results
+
+# next.js build output
+/.next/
+/out/
+/build
+
+# environment files (PENTING: Jangan pernah push file berisi password / credentials!)
+.env
+.env*.local
+!.env.example
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# typescript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# OS & Editor
+.DS_Store
+*.pem
+Thumbs.db
+.vscode/
+.idea/

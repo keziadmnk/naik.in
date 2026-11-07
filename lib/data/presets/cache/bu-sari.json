@@ -1,0 +1,12 @@
+{
+  "insight": {
+    "ringkasan": "Data Bu Sari menunjukkan usaha dengan pemasukan campuran QRIS dan tunai serta pengeluaran pribadi yang masih tercampur.",
+    "risiko": ["Minggu tersepi perlu diperhatikan sebelum mengambil cicilan baru."],
+    "saran": ["Pisahkan uang usaha dan rumah tangga secara bertahap."]
+  },
+  "labelFix": {
+    "label_belakang": "[ISI: komposisi]\n[ISI: alamat produsen]\n[ISI: nomor izin edar]",
+    "deskripsi_marketplace": "Keripik balado dengan rasa gurih dan pedas.",
+    "placeholder": ["[ISI: komposisi]", "[ISI: nomor izin edar]"]
+  }
+}
