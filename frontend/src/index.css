@@ -4,6 +4,8 @@
 @import "./app.css";
 @import "./kur.css";
 @import "./fitur.css";
+@import "./figma-ext.css";
+@import "./label.css";
 
 :root {
   --navy: #122056;

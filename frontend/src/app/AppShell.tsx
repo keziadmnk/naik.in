@@ -33,15 +33,6 @@ export const NAV: ItemNav[] = [
   { route: "laporan", label: "Laporan", pendek: "Laporan", icon: "report" },
 ];
 
-const JUDUL: Partial<Record<AppRoute, string>> = {
-  beranda: "Beranda",
-  keuangan: "Keuangan",
-  kur: "Simulasi Kesiapan KUR",
-  label: "Label Produk",
-  laporan: "Laporan",
-  akun: "Akun",
-  pengaturan: "Pengaturan",
-};
 
 function Logo() {
   return (
@@ -125,7 +116,7 @@ function MenuAkun({ onKeluar }: { onKeluar: () => void }) {
 }
 
 function Pengingat() {
-  const { temuan, pengingat } = useToko();
+  const { pengingat, transaksi, hariIni } = useToko();
   const [buka, setBuka] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -134,14 +125,12 @@ function Pengingat() {
     document.addEventListener("mousedown", tutup);
     return () => document.removeEventListener("mousedown", tutup);
   }, [buka]);
-  const perluDicek = temuan.filter((t) => t.jenis !== "hari_belum_dicatat").length;
-  const hariKosong = temuan.filter((t) => t.jenis === "hari_belum_dicatat").length;
+  const belumCatatHariIni = !transaksi.some((t) => t.tanggal === hariIni);
   const item = [
-    perluDicek > 0 && { ikon: "alert" as const, teks: `${perluDicek} catatan perlu dicek`, aksi: () => goTo("keuangan", "perlu-dicek") },
-    hariKosong > 0 && { ikon: "calendar" as const, teks: `${hariKosong} rentang hari belum dicatat`, aksi: () => goTo("keuangan", "perlu-dicek") },
+    belumCatatHariIni && { ikon: "calendar" as const, teks: "Hari ini belum ada catatan", aksi: () => goTo("keuangan") },
     pengingat.harian && { ikon: "bell" as const, teks: `Pengingat catat harian pukul ${pengingat.jam.replace(":", ".")}`, aksi: () => goTo("pengaturan") },
   ].filter(Boolean) as { ikon: PIconName; teks: string; aksi: () => void }[];
-  const ada = perluDicek + hariKosong > 0;
+  const ada = belumCatatHariIni;
   return (
     <div className="nk-akun" ref={ref}>
       <button className="nk-icon-btn nk-lonceng" onClick={() => setBuka(!buka)} aria-label={`Pengingat${ada ? " (ada yang baru)" : ""}`} aria-expanded={buka}>
@@ -254,7 +243,6 @@ export function AppShell({ route, children }: { route: AppRoute; children: React
               <span className="nk-logo-hp">
                 <Logo />
               </span>
-              <h1>{JUDUL[route] ?? "NAIK.IN"}</h1>
             </div>
             <div className="nk-topbar-aksi">
               <Pengingat />

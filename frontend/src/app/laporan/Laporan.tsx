@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PIcon } from "../../components/icons";
 import { kategoriMap } from "../../data/categories";
 import { LABEL_STATUS } from "../../lib/engine/loan";
@@ -12,7 +12,7 @@ import { lamaUsaha } from "../Beranda";
 
 const BULAN_LAPORAN = 6;
 
-type Bagian = "kategori" | "ketahanan" | "kur" | "label" | "catatan";
+export type Bagian = "ringkasan" | "rekap" | "kategori" | "ketahanan" | "kur" | "label" | "catatan";
 
 /** Grafik batang statis (aman dicetak): omzet & laba per bulan. */
 function GrafikBulanan({ data }: { data: { label: string; omzet: number; laba: number }[] }) {
@@ -49,10 +49,9 @@ function GrafikBulanan({ data }: { data: { label: string; omzet: number; laba: n
   );
 }
 
-export function Laporan() {
+export function DokumenLaporan({ bagian, judul }: { bagian: Record<Bagian, boolean>; judul: string }) {
   const toko = useToko();
   const { profil, transaksi, kategori, perluDicek, temuan, hariIni, hariLibur, simulasi, produk } = toko;
-  const [bagian, setBagian] = useState<Record<Bagian, boolean>>({ kategori: true, ketahanan: true, kur: true, label: true, catatan: true });
 
   const lap = useMemo(() => {
     const terkonfirmasi = transaksi.filter((t) => !perluDicek.has(t.id));
@@ -86,31 +85,9 @@ export function Laporan() {
   const nomor = `NK-${hariIni.replaceAll("-", "")}-${profil.namaUsaha.replace(/[^A-Za-z]/g, "").slice(0, 4).toUpperCase()}`;
   const kosong = lap.adaData.length === 0;
 
-  const opsi: { id: Bagian; label: string }[] = [
-    { id: "kategori", label: "Rincian uang keluar" },
-    { id: "ketahanan", label: "Ketahanan saat sepi" },
-    { id: "kur", label: "Simulasi KUR" },
-    { id: "label", label: "Label produk" },
-    { id: "catatan", label: "Catatan analisis" },
-  ];
 
   return (
-    <div className="nk-halaman nk-laporan">
-      <div className="nk-laporan-toolbar">
-        <div className="nk-laporan-opsi" role="group" aria-label="Bagian yang disertakan">
-          <span>Sertakan:</span>
-          {opsi.map((o) => (
-            <label key={o.id} className={`nk-chip ${bagian[o.id] ? "" : "mati"}`}>
-              <input type="checkbox" checked={bagian[o.id]} onChange={(e) => setBagian({ ...bagian, [o.id]: e.target.checked })} />
-              {o.label}
-            </label>
-          ))}
-        </div>
-        <button className="nk-btn" onClick={() => window.print()} disabled={kosong}>
-          <PIcon name="download" size={16} /> Cetak / Simpan PDF
-        </button>
-      </div>
-
+    <>
       <article className="nk-dokumen" aria-label="Laporan kondisi usaha">
         {/* Kop */}
         <header className="nk-dok-kop">
@@ -118,7 +95,7 @@ export function Laporan() {
             <div className="nk-dok-logo">
               NAIK<span>.IN</span>
             </div>
-            <h1>Laporan Kondisi Usaha</h1>
+            <h1>{judul}</h1>
             <p>Rekap {BULAN_LAPORAN} bulan · {rentang(lap.dari, lap.sampai)}</p>
           </div>
           <dl>
@@ -168,6 +145,7 @@ export function Laporan() {
         ) : (
           <>
             {/* 1. Ringkasan */}
+            {bagian.ringkasan && (
             <section className="nk-dok-bagian">
               <h2>Ringkasan {lap.adaData.length} bulan</h2>
               <div className="nk-dok-angka">
@@ -197,8 +175,10 @@ export function Laporan() {
                 terkonfirmasi{temuanTerbuka > 0 ? `; ${temuanTerbuka} catatan yang masih perlu dicek tidak ikut dihitung` : ""}.
               </p>
             </section>
+            )}
 
             {/* 2. Rekap bulanan */}
+            {bagian.rekap && (
             <section className="nk-dok-bagian">
               <h2>Rekap kas bulanan</h2>
               <table className="nk-dok-tabel">
@@ -259,6 +239,7 @@ export function Laporan() {
               </div>
               <GrafikBulanan data={lap.adaData.map((b) => ({ label: namaBulan(b.kunci).split(" ")[0], omzet: b.penjualan, laba: b.laba }))} />
             </section>
+            )}
 
             {bagian.kategori && (
               <section className="nk-dok-bagian">
@@ -417,6 +398,6 @@ export function Laporan() {
           </span>
         </div>
       </article>
-    </div>
+    </>
   );
 }

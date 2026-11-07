@@ -1,9 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PIcon } from "../../components/icons";
-import { Kosong, Panel } from "../../components/ui";
+import { Kosong } from "../../components/ui";
 import { kategoriMap } from "../../data/categories";
 import { METODE, type Transaksi } from "../../data/types";
-import { NAMA_JENIS } from "../../lib/findings";
 import { rupiah, tanggal, tanggalPanjang } from "../../lib/format";
 import { useToko } from "../../state/store";
 
@@ -14,41 +13,47 @@ const LABEL_SUMBER: Record<Transaksi["sumber"], string> = {
   scan_foto: "Scan foto",
 };
 
-export function BadgeStatus({ perlu }: { perlu: boolean }) {
-  return perlu ? (
-    <span className="nk-badge kuning">
-      <PIcon name="alert" size={12} /> Perlu dicek
-    </span>
-  ) : (
-    <span className="nk-badge hijau">
-      <PIcon name="check" size={12} /> Terkonfirmasi
-    </span>
-  );
-}
+const PER_HALAMAN = 25;
 
+/** Drawer detail transaksi (desain Figma). */
 export function DetailTransaksi({ id, onTutup }: { id: string; onTutup: () => void }) {
-  const { transaksi, kategori, temuan, perluDicek, kirim } = useToko();
+  const { transaksi, kategori, kirim } = useToko();
   const [hapus, setHapus] = useState(false);
   const t = transaksi.find((x) => x.id === id);
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && onTutup();
+    document.addEventListener("keydown", esc);
+    return () => document.removeEventListener("keydown", esc);
+  }, [onTutup]);
   if (!t) return null;
   const peta = kategoriMap(kategori);
-  const terkait = temuan.filter((f) => f.transaksiIds.includes(t.id));
   return (
-    <Panel judul="Detail transaksi" onTutup={onTutup}>
-      <div className="nk-detail">
-        <span className={`nk-detail-nominal ${t.arah}`}>
-          {t.arah === "masuk" ? "+" : "−"}
-          {rupiah(t.nominal)}
-        </span>
-        <h4>{t.uraian}</h4>
-        <BadgeStatus perlu={perluDicek.has(t.id)} />
-        <dl>
-          <dt>Tanggal</dt>
-          <dd>{tanggalPanjang(t.tanggal)}</dd>
-          <dt>Jenis</dt>
-          <dd>{t.arah === "masuk" ? "Uang masuk" : "Uang keluar"}</dd>
-          <dt>Kategori</dt>
-          <dd>
+    <div className="drawer-backdrop" onClick={onTutup}>
+      <aside className="transaction-drawer" role="dialog" aria-modal="true" aria-label="Detail transaksi" onClick={(e) => e.stopPropagation()}>
+        <header>
+          <div>
+            <span>Detail transaksi</span>
+            <h3>{t.uraian}</h3>
+          </div>
+          <button onClick={onTutup} aria-label="Tutup">
+            <PIcon name="close" />
+          </button>
+        </header>
+        <div className="drawer-amount">
+          <span>{t.arah === "masuk" ? "Pemasukan" : "Pengeluaran"}</span>
+          <strong>
+            {t.arah === "masuk" ? "+" : "−"}
+            {rupiah(t.nominal)}
+          </strong>
+          <small>{tanggalPanjang(t.tanggal)}</small>
+        </div>
+        <div className="drawer-details">
+          <div>
+            <span>Tanggal</span>
+            <b>{tanggalPanjang(t.tanggal)}</b>
+          </div>
+          <div>
+            <span>Kategori</span>
             <select value={t.kategoriId} onChange={(e) => kirim({ type: "ubahTransaksi", id: t.id, perubahan: { kategoriId: e.target.value } })} aria-label="Ubah kategori">
               {kategori
                 .filter((k) => k.arah === t.arah)
@@ -58,36 +63,28 @@ export function DetailTransaksi({ id, onTutup }: { id: string; onTutup: () => vo
                   </option>
                 ))}
             </select>
-          </dd>
-          <dt>Metode</dt>
-          <dd>{t.metode}</dd>
-          <dt>Sumber</dt>
-          <dd>{LABEL_SUMBER[t.sumber]}</dd>
-          <dt>Kelompok</dt>
-          <dd>{peta[t.kategoriId]?.kelompok === "pribadi" ? "Tidak dihitung ke laba usaha" : "Dihitung ke laba usaha"}</dd>
-        </dl>
-        <div className="nk-alasan">
-          <b>
-            <PIcon name="sparkle" size={14} /> Alasan deteksi AI
-          </b>
-          {terkait.length ? (
-            terkait.map((f) => (
-              <p key={f.id}>
-                <span className="nk-badge kuning">{NAMA_JENIS[f.jenis]}</span> {f.alasan}
-              </p>
-            ))
-          ) : (
-            <p>Tidak ada yang janggal: kategori, tanggal, dan nominal sesuai pola catatan sebelumnya.</p>
-          )}
+          </div>
+          <div>
+            <span>Metode Pembayaran</span>
+            <b>{t.metode}</b>
+          </div>
+          <div>
+            <span>Sumber Data</span>
+            <b>{LABEL_SUMBER[t.sumber]}</b>
+          </div>
+          <div>
+            <span>Laba usaha</span>
+            <b>{peta[t.kategoriId]?.kelompok === "pribadi" ? "Tidak dihitung (pribadi)" : "Dihitung"}</b>
+          </div>
         </div>
         {hapus ? (
-          <div className="nk-konfirmasi-baris">
+          <div className="fg-konfirmasi">
             <span>Hapus transaksi ini dari riwayat?</span>
-            <button className="nk-btn sekunder kecil" onClick={() => setHapus(false)}>
+            <button className="portal-secondary" onClick={() => setHapus(false)}>
               Batal
             </button>
             <button
-              className="nk-btn bahaya kecil"
+              className="portal-primary fg-bahaya"
               onClick={() => {
                 kirim({ type: "hapusTransaksi", id: t.id });
                 onTutup();
@@ -97,23 +94,37 @@ export function DetailTransaksi({ id, onTutup }: { id: string; onTutup: () => vo
             </button>
           </div>
         ) : (
-          <button className="nk-btn hantu bahaya-teks" onClick={() => setHapus(true)}>
-            <PIcon name="trash" size={15} /> Hapus transaksi
+          <button className="portal-secondary" onClick={() => setHapus(true)}>
+            <PIcon name="trash" size={15} />
+            Hapus Transaksi
           </button>
         )}
-      </div>
-    </Panel>
+      </aside>
+    </div>
   );
 }
 
-type Filter = { cari: string; dari: string; sampai: string; arah: "" | "masuk" | "keluar"; kategori: string; metode: string; status: "" | "ok" | "cek" };
-const FILTER_AWAL: Filter = { cari: "", dari: "", sampai: "", arah: "", kategori: "", metode: "", status: "" };
+type Filter = { cari: string; dari: string; sampai: string; arah: "" | "masuk" | "keluar"; kategori: string; metode: string };
+const FILTER_AWAL: Filter = { cari: "", dari: "", sampai: "", arah: "", kategori: "", metode: "" };
+
+function unduhCsv(baris: Transaksi[]) {
+  const isi = [
+    ["Tanggal", "Deskripsi", "Jenis", "Metode", "Nominal"],
+    ...baris.map((t) => [t.tanggal, t.uraian, t.arah === "masuk" ? "Pemasukan" : "Pengeluaran", t.metode, t.nominal]),
+  ]
+    .map((r) => r.map((v) => (typeof v === "string" && /[;"\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)).join(";"))
+    .join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([`﻿${isi}`], { type: "text/csv;charset=utf-8" }));
+  a.download = "riwayat-transaksi.csv";
+  a.click();
+}
 
 export function Riwayat() {
-  const { transaksi, kategori, perluDicek } = useToko();
+  const { transaksi, kategori } = useToko();
   const [f, setF] = useState<Filter>(FILTER_AWAL);
   const [bukaFilter, setBukaFilter] = useState(false);
-  const [batas, setBatas] = useState(40);
+  const [halaman, setHalaman] = useState(1);
   const [detail, setDetail] = useState<string | null>(null);
   const peta = kategoriMap(kategori);
 
@@ -127,25 +138,45 @@ export function Riwayat() {
           (!f.sampai || t.tanggal <= f.sampai) &&
           (!f.arah || t.arah === f.arah) &&
           (!f.kategori || t.kategoriId === f.kategori) &&
-          (!f.metode || t.metode === f.metode) &&
-          (!f.status || (f.status === "cek") === perluDicek.has(t.id)),
+          (!f.metode || t.metode === f.metode),
       )
       .reverse();
-  }, [transaksi, f, perluDicek]);
+  }, [transaksi, f]);
 
-  const aktif = Object.entries(f).filter(([k, v]) => k !== "cari" && v).length;
-  const tampil = hasil.slice(0, batas);
+  useEffect(() => setHalaman(1), [f]);
+  const aktif = Object.entries(f).filter(([k, v]) => k !== "cari" && k !== "arah" && v).length;
+  const totalHalaman = Math.max(1, Math.ceil(hasil.length / PER_HALAMAN));
+  const tampil = hasil.slice((halaman - 1) * PER_HALAMAN, halaman * PER_HALAMAN);
   const perTanggal = tampil.reduce<Record<string, Transaksi[]>>((g, t) => ((g[t.tanggal] = [...(g[t.tanggal] ?? []), t]), g), {});
+  const nomorHalaman = Array.from(new Set([1, halaman - 1, halaman, halaman + 1, totalHalaman])).filter((n) => n >= 1 && n <= totalHalaman).sort((a, b) => a - b);
 
   return (
-    <div className="nk-riwayat">
-      <div className="nk-toolbar">
-        <label className="nk-cari">
-          <PIcon name="search" size={16} />
-          <input value={f.cari} onChange={(e) => setF({ ...f, cari: e.target.value })} placeholder="Cari uraian atau nominal" aria-label="Cari transaksi" />
+    <div className="history-content">
+      <div className="table-tools">
+        <label>
+          <PIcon name="search" size={17} />
+          <input value={f.cari} onChange={(e) => setF({ ...f, cari: e.target.value })} placeholder="Cari transaksi..." aria-label="Cari transaksi" />
         </label>
-        <button className={`nk-btn sekunder ${bukaFilter ? "aktif" : ""}`} onClick={() => setBukaFilter(!bukaFilter)} aria-expanded={bukaFilter}>
-          <PIcon name="filter" size={16} /> Filter{aktif ? ` (${aktif})` : ""}
+        <div className="fg-jenis" role="radiogroup" aria-label="Jenis transaksi">
+          {(
+            [
+              ["", "Semua"],
+              ["masuk", "Pemasukan"],
+              ["keluar", "Pengeluaran"],
+            ] as const
+          ).map(([id, label]) => (
+            <button key={id} role="radio" aria-checked={f.arah === id} className={f.arah === id ? "active" : ""} onClick={() => setF({ ...f, arah: id })}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <button className={bukaFilter || aktif ? "aktif" : ""} onClick={() => setBukaFilter(!bukaFilter)} aria-expanded={bukaFilter}>
+          <PIcon name="filter" size={16} />
+          Filter{aktif ? ` (${aktif})` : ""}
+        </button>
+        <button className="export" onClick={() => unduhCsv(hasil)}>
+          <PIcon name="download" size={16} />
+          Export CSV
         </button>
       </div>
       {bukaFilter && (
@@ -157,14 +188,6 @@ export function Riwayat() {
           <label>
             Sampai
             <input type="date" value={f.sampai} onChange={(e) => setF({ ...f, sampai: e.target.value })} />
-          </label>
-          <label>
-            Masuk/keluar
-            <select value={f.arah} onChange={(e) => setF({ ...f, arah: e.target.value as Filter["arah"] })}>
-              <option value="">Semua</option>
-              <option value="masuk">Masuk</option>
-              <option value="keluar">Keluar</option>
-            </select>
           </label>
           <label>
             Kategori
@@ -186,52 +209,55 @@ export function Riwayat() {
               ))}
             </select>
           </label>
-          <label>
-            Status
-            <select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as Filter["status"] })}>
-              <option value="">Semua</option>
-              <option value="ok">Terkonfirmasi</option>
-              <option value="cek">Perlu dicek</option>
-            </select>
-          </label>
           {aktif > 0 && (
-            <button className="nk-btn hantu kecil" onClick={() => setF({ ...FILTER_AWAL, cari: f.cari })}>
+            <button className="nk-btn hantu kecil" onClick={() => setF({ ...FILTER_AWAL, cari: f.cari, arah: f.arah })}>
               Hapus filter
             </button>
           )}
         </div>
       )}
-      <p className="nk-muted kecil">{hasil.length.toLocaleString("id-ID")} transaksi</p>
 
       {hasil.length === 0 ? (
-        <Kosong ikon="search" judul="Tidak ada transaksi" teks={transaksi.length ? "Coba ubah kata kunci atau filter." : "Riwayat masih kosong. Catat transaksi pertamamu di panel Catat."} />
+        <Kosong ikon="search" judul="Tidak ada transaksi" teks={transaksi.length ? "Coba ubah kata kunci atau filter." : "Riwayat masih kosong. Catat transaksi pertamamu di tab Upload & Scan."} />
       ) : (
         <>
-          <div className="nk-tabel-wrap nk-hanya-laptop">
-            <table className="nk-tabel">
+          <div className="table-wrap transaction-table nk-hanya-laptop">
+            <table>
               <thead>
                 <tr>
                   <th>Tanggal</th>
-                  <th>Uraian</th>
-                  <th>Kategori</th>
+                  <th>Deskripsi</th>
+                  <th>Jenis</th>
                   <th>Metode</th>
-                  <th>Status</th>
-                  <th className="kanan">Nominal</th>
+                  <th>Nominal</th>
+                  <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {tampil.map((t) => (
-                  <tr key={t.id} className="bisa-klik" onClick={() => setDetail(t.id)} tabIndex={0} onKeyDown={(e) => e.key === "Enter" && setDetail(t.id)}>
-                    <td className="nowrap">{tanggal(t.tanggal)}</td>
-                    <td>{t.uraian}</td>
-                    <td>{peta[t.kategoriId]?.nama ?? t.kategoriId}</td>
-                    <td>{t.metode}</td>
+                  <tr key={t.id} onClick={() => setDetail(t.id)}>
+                    <td>{tanggal(t.tanggal)}</td>
                     <td>
-                      <BadgeStatus perlu={perluDicek.has(t.id)} />
+                      <b>{t.uraian}</b>
                     </td>
-                    <td className={`kanan nowrap nominal ${t.arah}`}>
+                    <td>
+                      <span className={t.arah === "masuk" ? "type income" : "type expense"}>{t.arah === "masuk" ? "Pemasukan" : "Pengeluaran"}</span>
+                    </td>
+                    <td>{t.metode}</td>
+                    <td className={t.arah === "masuk" ? "amount in" : "amount out"}>
                       {t.arah === "masuk" ? "+" : "−"}
                       {rupiah(t.nominal)}
+                    </td>
+                    <td>
+                      <button
+                        aria-label="Lihat & ubah"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDetail(t.id);
+                        }}
+                      >
+                        <PIcon name="edit" size={15} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -248,9 +274,8 @@ export function Riwayat() {
                     <span>
                       <b>{t.uraian}</b>
                       <small>
-                        {peta[t.kategoriId]?.nama} · {t.metode}
+                        {t.arah === "masuk" ? "Pemasukan" : "Pengeluaran"} · {t.metode}
                       </small>
-                      <BadgeStatus perlu={perluDicek.has(t.id)} />
                     </span>
                     <strong className={`nominal ${t.arah}`}>
                       {t.arah === "masuk" ? "+" : "−"}
@@ -261,11 +286,28 @@ export function Riwayat() {
               </div>
             ))}
           </div>
-          {hasil.length > batas && (
-            <button className="nk-btn sekunder penuh" onClick={() => setBatas(batas + 60)}>
-              Tampilkan lebih banyak ({(hasil.length - batas).toLocaleString("id-ID")} lagi)
-            </button>
-          )}
+
+          <div className="pagination">
+            <span>
+              Menampilkan {(halaman - 1) * PER_HALAMAN + 1}–{Math.min(hasil.length, halaman * PER_HALAMAN)} dari {hasil.length.toLocaleString("id-ID")} transaksi
+            </span>
+            <div>
+              <button onClick={() => setHalaman(Math.max(1, halaman - 1))} disabled={halaman === 1} aria-label="Sebelumnya">
+                ‹
+              </button>
+              {nomorHalaman.map((n, i) => (
+                <span key={n} className="fg-halaman-no">
+                  {i > 0 && n - nomorHalaman[i - 1] > 1 && <em>…</em>}
+                  <button className={n === halaman ? "active" : ""} onClick={() => setHalaman(n)}>
+                    {n}
+                  </button>
+                </span>
+              ))}
+              <button onClick={() => setHalaman(Math.min(totalHalaman, halaman + 1))} disabled={halaman === totalHalaman} aria-label="Berikutnya">
+                ›
+              </button>
+            </div>
+          </div>
         </>
       )}
       {detail && <DetailTransaksi id={detail} onTutup={() => setDetail(null)} />}

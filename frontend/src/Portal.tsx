@@ -7,7 +7,7 @@ import { Keuangan } from "./app/keuangan/Keuangan";
 import { Pengaturan } from "./app/Pengaturan";
 import { SimulasiKur } from "./app/kur/SimulasiKur";
 import { LabelProduk } from "./app/label/LabelProduk";
-import { Laporan } from "./app/laporan/Laporan";
+import { Laporan } from "./app/laporan/HalamanLaporan";
 import { PIcon, type PIconName } from "./components/icons";
 import { goTo, type AppRoute } from "./routes";
 import { tandaiMasuk, useToko } from "./state/store";
@@ -570,7 +570,7 @@ export function PortalRouter({ route, sub }: { route: AppRoute; sub: string | nu
     beranda: <Beranda />,
     keuangan: <Keuangan sub={sub} />,
     kur: <SimulasiKur />,
-    label: <LabelProduk />,
+    label: <LabelProduk sub={sub} />,
     laporan: <Laporan />,
     akun: <Akun />,
     pengaturan: <Pengaturan />,

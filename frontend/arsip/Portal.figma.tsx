@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
-import { api } from "./api";
+import { api } from "../src/api";
 
 export type AppRoute =
   | "login"

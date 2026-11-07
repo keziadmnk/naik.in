@@ -1,34 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DemoStrip, PageHeader, PageTabs } from "../../components/figma";
+import { PIcon } from "../../components/icons";
 import { goTo } from "../../routes";
 import { useToko } from "../../state/store";
+import { useCatat } from "../AppShell";
 import { PanelCatat, type HasilBaca } from "./PanelCatat";
 import { PeriksaDulu } from "./PeriksaDulu";
-import { PerluDicek } from "./PerluDicek";
 import { RekapKas } from "./RekapKas";
 import { RingkasanAiBox } from "./RingkasanAiBox";
 import { DetailTransaksi, Riwayat } from "./Riwayat";
 
-type Tab = "riwayat" | "rekap" | "perlu-dicek";
+type Tab = "catat" | "riwayat" | "rekap" | "analisis";
+const TAB: Tab[] = ["catat", "riwayat", "rekap", "analisis"];
 
 export function Keuangan({ sub }: { sub: string | null }) {
-  const { temuan } = useToko();
-  const tab: Tab = sub === "rekap" || sub === "perlu-dicek" ? sub : "riwayat";
+  const { server } = useToko();
+  const { permintaan } = useCatat();
+  const tab: Tab = TAB.includes(sub as Tab) ? (sub as Tab) : "catat";
   const [periksa, setPeriksa] = useState<HasilBaca | null>(null);
   const [detail, setDetail] = useState<string | null>(null);
   const [tersimpan, setTersimpan] = useState<number | null>(null);
 
+  // Permintaan "Catat" (tombol +, navigasi cepat, Perlu Dicek) ditangani di tab Upload & Scan
+  useEffect(() => {
+    if (permintaan && tab !== "catat") goTo("keuangan");
+  }, [permintaan, tab]);
+
   const tabs: { id: Tab; label: string; jumlah?: number }[] = [
+    { id: "catat", label: "Upload & Scan" },
     { id: "riwayat", label: "Riwayat Transaksi" },
     { id: "rekap", label: "Rekap Kas" },
-    { id: "perlu-dicek", label: "Perlu Dicek", jumlah: temuan.length },
+    { id: "analisis", label: "Hasil Analisis AI" },
   ];
 
   return (
-    <div className="nk-halaman">
-      <div className="nk-keuangan-atas">
-        <PanelCatat onHasil={setPeriksa} />
-        <RingkasanAiBox />
-      </div>
+    <div className="fg-halaman">
+      <PageHeader title="Keuangan" subtitle="Kelola transaksi, pahami arus kas, dan temukan insight keuangan usahamu.">
+        <button className="portal-primary" onClick={() => goTo("keuangan")}>
+          <PIcon name="plus" size={16} />
+          Tambah Data
+        </button>
+      </PageHeader>
+      <DemoStrip>
+        {server ? (
+          <>
+            Data dihitung dari <b>catatan usahamu yang sudah dikonfirmasi</b>. Hasil scan & impor selalu diperiksa dulu sebelum disimpan.
+          </>
+        ) : (
+          <>
+            Data yang tampil adalah <b>data demo ilustratif</b> untuk menunjukkan cara kerja aplikasi.
+          </>
+        )}
+      </DemoStrip>
+      <PageTabs tabs={tabs} aktif={tab} onPilih={(id) => goTo("keuangan", id === "catat" ? undefined : id)} />
 
       {tersimpan !== null && (
         <div className="nk-sukses" role="status">
@@ -39,21 +63,14 @@ export function Keuangan({ sub }: { sub: string | null }) {
         </div>
       )}
 
-      <section className="nk-card nk-tab-card">
-        <div className="nk-tabs" role="tablist" aria-label="Data keuangan">
-          {tabs.map((t) => (
-            <button key={t.id} role="tab" aria-selected={tab === t.id} className={tab === t.id ? "aktif" : ""} onClick={() => goTo("keuangan", t.id === "riwayat" ? undefined : t.id)}>
-              {t.label}
-              {t.jumlah !== undefined && t.jumlah > 0 && <i className="nk-hitung">{t.jumlah}</i>}
-            </button>
-          ))}
-        </div>
-        <div role="tabpanel">
-          {tab === "riwayat" && <Riwayat />}
-          {tab === "rekap" && <RekapKas />}
-          {tab === "perlu-dicek" && <PerluDicek onBukaDetail={setDetail} />}
-        </div>
-      </section>
+      {tab === "catat" && <PanelCatat onHasil={setPeriksa} />}
+      {tab === "riwayat" && <Riwayat />}
+      {tab === "rekap" && (
+        <section className="panel">
+          <RekapKas />
+        </section>
+      )}
+      {tab === "analisis" && <RingkasanAiBox />}
 
       {periksa && (
         <PeriksaDulu
@@ -63,7 +80,7 @@ export function Keuangan({ sub }: { sub: string | null }) {
           onSimpan={(n) => {
             setPeriksa(null);
             setTersimpan(n);
-            goTo("keuangan");
+            goTo("keuangan", "riwayat");
           }}
         />
       )}

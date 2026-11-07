@@ -5,7 +5,6 @@ import { AWAL_DATA_TIGA_BULAN, HARI_INI_DEMO, PROFIL_DEMO, produkDemo, transaksi
 import type {
   BiayaRutin, Kategori, PengaturanDemo, Pengingat, ProfilUsaha, RingkasanAi, Temuan, Transaksi,
 } from "../data/types";
-import { deteksiTemuan } from "../lib/findings";
 import { dataLabelKosong, type DataLabel } from "../lib/engine/label";
 import type { ProdukLabel } from "../data/demo";
 import { keApi } from "./sinkron";
@@ -246,12 +245,10 @@ function useNilai(keadaan: Keadaan, kirim: (a: Aksi) => void, sinkron: StatusSin
       .map((t) => (keadaan.diubah[t.id] ? { ...t, ...keadaan.diubah[t.id] } : t))
       .sort((a, b) => a.tanggal.localeCompare(b.tanggal) || a.id.localeCompare(b.id));
     const hariIni = HARI_INI_DEMO;
-    const temuan = deteksiTemuan(transaksi, kategori, {
-      hariIni,
-      hariLibur: keadaan.hariLibur,
-      diabaikan: keadaan.temuanDitindak,
-    });
-    const perluDicek = new Set(temuan.flatMap((t) => t.transaksiIds.slice(0, 1)));
+    // Deteksi anomali ("Perlu Dicek") dinonaktifkan atas permintaan pengguna:
+    // tidak ada transaksi yang ditandai, semua transaksi di riwayat dihitung.
+    const temuan: Temuan[] = [];
+    const perluDicek = new Set<string>();
     return { ...keadaan, kategori, transaksi, temuan, perluDicek, hariIni, kirim, sinkron, muatUlang };
   }, [keadaan, kirim, sinkron, muatUlang]);
 }

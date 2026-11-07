@@ -936,7 +936,7 @@ p.kecil {
   color: var(--teks-3);
   font-size: 12px;
 }
-.nk-shell input:not([type="checkbox"]),
+.nk-shell input:not([type="checkbox"]):not([type="range"]):not([type="file"]),
 .nk-shell select,
 .nk-periksa input:not([type="checkbox"]),
 .nk-periksa select {

@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { api } from "../../api";
 import { BatangSkenario, GaugeRisiko, GrafikKipas, WARNA_STATUS } from "../../components/chartsKur";
 import { PIcon } from "../../components/icons";
-import { ARTI, ArtinyaApa, Cincin, Istilah, Saklar, Segmen } from "../../components/ui";
+import { DemoStrip, PageHeader } from "../../components/figma";
+import { ARTI, Cincin, Istilah, Saklar } from "../../components/ui";
+import { GrafikGabungan } from "../../components/charts";
 import {
   AMBANG_HIJAU, AMBANG_KUNING, BULAN_CADANGAN, BULAN_MENABUNG_CADANGAN, LABEL_AMBANG, MIN_HARI_MINGGU_VALID,
   MIN_MINGGU_VALID_KUR, MINGGU_JENDELA, PLAFON_LANGKAH, PLAFON_MAKS, PLAFON_MIN, PLAFON_WAJIB_NPWP, TENOR_PILIHAN,
@@ -38,7 +40,13 @@ function KurTerkunci({ data }: { data: DataPinjaman }) {
   const perBulan = new Map<string, typeof belum>();
   for (const m of belum) perBulan.set(m.dari.slice(0, 7), [...(perBulan.get(m.dari.slice(0, 7)) ?? []), m]);
   return (
-    <div className="nk-halaman">
+    <div className="fg-halaman">
+      <PageHeader title="Simulasi Kesiapan KUR" subtitle="Uji kemampuan membayar cicilan berdasarkan kondisi keuangan dan ketahanan kas usahamu.">
+        <span className="disclaimer">
+          <PIcon name="alert" size={14} />
+          Bukan keputusan persetujuan kredit bank
+        </span>
+      </PageHeader>
       <section className="nk-card nk-kunci">
         <Cincin rasio={data.bulanTerdata / 6} ukuran={132} tebal={12}>
           <div className="nk-kunci-cincin">
@@ -179,6 +187,7 @@ function KurTerbuka({ data }: { data: DataPinjaman }) {
   const [prosesAi, setProsesAi] = useState(false);
   const [pesan, setPesan] = useState<string | null>(null);
   const [syarat, setSyarat] = useState<Record<string, boolean>>({});
+  const [modeSepi, setModeSepi] = useState<"kuartil" | "terburuk">("kuartil");
 
   // Saat kapasitas berubah (input uang dapur / cicilan lama), penjelasan lama tidak berlaku lagi
   useEffect(() => setPenjelasan(null), [rek.plafon, kap]);
@@ -284,207 +293,300 @@ function KurTerbuka({ data }: { data: DataPinjaman }) {
 
   const teksPenjelasan = penjelasan?.teks ?? (diRekomendasi ? penjelasanRekomendasi(rek, kap) : null);
 
+  // --- data tampilan (dari engine & store, tanpa perhitungan baru) ---
+  const bulanJendela = rekapBulanan(transaksi.filter((t) => !perluDicek.has(t.id)), kategori, data.jendela.dari, data.jendela.sampai);
+  const statusBulan = bulanJendela.map((b) => {
+    const m = data.minggu.filter((w) => w.sampai.slice(0, 7) === b.kunci);
+    const kurang = m.filter((w) => !w.valid).length;
+    return { kunci: b.kunci, lengkap: m.length > 0 && kurang === 0, kurang };
+  });
+  const semuaLengkap = statusBulan.every((b) => b.lengkap);
+  const kelasStatus = p.status === "hijau" ? "safe" : p.status === "kuning" ? "caution" : "danger";
+  const maksMinggu = Math.max(1, ...data.minggu.map((m) => m.laba));
+  const ambangSepi = modeSepi === "kuartil" ? kap.labaStress / 4 : (data.mingguTerburuk?.laba ?? 0);
+  const labaSepi = modeSepi === "kuartil" ? kap.labaStress : kap.labaTerburuk;
+  const sisaSepi = modeSepi === "kuartil" ? p.sisaStress : p.sisaTerburuk;
+  const cadanganVisual = [
+    ["Kas normal", Math.max(0, kap.labaRata - kap.kebutuhanRT)],
+    ["Kas saat sepi", Math.max(0, kap.labaStress - kap.kebutuhanRT)],
+    ["Cicilan bulanan", p.beban],
+    ["Cadangan disarankan", p.cadangan?.target ?? 0],
+  ] as const;
+  const maksCadangan = Math.max(1, ...cadanganVisual.map((x) => x[1]));
+
   return (
-    <div className="nk-halaman nk-kur">
-      <p className="nk-kur-dasar">
-        <PIcon name="check" size={14} /> Dihitung dari {data.mingguValid} dari {MINGGU_JENDELA} minggu lengkap ({rentang(data.jendela.dari, data.jendela.sampai)}).
-        Semua angka dihitung sistem; AI hanya menjelaskan.
-      </p>
+    <div className="fg-halaman fg-kur">
+      <PageHeader title={<Istilah arti={ARTI.kur}>Simulasi Kesiapan KUR</Istilah>} subtitle="Uji kemampuan membayar cicilan berdasarkan kondisi keuangan dan ketahanan kas usahamu.">
+        <span className="disclaimer">
+          <PIcon name="alert" size={14} />
+          Bukan keputusan persetujuan kredit bank
+        </span>
+      </PageHeader>
+      <DemoStrip>
+        Semua angka dihitung sistem dari <b>{data.mingguValid} dari {MINGGU_JENDELA} minggu lengkap</b> ({rentang(data.jendela.dari, data.jendela.sampai)}). AI hanya menjelaskan.
+      </DemoStrip>
 
-      <div className="nk-kur-atas">
-        {/* ------------------------------ Kontrol ------------------------------ */}
-        <section className="nk-card nk-kur-kontrol" aria-labelledby="judul-rencana">
-          <div className="nk-card-head">
+      <section className="validation-card">
+        <div>
+          <span>Validasi data 6 bulan</span>
+          <h3>{semuaLengkap ? "Data Keuangan Lengkap" : "Data Keuangan Hampir Lengkap"}</h3>
+          <p>
+            {data.mingguValid} dari {MINGGU_JENDELA} minggu tercatat minimal {MIN_HARI_MINGGU_VALID} hari (syarat minimal {MIN_MINGGU_VALID_KUR} minggu).
+            {!semuaLengkap && " Lengkapi minggu yang kosong agar hasil makin akurat."}
+          </p>
+        </div>
+        <div className="timeline">
+          {statusBulan.map((b) => (
+            <span className={b.lengkap ? "" : "missing"} key={b.kunci}>
+              <i>{b.lengkap ? "✓" : "!"}</i>
+              <b>{namaBulan(b.kunci).split(" ")[0]}</b>
+              <small>{b.lengkap ? "Lengkap" : `${b.kurang} minggu kurang`}</small>
+            </span>
+          ))}
+        </div>
+        <button onClick={() => goTo("keuangan")}>
+          Lengkapi Data Keuangan <PIcon name="arrow" size={15} />
+        </button>
+      </section>
+
+      <section className="ai-loan-recommendation">
+        <div className="recommendation-icon">
+          <PIcon name="sparkle" size={23} />
+        </div>
+        <div>
+          <span>Rekomendasi Awal NAIK.IN AI</span>
+          <h3>{rek.adaHijau ? "Rencana pinjaman yang sesuai kemampuan kas" : "Belum ada plafon di zona Siap"}</h3>
+          <p>{teksPenjelasan ?? penjelasanRekomendasi(rek, kap)}</p>
+          <div className="recommendation-values">
             <div>
-              <span className="nk-eyebrow">Rencana pinjaman KUR</span>
-              <h3 id="judul-rencana" className="nk-kur-plafon">{rupiah(plafon)}</h3>
+              <small>Batas cicilan aman – hati-hati</small>
+              <b>
+                {rupiah(batas.aman)} – {rupiah(batas.hatiHati)}
+              </b>
             </div>
-            <button className="nk-btn hantu kecil" onClick={kembalikan} disabled={diRekomendasi}>
-              <PIcon name="refresh" size={14} /> Kembalikan ke rekomendasi
-            </button>
-          </div>
-          <SliderPlafon nilai={plafon} onUbah={setPlafon} zona={zona} plafonRekomendasi={rek.plafon} />
-
-          <div className="nk-kur-baris">
-            <span className="nk-kur-label">Tenor</span>
-            <Segmen label="Tenor" pilihan={TENOR_PILIHAN.map((t) => ({ id: String(t), label: `${t} bulan` }))} nilai={String(tenor)} onPilih={(v) => setTenor(Number(v) as Tenor)} />
-          </div>
-
-          <div className="nk-kur-bunga">
             <div>
-              <span className="nk-chip statis">
-                <PIcon name="tag" size={13} /> {p.bunga.jenis} · <b>{persen(p.bunga.tahunan)} per tahun</b>
-              </span>
-              <small>Bunga otomatis: plafon s.d. Rp10 juta 3% (KUR Super Mikro), di atasnya 6% (KUR Mikro, sektor produksi).</small>
+              <small>Nominal disarankan</small>
+              <b>{rupiah(rek.plafon)}</b>
             </div>
-            <Saklar label="Mode konservatif: 6% untuk semua plafon" nyala={kur.konservatif} onUbah={(v) => kirim({ type: "kur", kur: { konservatif: v } })} />
-            <p className="nk-catatan-bank">
-              <PIcon name="info" size={14} /> Konfirmasi bunga dan syarat ke bank.
-            </p>
+            <div>
+              <small>Tenor</small>
+              <b>{rek.tenor} Bulan</b>
+            </div>
           </div>
+          {penjelasan && <small className="fg-sumber">{penjelasan.sumber === "ai" ? "Ditulis AI dari angka sistem" : "Penjelasan templat"}</small>}
+        </div>
+        <button onClick={kembalikan} disabled={diRekomendasi}>
+          {diRekomendasi ? "Rekomendasi AI dipakai" : "Gunakan Rekomendasi AI"}
+        </button>
+      </section>
 
-          <div className="nk-kur-input">
-            <InputRupiah label="Cicilan lama" nilai={kur.cicilanLama} onUbah={(v) => kirim({ type: "kur", kur: { cicilanLama: v } })} petunjuk="Cicilan lain yang sedang berjalan (motor, koperasi, dll.)" />
-            <InputRupiah
-              label={<Istilah arti="Kebutuhan rumah tangga minimal per bulan yang tidak boleh terpotong cicilan.">Kebutuhan rumah tangga minimal</Istilah>}
-              nilai={kebutuhanRT}
-              onUbah={(v) => kirim({ type: "kur", kur: { kebutuhanRT: v } })}
-              petunjuk={
-                <>
-                  Uang dapur keluarga. Rata-rata pengeluaran pribadi kamu {rupiah(Math.round(data.pribadiRataBulanan / 1000) * 1000)}/bulan.{" "}
-                  <button type="button" className="nk-link" onClick={() => kirim({ type: "kur", kur: { kebutuhanRT: Math.round(data.pribadiRataBulanan / 1000) * 1000 } })}>
-                    Pakai angka ini
+      <section className="simulator-card">
+        <div className="simulator-head">
+          <div>
+            <span>Simulator interaktif</span>
+            <h3>Atur Rencana Pinjamanmu</h3>
+          </div>
+          <div className="rate-badge">
+            <small>{p.bunga.jenis}</small>
+            <b>{persen(p.bunga.tahunan)} Efektif / Tahun</b>
+            <i title="Bunga otomatis: plafon s.d. Rp10 juta 3% (KUR Super Mikro), di atasnya 6% (KUR Mikro, sektor produksi).">?</i>
+          </div>
+        </div>
+        <div className="simulator-grid">
+          <div className="loan-controls">
+            <div className="select-label">
+              <span>Kategori KUR</span>
+              <div className="fg-kur-jenis">
+                <span className="nk-chip statis">
+                  <PIcon name="tag" size={13} /> {p.bunga.jenis} · <b>{persen(p.bunga.tahunan)}</b>
+                </span>
+                <Saklar label="Mode konservatif: 6% untuk semua plafon" nyala={kur.konservatif} onUbah={(v) => kirim({ type: "kur", kur: { konservatif: v } })} />
+              </div>
+              <small>Bunga ditentukan otomatis dari plafon. Konfirmasi bunga dan syarat ke bank.</small>
+            </div>
+            <div className="range-block">
+              <div>
+                <span>Jumlah Pinjaman</span>
+                <strong>{rupiah(plafon)}</strong>
+              </div>
+              <SliderPlafon nilai={plafon} onUbah={setPlafon} zona={zona} plafonRekomendasi={rek.plafon} />
+            </div>
+            <div className="tenor-control">
+              <span>Tenor Pinjaman</span>
+              <div>
+                {TENOR_PILIHAN.map((x) => (
+                  <button className={tenor === x ? "active" : ""} onClick={() => setTenor(x)} key={x}>
+                    {x} Bulan
                   </button>
-                </>
-              }
-            />
-          </div>
-
-          <div className="nk-rek-box">
-            <b>
-              <PIcon name="sparkle" size={14} /> Rekomendasi AI: {rupiah(rek.plafon)} · {rek.tenor} bulan
-            </b>
-            <p>{teksPenjelasan ?? `Plafon dan tenor saat ini berbeda dari rekomendasi. Tekan “Kembalikan ke rekomendasi” atau “Minta penjelasan AI” untuk penjelasan simulasi ini.`}</p>
-            {penjelasan && <small>{penjelasan.sumber === "ai" ? "Ditulis AI dari angka sistem" : "Penjelasan templat"}</small>}
-          </div>
-        </section>
-
-        {/* ------------------------------ Hasil ------------------------------ */}
-        <div className="nk-kur-hasil">
-          <section className={`nk-status-banner ${p.status}`} role="status" aria-live="polite">
-            <span className="nk-status-titik" />
-            <div>
-              <b>{LABEL_STATUS[p.status]}</b>
-              <p>{kalimatStatus(p).replace(/^[^:]+:\s*/, "")}</p>
-              <small>
-                Cicilan {Number.isFinite(p.rasioRata) ? persen(p.rasioRata, 1) : "—"} dari laba rata-rata · batas {persen(AMBANG_HIJAU)} / {persen(AMBANG_KUNING)} ({LABEL_AMBANG})
-              </small>
+                ))}
+              </div>
             </div>
-          </section>
-
-          <div className="nk-kur-kartu">
-            <article className="nk-card nk-angka">
-              <div className="nk-angka-head">
-                <span>Cicilan KUR per bulan</span>
-              </div>
+            <div className="nk-kur-input">
+              <InputRupiah label="Cicilan lama" nilai={kur.cicilanLama} onUbah={(v) => kirim({ type: "kur", kur: { cicilanLama: v } })} petunjuk="Cicilan lain yang sedang berjalan" />
+              <InputRupiah
+                label={<Istilah arti="Kebutuhan rumah tangga minimal per bulan yang tidak boleh terpotong cicilan.">Uang dapur keluarga</Istilah>}
+                nilai={kebutuhanRT}
+                onUbah={(v) => kirim({ type: "kur", kur: { kebutuhanRT: v } })}
+                petunjuk={
+                  <>
+                    Rata-rata pengeluaran pribadi {rupiah(Math.round(data.pribadiRataBulanan / 1000) * 1000)}.{" "}
+                    <button type="button" className="nk-link" onClick={() => kirim({ type: "kur", kur: { kebutuhanRT: Math.round(data.pribadiRataBulanan / 1000) * 1000 } })}>
+                      Pakai
+                    </button>
+                  </>
+                }
+              />
+            </div>
+          </div>
+          <div className="simulation-outputs">
+            <article>
+              <i>
+                <PIcon name="calc" size={18} />
+              </i>
+              <span>Estimasi Cicilan per Bulan</span>
               <strong>{rupiah(p.cicilanBaru)}</strong>
-              <small className="nk-muted kecil">
+              <small>
                 {p.tenor} bulan · bunga {persen(p.bunga.tahunan)}
-                {kur.cicilanLama > 0 && <> · total beban {rupiah(p.beban)}</>}
+                {kur.cicilanLama > 0 && ` · total ${rupiah(p.beban)}`}
               </small>
             </article>
-            <article className="nk-card nk-angka">
-              <div className="nk-angka-head">
-                <span>
-                  <Istilah arti={ARTI_KUR.batasAman}>Batas aman cicilan</Istilah>
-                </span>
-              </div>
+            <article>
+              <i>
+                <PIcon name="wallet" size={18} />
+              </i>
+              <span>
+                <Istilah arti={ARTI_KUR.batasAman}>Batas Cicilan Aman</Istilah>
+              </span>
               <strong>{rupiah(batas.aman)}</strong>
-              <small className="nk-muted kecil">Batas hati-hati {rupiah(batas.hatiHati)}</small>
-              <small className="nk-muted kecil">
-                <Istilah arti={ARTI_KUR.plafonAman}>Plafon aman</Istilah> {tenor} bln (6%): <b>{rupiahRingkas(plafonAman(batas.aman, 0.06, tenor))}</b>
+              <small>
+                hati-hati {rupiah(batas.hatiHati)} · plafon aman {tenor} bln ≈ {rupiahRingkas(plafonAman(batas.aman, 0.06, tenor))}
               </small>
             </article>
-            <article className="nk-card nk-angka nk-npl">
-              <div className="nk-angka-head">
-                <span>
-                  <Istilah arti={ARTI_KUR.npl}>Risiko Kredit Macet (NPL)</Istilah>
-                </span>
-              </div>
-              <GaugeRisiko nilai={risiko.npl} />
-              <p className="nk-npl-bawah">
-                Peluang bulan sulit bayar <b>{persen(risiko.peluangBulanSulit, 1)}</b>
-              </p>
-              <small className="nk-muted kecil">{LABEL_NPL}</small>
+            <article>
+              <i>
+                <PIcon name="report" size={18} />
+              </i>
+              <span>Sisa Kas Setelah Cicilan</span>
+              <strong className={p.sisaRata < 0 ? "negatif" : ""}>{rupiah(p.sisaRata)}</strong>
+              <small>rata-rata, setelah uang dapur</small>
+            </article>
+            <article className={kelasStatus}>
+              <i>
+                <PIcon name={p.status === "hijau" ? "check" : "alert"} size={18} />
+              </i>
+              <span>Status Kesiapan</span>
+              <strong>{LABEL_STATUS[p.status]}</strong>
+              <small>
+                cicilan {Number.isFinite(p.rasioRata) ? persen(p.rasioRata, 1) : "—"} dari laba · {LABEL_AMBANG}
+              </small>
             </article>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ------------------------------ Dua lapis + cadangan ------------------------------ */}
-      <div className={p.status === "kuning" && p.cadangan ? "nk-grid-2-1" : ""}>
-        <section className="nk-card nk-dua-lapis" aria-labelledby="judul-lapis">
-          <div className="nk-card-head">
+      <div className="section-title">
+        <span>Analisis ketahanan pembayaran</span>
+        <h2>Penilaian Arus Kas Dua Lapis</h2>
+        <p>Menilai kemampuan cicilan bukan hanya saat usaha ramai, tetapi juga ketika pendapatan menurun.</p>
+      </div>
+      <div className="dual-layer">
+        <article className="layer-card">
+          <header>
+            <i>01</i>
             <div>
-              <span className="nk-eyebrow">Metode</span>
-              <h3 id="judul-lapis">Penilaian Arus Kas Dua Lapis</h3>
+              <span>Lapis 1 · {p.lolosLapis1 ? "✓ Lolos" : "✗ Tidak lolos"}</span>
+              <h3>
+                <Istilah arti={ARTI_KUR.lapis1}>Kapasitas Dasar 6 Bulan</Istilah>
+              </h3>
+            </div>
+          </header>
+          <GrafikGabungan
+            tinggi={190}
+            data={bulanJendela.map((b) => ({ label: namaBulan(b.kunci).split(" ")[0], sub: namaBulan(b.kunci, true), omzet: b.penjualan, laba: b.laba }))}
+            seri={[
+              { kunci: "omzet", label: "Omzet", warna: "#C9CDF6", jenis: "batang" },
+              { kunci: "laba", label: "Laba usaha", warna: "#5B65DC", jenis: "garis" },
+            ]}
+          />
+          <div className="layer-stats">
+            <div>
+              <span>Laba rata-rata / bulan</span>
+              <b>{rupiah(kap.labaRata)}</b>
+            </div>
+            <div>
+              <span>Uang dapur keluarga</span>
+              <b>{rupiah(kap.kebutuhanRT)}</b>
+            </div>
+            <div>
+              <span>Cicilan (total)</span>
+              <b>{rupiah(p.beban)}</b>
+            </div>
+            <div>
+              <span>Setelah cicilan</span>
+              <b className={p.sisaRata < 0 ? "negatif" : ""}>{rupiah(p.sisaRata)}</b>
             </div>
           </div>
-          <div className="nk-lapis-grid">
-            <div className={`nk-lapis ${p.lolosLapis1 ? "lolos" : "gagal"}`}>
-              <header>
-                <span>
-                  Lapis 1 · <Istilah arti={ARTI_KUR.lapis1}>Kapasitas Dasar</Istilah>
-                </span>
-                <em>{p.lolosLapis1 ? "✓ Lolos" : "✗ Tidak lolos"}</em>
-              </header>
-              <dl>
-                <dt>Laba rata-rata / bulan</dt>
-                <dd>{rupiah(kap.labaRata)}</dd>
-                <dt>Uang dapur keluarga</dt>
-                <dd>− {rupiah(kap.kebutuhanRT)}</dd>
-                <dt>Cicilan (total)</dt>
-                <dd>− {rupiah(p.beban)}</dd>
-                <dt className="hasil">Sisa kas</dt>
-                <dd className={`hasil ${p.sisaRata < 0 ? "negatif" : ""}`}>{rupiah(p.sisaRata)}</dd>
-                <dt>Rasio cicilan</dt>
-                <dd>{Number.isFinite(p.rasioRata) ? persen(p.rasioRata, 1) : "—"} (maks. {persen(AMBANG_HIJAU)})</dd>
-              </dl>
+          <p>Laba rata-rata = rata-rata laba mingguan × 4. Lolos bila cicilan ≤ {persen(AMBANG_HIJAU)} laba dan sisa kas tidak minus.</p>
+        </article>
+        <article className="layer-card downside">
+          <header>
+            <i>02</i>
+            <div>
+              <span>Lapis 2 · {p.lolosLapis2 ? "✓ Lolos" : "✗ Tidak lolos"}</span>
+              <h3>
+                <Istilah arti={ARTI_KUR.lapis2}>Uji Tekan Saat Minggu Sepi</Istilah>
+              </h3>
             </div>
-            <div className={`nk-lapis ${p.lolosLapis2 ? "lolos" : "gagal"}`}>
-              <header>
-                <span>
-                  Lapis 2 · <Istilah arti={ARTI_KUR.lapis2}>Uji Tekan Saat Sepi</Istilah>
-                </span>
-                <em>{p.lolosLapis2 ? "✓ Lolos" : "✗ Tidak lolos"}</em>
-              </header>
-              <dl>
-                <dt>
-                  Laba bulan sepi <ArtinyaApa arti={ARTI.kuartilBawah} />
-                </dt>
-                <dd>{rupiah(kap.labaStress)}</dd>
-                <dt>Uang dapur keluarga</dt>
-                <dd>− {rupiah(kap.kebutuhanRT)}</dd>
-                <dt>Cicilan (total)</dt>
-                <dd>− {rupiah(p.beban)}</dd>
-                <dt className="hasil">Sisa kas</dt>
-                <dd className={`hasil ${p.sisaStress < 0 ? "negatif" : ""}`}>{rupiah(p.sisaStress)}</dd>
-                <dt>Skenario terburuk (info)</dt>
-                <dd className={p.sisaTerburuk < 0 ? "negatif" : ""}>{rupiah(p.sisaTerburuk)}</dd>
-              </dl>
+          </header>
+          <div className="downside-toggle">
+            <button className={modeSepi === "kuartil" ? "active" : ""} onClick={() => setModeSepi("kuartil")}>
+              Kuartil Bawah
+            </button>
+            <button className={modeSepi === "terburuk" ? "active" : ""} onClick={() => setModeSepi("terburuk")}>
+              Minggu Tersepi
+            </button>
+          </div>
+          <div className="weekly-bars">
+            {data.minggu.map((m) => (
+              <i
+                key={m.dari}
+                className={!m.valid ? "fg-kosong" : m.laba <= ambangSepi ? "low" : ""}
+                style={{ height: `${m.valid ? Math.max(4, (Math.max(0, m.laba) / maksMinggu) * 100) : 100}%` }}
+                title={`${rentang(m.dari, m.sampai)}: ${m.valid ? rupiah(m.laba) : "belum lengkap"}`}
+              />
+            ))}
+          </div>
+          <div className="layer-stats">
+            <div>
+              <span>{modeSepi === "kuartil" ? "Laba minggu sepi (Q1)" : "Laba minggu terendah"}</span>
+              <b>{rupiah(labaSepi / 4)}</b>
+            </div>
+            <div>
+              <span>Skenario × 4</span>
+              <b>{rupiah(labaSepi)}</b>
+            </div>
+            <div>
+              <span>Uang dapur + cicilan</span>
+              <b>{rupiah(kap.kebutuhanRT + p.beban)}</b>
+            </div>
+            <div>
+              <span>Setelah cicilan</span>
+              <b className={sisaSepi < 0 ? "negatif" : ""}>{rupiah(sisaSepi)}</b>
             </div>
           </div>
-        </section>
-
-        {p.status === "kuning" && p.cadangan && (
-          <section className="nk-card nk-cadangan" aria-labelledby="judul-cadangan">
-            <span className="nk-eyebrow">Untuk status Hati-hati</span>
-            <h3 id="judul-cadangan">Tabungan Cadangan Cicilan</h3>
-            <div className="nk-cadangan-angka">
-              <div>
-                <small>Target cadangan</small>
-                <strong>{rupiah(p.cadangan.target)}</strong>
-                <span>
-                  {BULAN_CADANGAN} × kekurangan bulan sepi {rupiah(p.cadangan.kekuranganBulanSepi)}
-                </span>
-              </div>
-              <div>
-                <small>Setoran per bulan ramai</small>
-                <strong>{rupiah(p.cadangan.setoranBulanan)}</strong>
-                <span>selama {BULAN_MENABUNG_CADANGAN} bulan</span>
-              </div>
-            </div>
-            <p>Sisihkan saat bulan ramai agar saat bulan sepi cicilan tetap terbayar tanpa memotong uang dapur.</p>
-          </section>
-        )}
+          <p>
+            {modeSepi === "kuartil"
+              ? "Status memakai kuartil bawah. Batang oranye = minggu di bawah kuartil bawah; abu = minggu belum lengkap."
+              : "Minggu tersepi hanya informasi skenario terburuk, tidak menentukan status."}
+          </p>
+        </article>
       </div>
 
-      {/* ------------------------------ Ketahanan kas ------------------------------ */}
       <div className="nk-grid-2">
-        <section className="nk-card">
-          <div className="nk-card-head">
+        <section className="panel">
+          <div className="panel-title">
             <div>
-              <span className="nk-eyebrow">Ketahanan kas</span>
+              <span>Ketahanan kas</span>
               <h3>Sisa kas setelah cicilan dan uang dapur</h3>
             </div>
           </div>
@@ -496,10 +598,10 @@ function KurTerbuka({ data }: { data: DataPinjaman }) {
             ]}
           />
         </section>
-        <section className="nk-card">
-          <div className="nk-card-head">
+        <section className="panel">
+          <div className="panel-title">
             <div>
-              <span className="nk-eyebrow">12 bulan ke depan</span>
+              <span>12 bulan ke depan</span>
               <h3>Proyeksi saldo kas bebas</h3>
             </div>
           </div>
@@ -515,105 +617,103 @@ function KurTerbuka({ data }: { data: DataPinjaman }) {
             </span>
           </div>
           <GrafikKipas data={kipas} />
-          <small className="nk-muted kecil">Saldo kumulatif setelah uang dapur dan cicilan, dari {jalur.jumlah.toLocaleString("id-ID")} simulasi pola 26 minggu.</small>
+          <small className="nk-muted kecil">Dari {jalur.jumlah.toLocaleString("id-ID")} simulasi pola 26 minggu usahamu.</small>
         </section>
       </div>
 
-      {/* ------------------------------ Tindakan + syarat ------------------------------ */}
-      <div className="nk-grid-2-1">
-        <section className="nk-card" aria-labelledby="judul-tindakan">
-          <div className="nk-card-head">
+      <section className={`readiness-status ${kelasStatus}`} role="status" aria-live="polite">
+        <div className="status-mark">
+          <PIcon name={p.status === "hijau" ? "check" : "alert"} size={27} />
+        </div>
+        <div>
+          <span>Hasil Simulasi Kesiapan Pembayaran</span>
+          <h2>{LABEL_STATUS[p.status]}</h2>
+          <p>{kalimatStatus(p).replace(/^[^:]+:\s*/, "")}</p>
+          <small>
+            Ambang {persen(AMBANG_HIJAU)} / {persen(AMBANG_KUNING)}: {LABEL_AMBANG}.
+          </small>
+        </div>
+        <div className="risk-indicator fg-npl">
+          <span>
+            <Istilah arti={ARTI_KUR.npl}>Risiko Kredit Macet (NPL)</Istilah>
+          </span>
+          <GaugeRisiko nilai={risiko.npl} />
+          <small>
+            Peluang bulan sulit bayar <b>{persen(risiko.peluangBulanSulit, 1)}</b>
+          </small>
+          <em>{LABEL_NPL}</em>
+        </div>
+      </section>
+
+      <section className="reserve-section">
+        <div className="reserve-chart">
+          <div className="panel-title">
             <div>
-              <span className="nk-eyebrow">Langkah berikutnya</span>
-              <h3 id="judul-tindakan">Rekomendasi tindakan</h3>
+              <span>Perencanaan buffer</span>
+              <h3>{p.status === "kuning" && p.cadangan ? "Tabungan Cadangan Cicilan" : "Ketahanan Kas & Cadangan Cicilan"}</h3>
             </div>
           </div>
-          <ol className="nk-tindakan">
-            {tindakan.map((t, i) => (
-              <li key={t.jenis} className={`prioritas-${t.prioritas}`}>
-                <span>{i + 1}</span>
-                <div>
-                  <b>{t.judul}</b>
-                  <p>{t.teks}</p>
-                  {t.jenis === "turunkan_plafon" && (
-                    <button className="nk-link" onClick={() => setPlafon(Number(t.angka.plafon))}>
-                      Coba {rupiahRingkas(Number(t.angka.plafon))}
-                    </button>
-                  )}
-                  {t.jenis === "perpanjang_tenor" && (
-                    <button className="nk-link" onClick={() => setTenor(Number(t.angka.tenor) as Tenor)}>
-                      Coba {t.angka.tenor} bulan
-                    </button>
-                  )}
-                  {t.jenis === "lengkapi_minggu" && (
-                    <button className="nk-link" onClick={() => goTo("keuangan", "perlu-dicek")}>
-                      Buka Perlu Dicek
-                    </button>
-                  )}
-                  {t.jenis === "pisahkan_rekening" && (
-                    <button className="nk-link" onClick={() => goTo("keuangan", "perlu-dicek")}>
-                      Periksa pengeluaran pribadi
-                    </button>
-                  )}
-                </div>
-              </li>
+          <div className="reserve-visual">
+            {cadanganVisual.map(([label, nilai], i) => (
+              <div key={label}>
+                <span>{label}</span>
+                <b>{rupiah(nilai)}</b>
+                <i style={{ height: `${Math.min(100, (nilai / maksCadangan) * 100)}%` }} className={`bar-${i}`} />
+              </div>
             ))}
-          </ol>
-        </section>
-        <section className="nk-card" aria-labelledby="judul-syarat">
-          <span className="nk-eyebrow">Informasi, tidak masuk skor</span>
-          <h3 id="judul-syarat">Syarat umum KUR</h3>
-          <ul className="nk-syarat">
-            {[
-              { id: "nib", teks: "NIB atau Surat Keterangan Usaha (SKU)" },
-              { id: "ktp", teks: "e-KTP" },
-              { id: "npwp", teks: "NPWP", catatan: plafon > PLAFON_WAJIB_NPWP ? "Wajib untuk plafon di atas Rp50 juta" : "Hanya wajib untuk plafon di atas Rp50 juta" },
-              {
-                id: "usia",
-                teks: `Usaha aktif minimal ${USIA_USAHA_MIN_BULAN} bulan`,
-                catatan: `Usahamu sudah ${usiaBulan} bulan. Ada pengecualian untuk KUR Super Mikro.`,
-              },
-            ].map((s) => (
-              <li key={s.id}>
-                <label>
-                  <input type="checkbox" checked={!!syarat[s.id]} onChange={(e) => setSyarat({ ...syarat, [s.id]: e.target.checked })} />
-                  <span>
-                    {s.teks}
-                    {s.catatan && <small>{s.catatan}</small>}
-                  </span>
-                </label>
+          </div>
+          {p.status === "kuning" && p.cadangan ? (
+            <p>
+              Target cadangan <b>{rupiah(p.cadangan.target)}</b> ({BULAN_CADANGAN} × kekurangan bulan sepi {rupiah(p.cadangan.kekuranganBulanSepi)}), disetor{" "}
+              <b>{rupiah(p.cadangan.setoranBulanan)}</b> per bulan ramai selama {BULAN_MENABUNG_CADANGAN} bulan. Sisihkan saat bulan ramai agar saat bulan sepi cicilan tetap
+              terbayar tanpa memotong uang dapur.
+            </p>
+          ) : (
+            <p>{p.status === "hijau" ? "Status Siap: kas saat sepi masih menutup uang dapur dan cicilan, cadangan khusus tidak diperlukan." : "Status Belum siap: turunkan plafon atau perpanjang tenor sebelum memikirkan cadangan."}</p>
+          )}
+        </div>
+        <div className="reserve-ai">
+          <span>
+            <PIcon name="sparkle" size={17} />
+            Rekomendasi Tindakan
+          </span>
+          <h3>{p.status === "hijau" ? "Rencana ini masih dalam batas aman" : p.status === "kuning" ? "Perkuat cadangan sebelum mengambil cicilan" : "Sesuaikan rencana pinjaman"}</h3>
+          <ul>
+            {tindakan.map((t) => (
+              <li key={t.jenis}>
+                <b>{t.judul}.</b> {t.teks}{" "}
+                {t.jenis === "turunkan_plafon" && (
+                  <button className="fg-link-terang" onClick={() => setPlafon(Number(t.angka.plafon))}>
+                    Coba {rupiahRingkas(Number(t.angka.plafon))}
+                  </button>
+                )}
+                {t.jenis === "perpanjang_tenor" && (
+                  <button className="fg-link-terang" onClick={() => setTenor(Number(t.angka.tenor) as Tenor)}>
+                    Coba {t.angka.tenor} bulan
+                  </button>
+                )}
               </li>
             ))}
           </ul>
-          <small className="nk-muted kecil">Syarat lengkap dapat berbeda per bank penyalur.</small>
-        </section>
-      </div>
-
-      {/* ------------------------------ Edukasi ------------------------------ */}
-      <details className="nk-card nk-edukasi" open>
-        <summary>
-          <PIcon name="info" size={16} /> Mengapa 6 bulan dan dua lapis?
-        </summary>
-        <p>
-          Jika hanya memakai rata-rata 6 bulan, bulan ramai seperti musim Lebaran atau tahun ajaran baru bisa menutupi kenyataan bahwa di bulan sepi laba turun di
-          bawah kebutuhan keluarga, sehingga cicilan mudah macet. Karena itu NAIK-KELAS AI memakai dua lapis. <b>Lapis 1</b> melihat kapasitas dasar usaha dari
-          rata-rata laba bulanan 6 bulan. <b>Lapis 2</b> menguji apakah saat omzet turun (kuartil bawah laba mingguan) kas masih sanggup membayar cicilan tanpa
-          memotong uang dapur. Jika rata-rata aman tetapi saat sepi minus, statusnya <b>Kuning (Hati-hati)</b> dengan saran tabungan cadangan, bukan penolakan.
-        </p>
-      </details>
-
-      {/* ------------------------------ Aksi ------------------------------ */}
-      <div className="nk-kur-aksi">
-        <button className="nk-btn sekunder" onClick={() => simpan(false)}>
-          <PIcon name="download" size={16} /> Simpan simulasi
-        </button>
-        <button className="nk-btn sekunder" onClick={() => simpan(true)}>
-          <PIcon name="report" size={16} /> Masukkan ke Laporan
-        </button>
-        <button className="nk-btn" onClick={mintaAi} disabled={prosesAi}>
-          <PIcon name="sparkle" size={16} /> {prosesAi ? "Meminta penjelasan…" : "Minta penjelasan AI"}
-        </button>
-      </div>
+          <button onClick={kembalikan} disabled={diRekomendasi}>
+            Gunakan Nominal yang Direkomendasikan
+          </button>
+          <div className="fg-reserve-aksi">
+            <button className="save-simulation" onClick={() => simpan(false)}>
+              <PIcon name="download" size={14} />
+              Simpan Simulasi
+            </button>
+            <button className="save-simulation" onClick={() => simpan(true)}>
+              <PIcon name="report" size={14} />
+              Masukkan ke Laporan
+            </button>
+            <button className="save-simulation" onClick={mintaAi} disabled={prosesAi}>
+              <PIcon name="sparkle" size={14} />
+              {prosesAi ? "Meminta…" : "Minta Penjelasan AI"}
+            </button>
+          </div>
+        </div>
+      </section>
 
       <p className="nk-pernyataan">
         <PIcon name="info" size={15} />

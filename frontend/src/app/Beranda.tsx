@@ -1,19 +1,20 @@
-import { useMemo, useState, type ReactNode } from "react";
-import { Donat, GrafikGabungan, Legenda, SparkLaba, WARNA_DONAT } from "../components/charts";
+import { useMemo, useState } from "react";
+import { GrafikGabungan, Legenda, SparkLaba } from "../components/charts";
+import { MiniTren } from "../components/figma";
 import { PIcon, type PIconName } from "../components/icons";
-import { ARTI, Cincin, Istilah, Kosong, Perubahan, Segmen } from "../components/ui";
-import { persen, rentang, rupiah, rupiahRingkas, tanggalPendek, namaBulanSaja, namaBulan, toDate } from "../lib/format";
-import {
-  PERIODE, dalamRentang, keluarPerKategori, kelengkapan, perubahan, rekapBulanan, rekapMingguan,
-  rentangPeriode, ringkas, stressOut, type PeriodeId,
-} from "../lib/finance";
-import { useToko } from "../state/store";
-import { goTo } from "../routes";
-import { LABEL_STATUS } from "../lib/engine/loan";
+import { ARTI, Istilah, Kosong } from "../components/ui";
+import type { Transaksi } from "../data/types";
 import { hitungSkor } from "../lib/engine/label";
+import { LABEL_STATUS } from "../lib/engine/loan";
+import { dalamRentang, kelengkapan, perubahan, rekapBulanan, rekapMingguan, ringkas, stressOut } from "../lib/finance";
+import { addDays, daysBetween, monthKey, namaBulan, namaBulanSaja, persen, rentang, rupiah, rupiahRingkas, tanggal, tanggalPendek, toDate } from "../lib/format";
+import { hitungAngka, poinTemplat } from "../lib/ringkasan";
+import { goTo } from "../routes";
+import { useToko } from "../state/store";
 import { useCatat } from "./AppShell";
 
 export function lamaUsaha(mulai: string, hariIni: string): string {
+  if (!mulai) return "—";
   const a = toDate(mulai);
   const b = toDate(hariIni);
   const bulan = (b.getUTCFullYear() - a.getUTCFullYear()) * 12 + (b.getUTCMonth() - a.getUTCMonth()) - (b.getUTCDate() < a.getUTCDate() ? 1 : 0);
@@ -21,196 +22,227 @@ export function lamaUsaha(mulai: string, hariIni: string): string {
   return `${bulan} bulan`;
 }
 
-type Granularitas = "minggu" | "bulan";
+// ---------------------------------------------------------------------------
+// Pilihan periode: Hari ini · 7 hari terakhir · Pilih bulan · Pilih tanggal
+// ---------------------------------------------------------------------------
 
-function KartuAkun() {
-  const { profil, transaksi, kategori, hariIni, hariLibur, simulasi, produk } = useToko();
-  const sim = simulasi[0];
-  const labelTerakhir = [...produk].filter((p) => p.diperiksaPada).sort((a, b) => (b.diperiksaPada ?? "").localeCompare(a.diperiksaPada ?? ""))[0];
-  const skorLabel = labelTerakhir ? hitungSkor(labelTerakhir.data, labelTerakhir.mode, profil.kota) : null;
-  const k = kelengkapan(transaksi, kategori, hariIni, hariLibur);
+type JenisPeriode = "hari" | "7h" | "bulan" | "tanggal";
+type Periode = { jenis: JenisPeriode; bulan: string; dari: string; sampai: string };
+
+const akhirBulan = (bulan: string) => addDays(`${monthKey(addDays(`${bulan}-01`, 32))}-01`, -1);
+
+/** Rentang periode & periode pembanding (panjang sama, tepat sebelumnya). */
+function hitungRentang(p: Periode, hariIni: string) {
+  let dari: string;
+  let sampai: string;
+  if (p.jenis === "hari") dari = sampai = hariIni;
+  else if (p.jenis === "7h") {
+    sampai = hariIni;
+    dari = addDays(hariIni, -6);
+  } else if (p.jenis === "bulan") {
+    dari = `${p.bulan}-01`;
+    sampai = akhirBulan(p.bulan) > hariIni ? hariIni : akhirBulan(p.bulan);
+  } else {
+    dari = p.dari <= p.sampai ? p.dari : p.sampai;
+    sampai = p.dari <= p.sampai ? p.sampai : p.dari;
+  }
+  if (p.jenis === "bulan") {
+    const bulanLalu = monthKey(addDays(dari, -1));
+    return { dari, sampai, sebelumDari: `${bulanLalu}-01`, sebelumSampai: akhirBulan(bulanLalu), pembanding: "bulan sebelumnya" };
+  }
+  const panjang = daysBetween(dari, sampai) + 1;
+  return {
+    dari,
+    sampai,
+    sebelumDari: addDays(dari, -panjang),
+    sebelumSampai: addDays(dari, -1),
+    pembanding: p.jenis === "hari" ? "kemarin" : p.jenis === "7h" ? "7 hari sebelumnya" : `${panjang} hari sebelumnya`,
+  };
+}
+
+type Granularitas = "hari" | "minggu" | "bulan";
+
+function Perubahan({ nilai, kebalikan = false }: { nilai: number | null; kebalikan?: boolean }) {
+  if (nilai === null) return <b>—</b>;
+  const naik = nilai >= 0;
   return (
-    <section className="nk-card nk-kartu-akun">
-      <div className="nk-kartu-akun-info">
-        <span className="nk-eyebrow">Usaha kamu</span>
-        <h2>{profil.namaUsaha}</h2>
-        <p>
-          <span>
-            <PIcon name="home" size={14} /> {profil.kota}
-          </span>
-          <span>
-            <PIcon name="calendar" size={14} /> Usaha berjalan {lamaUsaha(profil.mulaiUsaha, hariIni)}
-          </span>
-        </p>
-        <div className="nk-chip-row">
-          <button className="nk-chip" onClick={() => goTo("kur")}>
-            <PIcon name="calc" size={14} />
-            Kesiapan KUR:{" "}
-            <b className={sim ? `teks-${sim.status}` : ""}>{sim ? `${LABEL_STATUS[sim.status]} · ${rupiahRingkas(sim.plafon)}` : "Belum disimulasikan"}</b>
-          </button>
-          <button className="nk-chip" onClick={() => goTo("label")}>
-            <PIcon name="tag" size={14} />
-            Skor Label:{" "}
-            <b className={skorLabel ? `teks-${skorLabel.kategori === "Lengkap" ? "hijau" : skorLabel.kategori === "Hampir lengkap" ? "kuning" : "merah"}` : ""}>
-              {skorLabel ? `${Math.round(skorLabel.skor)}/100 · ${skorLabel.kategori}` : "Belum diperiksa"}
-            </b>
-          </button>
-        </div>
-      </div>
-      <div className="nk-kartu-akun-cincin">
-        <Cincin rasio={k.rasio} ukuran={104} tebal={10}>
-          <strong>{persen(k.rasio)}</strong>
-        </Cincin>
-        <div>
-          <b>
-            <Istilah arti={ARTI.kelengkapan}>Kelengkapan Catatan</Istilah>
-          </b>
-          <span>6 bulan terakhir</span>
-          <small>
-            {k.mingguLengkap} dari {k.totalMinggu} minggu lengkap
-          </small>
-        </div>
-      </div>
-    </section>
+    <b className={(kebalikan ? !naik : naik) ? "" : "turun"}>
+      {naik ? "+" : "−"}
+      {Math.abs(nilai * 100).toLocaleString("id-ID", { maximumFractionDigits: 1 })}%
+    </b>
   );
 }
 
-function KartuAngka({
-  judul, nilai, delta, kebalikan, arti, ikon, rincian,
-}: {
-  judul: string; nilai: number; delta: number | null; kebalikan?: boolean; arti?: string; ikon: PIconName; rincian?: ReactNode;
-}) {
+function ToggleGran({ nilai, onPilih }: { nilai: Granularitas; onPilih: (g: Granularitas) => void }) {
   return (
-    <article className="nk-card nk-angka">
-      <div className="nk-angka-head">
-        <span>{arti ? <Istilah arti={arti}>{judul}</Istilah> : judul}</span>
-        <i>
-          <PIcon name={ikon} size={17} />
-        </i>
-      </div>
-      <strong className={nilai < 0 ? "negatif" : ""}>{rupiah(nilai)}</strong>
-      <Perubahan nilai={delta} kebalikan={kebalikan} />
-      {rincian}
-    </article>
-  );
-}
-
-function KartuStressOut() {
-  const { transaksi, kategori, hariIni, hariLibur } = useToko();
-  const s = stressOut(transaksi, kategori, hariIni, hariLibur);
-  return (
-    <article className="nk-card nk-stress">
-      <div className="nk-card-head">
-        <div>
-          <span className="nk-eyebrow">
-            <Istilah arti={ARTI.stressOut}>Stress-out</Istilah>
-          </span>
-          <h3>Laba Minggu Tersepi</h3>
-        </div>
-      </div>
-      {!s.cukupData ? (
-        <div className="nk-stress-progres">
-          <p>
-            <b>Butuh 6 bulan data</b> untuk melihat minggu tersepi dengan adil.
-          </p>
-          <div className="nk-bar">
-            <i style={{ width: `${(s.mingguValid / s.dibutuhkan) * 100}%` }} />
-          </div>
-          <small>
-            {s.mingguValid} dari {s.dibutuhkan} minggu lengkap tercatat
-          </small>
-          <button className="nk-btn sekunder kecil" onClick={() => goTo("keuangan")}>
-            Lengkapi catatan
-          </button>
-        </div>
-      ) : (
-        <>
-          <div className="nk-stress-utama">
-            <strong>{rupiah(s.terendah?.nilai ?? 0)}</strong>
-            <span>laba minggu terendah · {s.terendah ? rentang(s.terendah.dari, s.terendah.sampai) : "-"}</span>
-          </div>
-          <SparkLaba seri={s.seri} kuartilBawah={s.kuartilBawah} idTerendah={s.terendah?.dari ?? null} />
-          <div className="nk-stress-angka">
-            <span>
-              <i className="titik terendah" />
-              Terendah
-              <b>{rupiah(s.terendah?.nilai ?? 0)}</b>
-            </span>
-            <span>
-              <i className="titik kuartil" />
-              <Istilah arti={ARTI.kuartilBawah}>Kuartil bawah</Istilah>
-              <b>{rupiah(s.kuartilBawah)}</b>
-            </span>
-            <span>
-              <i className="titik rata" />
-              Rata-rata
-              <b>{rupiah(s.rataRata)}</b>
-            </span>
-          </div>
-          <small className="nk-muted">
-            Dari {s.mingguValid} minggu lengkap dalam 26 minggu terakhir. Garis putus-putus menandai minggu belum lengkap.
-          </small>
-        </>
-      )}
-    </article>
+    <div className="view-toggle">
+      {(
+        [
+          ["hari", "Harian"],
+          ["minggu", "Mingguan"],
+          ["bulan", "Bulanan"],
+        ] as const
+      ).map(([id, label]) => (
+        <button key={id} className={nilai === id ? "active" : ""} onClick={() => onPilih(id)}>
+          {label}
+        </button>
+      ))}
+    </div>
   );
 }
 
 export function Beranda() {
-  const { transaksi, kategori, hariIni } = useToko();
+  const { profil, transaksi, kategori, hariIni, hariLibur, simulasi, produk, temuan, perluDicek, server } = useToko();
   const { minta } = useCatat();
-  const [periode, setPeriode] = useState<PeriodeId>("30h");
-  const [granGabungan, setGranGabungan] = useState<Granularitas>("minggu");
-  const [granKas, setGranKas] = useState<Granularitas>("minggu");
+  const [periode, setPeriode] = useState<Periode>({ jenis: "7h", bulan: monthKey(hariIni), dari: addDays(hariIni, -13), sampai: hariIni });
+  const r = hitungRentang(periode, hariIni);
+  const panjang = daysBetween(r.dari, r.sampai) + 1;
+  const granAuto: Granularitas = panjang <= 31 ? "hari" : panjang <= 120 ? "minggu" : "bulan";
+  const [granPilihan, setGranPilihan] = useState<Granularitas | null>(null);
+  const gran = granPilihan ?? granAuto;
+  const ubahPeriode = (p: Partial<Periode>) => {
+    setPeriode((x) => ({ ...x, ...p }));
+    setGranPilihan(null); // kembali ke tampilan grafik otomatis sesuai panjang periode
+  };
 
-  const r = rentangPeriode(periode, hariIni);
   const isi = useMemo(() => dalamRentang(transaksi, r.dari, r.sampai), [transaksi, r.dari, r.sampai]);
   const sekarang = ringkas(isi, kategori);
   const sebelum = ringkas(dalamRentang(transaksi, r.sebelumDari, r.sebelumSampai), kategori);
+  const k = kelengkapan(transaksi, kategori, hariIni, hariLibur);
+  const s = stressOut(transaksi, kategori, hariIni, hariLibur);
+  const insight = useMemo(() => poinTemplat(hitungAngka(transaksi, kategori, temuan, perluDicek, hariIni, hariLibur)), [transaksi, kategori, temuan, perluDicek, hariIni, hariLibur]);
 
-  const titik = (g: Granularitas) =>
-    (g === "minggu" ? rekapMingguan(isi, kategori, r.dari, r.sampai) : rekapBulanan(isi, kategori, r.dari, r.sampai)).map((b) => ({
+  // Bulan yang bisa dipilih: sejak catatan pertama sampai bulan ini
+  const pilihanBulan = useMemo(() => {
+    const awal = transaksi.length ? monthKey(transaksi.reduce((a, t) => (t.tanggal < a ? t.tanggal : a), transaksi[0].tanggal)) : monthKey(hariIni);
+    const daftar: string[] = [];
+    for (let b = monthKey(hariIni); b >= awal; b = monthKey(addDays(`${b}-01`, -1))) daftar.push(b);
+    return daftar;
+  }, [transaksi, hariIni]);
+
+  const titik = (g: Granularitas) => {
+    if (g === "hari") {
+      const perHari = new Map<string, Transaksi[]>();
+      for (const t of isi) perHari.set(t.tanggal, [...(perHari.get(t.tanggal) ?? []), t]);
+      const hasil = [];
+      for (let d = r.dari; d <= r.sampai; d = addDays(d, 1)) {
+        const x = ringkas(perHari.get(d) ?? [], kategori);
+        hasil.push({ label: tanggalPendek(d), sub: tanggal(d), omzet: x.penjualan, laba: x.laba, hpp: x.hpp, masuk: x.uangMasuk, keluar: x.uangKeluar });
+      }
+      return hasil;
+    }
+    return (g === "minggu" ? rekapMingguan(isi, kategori, r.dari, r.sampai) : rekapBulanan(isi, kategori, r.dari, r.sampai)).map((b) => ({
       label: g === "minggu" ? tanggalPendek(b.dari) : namaBulanSaja(b.kunci),
       sub: g === "minggu" ? rentang(b.dari, b.sampai) : namaBulan(b.kunci, true),
-      omzet: b.penjualan,
-      laba: b.laba,
-      hpp: b.hpp,
-      masuk: b.uangMasuk,
-      keluar: b.uangKeluar,
-      selisih: b.selisih,
+      omzet: b.penjualan, laba: b.laba, hpp: b.hpp, masuk: b.uangMasuk, keluar: b.uangKeluar,
     }));
+  };
+  const seriTren = titik(panjang <= 31 ? "hari" : "minggu");
 
-  const keluar = keluarPerKategori(isi, kategori);
-  const totalKeluar = keluar.reduce((a, k) => a + k.nominal, 0);
-  const donat: { nama: string; nominal: number; warna: string }[] = keluar.slice(0, 6).map((k, i) => ({ nama: k.nama, nominal: k.nominal, warna: WARNA_DONAT[i] }));
-  if (keluar.length > 6) donat.push({ nama: "Lainnya", nominal: keluar.slice(6).reduce((a, k) => a + k.nominal, 0), warna: "#D6D8E8" });
-
+  const sim = simulasi[0];
+  const labelTerakhir = [...produk].filter((p) => p.diperiksaPada).sort((a, b) => (b.diperiksaPada ?? "").localeCompare(a.diperiksaPada ?? ""))[0];
+  const skorLabel = labelTerakhir ? hitungSkor(labelTerakhir.data, labelTerakhir.mode, profil.kota) : null;
+  const namaSapaan = profil.namaPemilik.replace(/^(ibu|bapak|pak|bu)\s+/i, "").split(" ")[0] || "Pemilik Usaha";
   const kosong = transaksi.length === 0;
-  const pilihanGran = [
-    { id: "minggu" as const, label: "Mingguan" },
-    { id: "bulan" as const, label: "Bulanan" },
+  const vs = `vs ${r.pembanding}`;
+
+  const metrik: { label: string; ikon: PIconName; nilai: number; delta: number | null; kebalikan?: boolean; catatan: string; tren: number[]; turun?: boolean; peringatan?: boolean; arti?: string }[] = [
+    { label: "Omzet", ikon: "wallet", nilai: sekarang.penjualan, delta: perubahan(sekarang.penjualan, sebelum.penjualan), catatan: vs, tren: seriTren.map((x) => x.omzet) },
+    {
+      label: "HPP", ikon: "tag", nilai: sekarang.hpp, delta: perubahan(sekarang.hpp, sebelum.hpp), kebalikan: true,
+      catatan: sekarang.penjualan ? `${persen(sekarang.hpp / sekarang.penjualan)} dari omzet` : vs, tren: seriTren.map((x) => x.hpp), turun: true, arti: ARTI.hpp,
+    },
+    { label: "Laba", ikon: "sparkle", nilai: sekarang.laba, delta: perubahan(sekarang.laba, sebelum.laba), catatan: vs, tren: seriTren.map((x) => x.laba), arti: ARTI.labaUsaha },
+    {
+      label: "Laba Minggu Tersepi", ikon: "alert", nilai: s.terendah?.nilai ?? 0, delta: null, peringatan: true,
+      catatan: s.cukupData && s.terendah ? rentang(s.terendah.dari, s.terendah.sampai) : `butuh 6 bulan data (${s.mingguValid}/${s.dibutuhkan})`,
+      tren: s.seri.filter((x) => x.valid).map((x) => x.laba), turun: true, arti: ARTI.stressOut,
+    },
   ];
 
   return (
-    <div className="nk-halaman">
-      <KartuAkun />
+    <div className="fg-halaman">
+      <div className="dashboard-welcome">
+        <div>
+          <span>{server ? "Data usaha kamu" : "Data demo ilustratif"}</span>
+          <h2>
+            Halo, {namaSapaan}! <i>👋</i>
+          </h2>
+          <p>Pantau performa dan kesiapan bisnismu dalam satu tempat.</p>
+        </div>
+        <div className="business-meta">
+          <b>{profil.namaUsaha || "Usaha kamu"}</b>
+          <span>
+            {profil.kota || "—"} · usaha berjalan {lamaUsaha(profil.mulaiUsaha, hariIni)}
+          </span>
+          <small>
+            <Istilah arti={ARTI.kelengkapan}>Kelengkapan catatan {persen(k.rasio)}</Istilah> ({k.mingguLengkap}/{k.totalMinggu} minggu)
+          </small>
+        </div>
+      </div>
 
-      <div className="nk-periode-row">
-        <Segmen label="Periode" pilihan={PERIODE.map((p) => ({ id: p.id, label: p.label }))} nilai={periode} onPilih={setPeriode} />
-        <span className="nk-periode-label">
-          <PIcon name="calendar" size={15} />
-          {rentang(r.dari, r.sampai)}
-        </span>
+      <div className="fg-status-chip">
+        <button onClick={() => goTo("kur")}>
+          <PIcon name="calc" size={14} /> Kesiapan KUR:{" "}
+          <b className={sim ? `teks-${sim.status}` : ""}>{sim ? `${LABEL_STATUS[sim.status]} · ${rupiahRingkas(sim.plafon)}` : "Belum disimulasikan"}</b>
+        </button>
+        <button onClick={() => goTo("label")}>
+          <PIcon name="tag" size={14} /> Skor Label:{" "}
+          <b className={skorLabel ? `teks-${skorLabel.kategori === "Lengkap" ? "hijau" : skorLabel.kategori === "Hampir lengkap" ? "kuning" : "merah"}` : ""}>
+            {skorLabel ? `${Math.round(skorLabel.skor)}/100 · ${skorLabel.kategori}` : "Belum diperiksa"}
+          </b>
+        </button>
+      </div>
+
+      <div className="period-row fg-periode">
+        <div className="period-tabs">
+          {(
+            [
+              ["hari", "Hari ini"],
+              ["7h", "7 hari terakhir"],
+              ["bulan", "Pilih bulan"],
+              ["tanggal", "Pilih tanggal"],
+            ] as const
+          ).map(([id, label]) => (
+            <button key={id} className={periode.jenis === id ? "active" : ""} onClick={() => ubahPeriode({ jenis: id })}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="fg-periode-isi">
+          {periode.jenis === "bulan" && (
+            <label className="fg-select-filter">
+              <PIcon name="calendar" size={15} />
+              <select value={periode.bulan} onChange={(e) => ubahPeriode({ bulan: e.target.value })} aria-label="Pilih bulan">
+                {pilihanBulan.map((b) => (
+                  <option key={b} value={b}>
+                    {namaBulan(b, true)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {periode.jenis === "tanggal" && (
+            <div className="fg-rentang-tanggal">
+              <input type="date" value={periode.dari} max={hariIni} onChange={(e) => e.target.value && ubahPeriode({ dari: e.target.value })} aria-label="Dari tanggal" />
+              <span>s.d.</span>
+              <input type="date" value={periode.sampai} max={hariIni} onChange={(e) => e.target.value && ubahPeriode({ sampai: e.target.value })} aria-label="Sampai tanggal" />
+            </div>
+          )}
+          <span className="icon-text-button">
+            <PIcon name="calendar" size={16} /> {rentang(r.dari, r.sampai)}
+          </span>
+        </div>
       </div>
 
       {kosong ? (
-        <section className="nk-card">
+        <section className="panel">
           <Kosong
             ikon="wallet"
             judul="Belum ada catatan keuangan"
             teks="Mulai catat uang masuk dan keluar usahamu. Ringkasan dan grafik akan muncul otomatis."
             aksi={
-              <button className="nk-btn" onClick={() => minta({ mode: "manual" })}>
+              <button className="portal-primary" onClick={() => minta({ mode: "manual" })}>
                 <PIcon name="plus" size={16} /> Catat transaksi pertama
               </button>
             }
@@ -218,138 +250,166 @@ export function Beranda() {
         </section>
       ) : (
         <>
-          <section className="nk-grid-4" aria-label="Ringkasan arus kas">
-            <KartuAngka judul="Uang Masuk" ikon="download" nilai={sekarang.uangMasuk} delta={perubahan(sekarang.uangMasuk, sebelum.uangMasuk)} />
-            <KartuAngka
-              judul="Uang Keluar"
-              ikon="upload"
-              nilai={sekarang.uangKeluar}
-              delta={perubahan(sekarang.uangKeluar, sebelum.uangKeluar)}
-              kebalikan
-              rincian={
-                <div className="nk-rincian-keluar">
-                  <div className="nk-bar ganda">
-                    <i style={{ width: `${(1 - sekarang.pribadi / Math.max(1, sekarang.uangKeluar)) * 100}%` }} />
-                  </div>
-                  <span>
-                    Usaha <b>{rupiahRingkas(sekarang.hpp + sekarang.operasional)}</b>
-                  </span>
-                  <span>
-                    Pribadi <b>{rupiahRingkas(sekarang.pribadi)}</b>
-                  </span>
+          <div className="metric-grid fg-empat">
+            {metrik.map((m) => (
+              <article className="metric-card" key={m.label}>
+                <div className="metric-top">
+                  <span>{m.arti ? <Istilah arti={m.arti}>{m.label}</Istilah> : m.label}</span>
+                  <i>
+                    <PIcon name={m.ikon} size={17} />
+                  </i>
                 </div>
-              }
-            />
-            <KartuAngka judul="Laba Usaha" ikon="sparkle" arti={ARTI.labaUsaha} nilai={sekarang.laba} delta={perubahan(sekarang.laba, sebelum.laba)} />
-            <KartuAngka judul="Selisih Kas" ikon="wallet" arti={ARTI.selisihKas} nilai={sekarang.selisih} delta={perubahan(sekarang.selisih, sebelum.selisih)} />
-          </section>
+                <strong className={m.nilai < 0 ? "negatif" : ""}>{rupiah(m.nilai)}</strong>
+                <div className={m.peringatan ? "metric-change warning" : "metric-change"}>
+                  {m.peringatan ? <b>Perlu perhatian</b> : <Perubahan nilai={m.delta} kebalikan={m.kebalikan} />}
+                  <span>{m.catatan}</span>
+                </div>
+                <MiniTren nilai={m.tren} turun={m.turun} />
+              </article>
+            ))}
+          </div>
 
-          <section className="nk-grid-2-1">
-            <article className="nk-card">
-              <div className="nk-card-head">
+          <div className="dashboard-main-grid">
+            <article className="panel cashflow-panel">
+              <div className="panel-title">
                 <div>
-                  <span className="nk-eyebrow">Kinerja usaha</span>
+                  <span>Arus kas usaha</span>
+                  <h3>Grafik Arus Kas Bisnis</h3>
+                </div>
+                <ToggleGran nilai={gran} onPilih={setGranPilihan} />
+              </div>
+              <Legenda
+                item={[
+                  { label: "Pemasukan", warna: "#5B65DC", garis: true },
+                  { label: "Pengeluaran", warna: "#122056", garis: true },
+                ]}
+              />
+              <GrafikGabungan
+                tinggi={300}
+                data={titik(gran)}
+                seri={[
+                  { kunci: "masuk", label: "Pemasukan", warna: "#5B65DC", jenis: "garis", area: true },
+                  { kunci: "keluar", label: "Pengeluaran", warna: "#122056", jenis: "garis" },
+                ]}
+              />
+            </article>
+            <article className="ai-insight-panel">
+              <div className="ai-panel-head">
+                <span>
+                  <PIcon name="sparkle" size={18} />
+                </span>
+                <div>
+                  <small>Analisis dari angka sistem</small>
+                  <h3>NAIK.IN AI Insights</h3>
+                </div>
+              </div>
+              <div className="insight-list">
+                {insight.slice(0, 3).map((p, i) => (
+                  <div key={p}>
+                    <i className={i === 0 ? "positive" : "attention"}>
+                      <PIcon name={i === 0 ? "check" : "alert"} size={13} />
+                    </i>
+                    <p>{p}</p>
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => goTo("keuangan", "analisis")}>
+                Lihat Analisis Lengkap <PIcon name="arrow" size={15} />
+              </button>
+            </article>
+          </div>
+
+          <div className="three-panels fg-dua">
+            <article className="panel">
+              <div className="panel-title">
+                <div>
+                  <span>Kinerja usaha</span>
                   <h3>
                     Omzet, Laba & <Istilah arti={ARTI.hpp}>HPP</Istilah>
                   </h3>
                 </div>
-                <Segmen label="Tampilan grafik omzet" pilihan={pilihanGran} nilai={granGabungan} onPilih={setGranGabungan} />
               </div>
               <Legenda
                 item={[
                   { label: "Omzet", warna: "#C9CDF6" },
-                  { label: "Laba usaha", warna: "#122056", garis: true },
+                  { label: "Laba", warna: "#122056", garis: true },
                   { label: "HPP", warna: "#5B65DC", garis: true },
                 ]}
               />
               <GrafikGabungan
-                data={titik(granGabungan)}
+                tinggi={240}
+                data={titik(gran)}
                 seri={[
                   { kunci: "omzet", label: "Omzet", warna: "#C9CDF6", jenis: "batang" },
-                  { kunci: "laba", label: "Laba usaha", warna: "#122056", jenis: "garis" },
+                  { kunci: "laba", label: "Laba", warna: "#122056", jenis: "garis" },
                   { kunci: "hpp", label: "HPP", warna: "#5B65DC", jenis: "garis", putus: true },
                 ]}
               />
             </article>
-            <article className="nk-card nk-donat-card">
-              <div className="nk-card-head">
-                <div>
-                  <span className="nk-eyebrow">Per kategori</span>
-                  <h3>Uang keluar</h3>
-                </div>
-              </div>
-              <div className="nk-donat-wrap">
-                <div className="nk-donat">
-                  <Donat data={donat} total={totalKeluar} />
-                  <div>
-                    <b>{rupiahRingkas(totalKeluar)}</b>
-                    <span>total keluar</span>
+            <article className="panel fg-stress">
+              <h3>
+                <Istilah arti={ARTI.stressOut}>Laba Minggu Tersepi</Istilah>
+              </h3>
+              {s.cukupData && s.terendah ? (
+                <>
+                  <strong>{rupiah(s.terendah.nilai)}</strong>
+                  <small>{rentang(s.terendah.dari, s.terendah.sampai)}</small>
+                  <SparkLaba seri={s.seri} kuartilBawah={s.kuartilBawah} idTerendah={s.terendah.dari} tinggi={70} />
+                  <dl>
+                    <dt>
+                      <Istilah arti={ARTI.kuartilBawah}>Kuartil bawah</Istilah>
+                    </dt>
+                    <dd>{rupiah(s.kuartilBawah)}</dd>
+                    <dt>Rata-rata mingguan</dt>
+                    <dd>{rupiah(s.rataRata)}</dd>
+                  </dl>
+                </>
+              ) : (
+                <div className="fg-stress-progres">
+                  <p>
+                    <b>Butuh 6 bulan data</b> untuk menilai minggu tersepi.
+                  </p>
+                  <div className="nk-bar">
+                    <i style={{ width: `${(s.mingguValid / s.dibutuhkan) * 100}%` }} />
                   </div>
+                  <small>
+                    {s.mingguValid} dari {s.dibutuhkan} minggu lengkap
+                  </small>
                 </div>
-                <ul className="nk-donat-legenda">
-                  {donat.map((d) => (
-                    <li key={d.nama}>
-                      <i style={{ background: d.warna }} />
-                      <span>{d.nama}</span>
-                      <b>{persen(d.nominal / Math.max(1, totalKeluar))}</b>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              )}
             </article>
-          </section>
-
-          <section className="nk-grid-2-1">
-            <article className="nk-card">
-              <div className="nk-card-head">
-                <div>
-                  <span className="nk-eyebrow">Arus kas bisnis</span>
-                  <h3>Uang masuk vs keluar</h3>
-                </div>
-                <Segmen label="Tampilan grafik arus kas" pilihan={pilihanGran} nilai={granKas} onPilih={setGranKas} />
-              </div>
-              <Legenda
-                item={[
-                  { label: "Uang masuk", warna: "#5B65DC" },
-                  { label: "Uang keluar", warna: "#BFC3F3" },
-                  { label: <Istilah arti={ARTI.selisihKas}>Selisih kas</Istilah>, warna: "#122056", garis: true },
-                ]}
-              />
-              <GrafikGabungan
-                data={titik(granKas)}
-                seri={[
-                  { kunci: "masuk", label: "Uang masuk", warna: "#5B65DC", jenis: "batang" },
-                  { kunci: "keluar", label: "Uang keluar", warna: "#BFC3F3", jenis: "batang" },
-                  { kunci: "selisih", label: "Selisih kas", warna: "#122056", jenis: "garis" },
-                ]}
-              />
-            </article>
-            <KartuStressOut />
-          </section>
+          </div>
         </>
       )}
 
-      <section className="nk-cepat" aria-label="Navigasi cepat">
-        <h3>Navigasi cepat</h3>
+      <div className="quick-section">
         <div>
+          <h3>Navigasi Cepat</h3>
+          <p>Lanjutkan analisis bisnis melalui fitur utama.</p>
+        </div>
+        <div className="quick-grid fg-lima">
           {(
             [
-              ["pen", "Catat transaksi", () => minta({ mode: "manual" })],
-              ["camera", "Scan nota", () => minta({ mode: "scan" })],
-              ["calc", "Simulasi KUR", () => goTo("kur")],
-              ["tag", "Cek label", () => goTo("label")],
-              ["report", "Buat laporan", () => goTo("laporan")],
-            ] as [PIconName, string, () => void][]
-          ).map(([ikon, judul, aksi]) => (
+              ["pen", "Catat transaksi", "Input manual lalu periksa", () => minta({ mode: "manual" })],
+              ["camera", "Scan nota", "Foto nota atau buku kas", () => minta({ mode: "scan" })],
+              ["calc", "Simulasi KUR", "Uji kemampuan cicilan", () => goTo("kur")],
+              ["tag", "Cek label", "Periksa informasi kemasan", () => goTo("label")],
+              ["report", "Buat laporan", "Rekap 6 bulan siap cetak", () => goTo("laporan")],
+            ] as [PIconName, string, string, () => void][]
+          ).map(([ikon, judul, teks, aksi]) => (
             <button key={judul} onClick={aksi}>
               <i>
-                <PIcon name={ikon} size={20} />
+                <PIcon name={ikon} />
               </i>
-              <span>{judul}</span>
+              <span>
+                <b>{judul}</b>
+                <small>{teks}</small>
+              </span>
+              <PIcon name="arrow" size={16} />
             </button>
           ))}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

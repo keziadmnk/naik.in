@@ -1,13 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../api";
+import { PageHeader } from "../../components/figma";
 import { PIcon } from "../../components/icons";
-import { Cincin, Istilah, Modal, Pernyataan, Segmen } from "../../components/ui";
+import { Cincin, Istilah, Modal, PERNYATAAN } from "../../components/ui";
 import {
   KETERANGAN_WAJIB, cariKlaim, cekAlamatProdusen, cekBeratBersih, cekKedaluwarsa, cekNomorIzin, dataLabelKosong,
   drafTeksLabel, hitungSkor, susunSaran, type DataLabel, type KunciLabel, type Lokasi, type ModeLabel, type StatusItem,
 } from "../../lib/engine/label";
 import { tanggal } from "../../lib/format";
+import { goTo } from "../../routes";
 import { idBaru, useToko, type ProdukLabel } from "../../state/store";
+
+// Alur halaman:
+//   #/label              → daftar produk
+//   #/label/tambah       → 1 Foto kemasan → 2 Periksa hasil baca → simpan → hasil
+//   #/label/periksa-<id> → alur yang sama untuk memeriksa ulang produk
+//   #/label/<id>         → hasil analisis & rekomendasi produk
 
 const LABEL_LOKASI: Record<Lokasi, string> = {
   utama: "Di depan (utama)",
@@ -16,10 +24,10 @@ const LABEL_LOKASI: Record<Lokasi, string> = {
 };
 
 const KELAS_STATUS: Record<StatusItem, string> = {
-  Sesuai: "hijau",
-  "Ada tapi kurang": "kuning",
-  "Tidak ada": "merah",
-  "Tidak berlaku": "abu",
+  Sesuai: "ok",
+  "Ada tapi kurang": "kurang",
+  "Tidak ada": "tidak",
+  "Tidak berlaku": "na",
 };
 
 /** Cocokkan kunci keluaran AI (bebas) ke 9 keterangan wajib. */
@@ -37,311 +45,543 @@ const POLA_AI: [RegExp, KunciLabel][] = [
 
 function hintFormat(kunci: KunciLabel, nilai: string, kota: string) {
   if (!nilai.trim()) return null;
-  const h =
-    kunci === "nomorIzin" ? cekNomorIzin(nilai) : kunci === "kedaluwarsa" ? cekKedaluwarsa(nilai) : kunci === "produsen" ? cekAlamatProdusen(nilai, kota) : kunci === "beratBersih" ? cekBeratBersih(nilai) : null;
-  return h;
+  return kunci === "nomorIzin" ? cekNomorIzin(nilai) : kunci === "kedaluwarsa" ? cekKedaluwarsa(nilai) : kunci === "produsen" ? cekAlamatProdusen(nilai, kota) : kunci === "beratBersih" ? cekBeratBersih(nilai) : null;
 }
 
-function FormLabel({ produk, onSimpan }: { produk: ProdukLabel; onSimpan: (p: ProdukLabel) => void }) {
-  const { profil, demo } = useToko();
-  const [draf, setDraf] = useState<DataLabel>(produk.data);
-  const [teksLain, setTeksLain] = useState(produk.teksLain);
-  const [nama, setNama] = useState(produk.nama);
-  const [mode, setMode] = useState<ModeLabel>(produk.mode);
-  const [foto, setFoto] = useState<{ url: string; nama: string }[]>([]);
-  const [proses, setProses] = useState(false);
-  const [pesanAi, setPesanAi] = useState<{ teks: string; jenis: "ok" | "info" } | null>(null);
-  const inputFoto = useRef<HTMLInputElement>(null);
-  const fileTerakhir = useRef<File | null>(null);
+const kelasSkor = (kategori: string) => (kategori === "Lengkap" ? "ok" : kategori === "Hampir lengkap" ? "kurang" : "tidak");
 
-  useEffect(() => {
-    setDraf(produk.data);
-    setTeksLain(produk.teksLain);
-    setNama(produk.nama);
-    setMode(produk.mode);
-    setFoto([]);
-    setPesanAi(null);
-  }, [produk.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const berubah = JSON.stringify(draf) !== JSON.stringify(produk.data) || teksLain !== produk.teksLain || nama !== produk.nama || mode !== produk.mode;
-  const ubah = (k: KunciLabel, p: Partial<DataLabel[KunciLabel]>) => setDraf((d) => ({ ...d, [k]: { ...d[k], ...p } }));
-
-  const bacaAi = async (file: File) => {
-    setPesanAi(null);
-    if (demo.modeOffline) {
-      setPesanAi({ jenis: "info", teks: "Mode offline: isi keterangan di bawah sesuai foto." });
-      return;
-    }
-    setProses(true);
-    const res = await api.labelScan(file);
-    setProses(false);
-    if (!res.ok || !res.data) {
-      setPesanAi({ jenis: "info", teks: `Pembacaan otomatis belum tersedia (${res.alasan ?? "AI tidak aktif"}). Isi keterangan di bawah sesuai foto.` });
-      return;
-    }
-    const hasil = { ...draf };
-    let terisi = 0;
-    for (const [kunciAi, f] of Object.entries(res.data.fields)) {
-      const cocok = POLA_AI.find(([re]) => re.test(kunciAi));
-      if (!cocok || !f.found || !f.value) continue;
-      hasil[cocok[1]] = { ...hasil[cocok[1]], nilai: f.value, lokasi: f.lokasi, tidakBerlaku: false };
-      terisi += 1;
-    }
-    setDraf(hasil);
-    setPesanAi({ jenis: "ok", teks: `AI membaca ${terisi} keterangan. Periksa dulu — hasil belum disimpan sampai kamu menekan “Konfirmasi & hitung skor”.` });
-  };
-
+/** Ilustrasi kemasan sederhana memakai nama & berat produk sebenarnya. */
+function Kemasan({ produk }: { produk: ProdukLabel }) {
+  const nama = (produk.data.namaProduk.nilai || produk.nama).replace(/\s+\d+\s*(g|gr|kg|ml|l)$/i, "");
   return (
-    <section className="nk-card nk-label-form" aria-labelledby="judul-periksa-label">
-      <div className="nk-card-head">
-        <div>
-          <span className="nk-eyebrow">Periksa dulu</span>
-          <h3 id="judul-periksa-label">9 keterangan wajib label</h3>
-        </div>
-        <Segmen
-          label="Status kemasan"
-          pilihan={[
-            { id: "draf", label: "Desain draf" },
-            { id: "beredar", label: "Sudah beredar" },
-          ]}
-          nilai={mode}
-          onPilih={setMode}
-        />
-      </div>
-
-      <label className="nk-field">
-        <span>Nama produk (untuk daftar)</span>
-        <input value={nama} onChange={(e) => setNama(e.target.value)} />
-      </label>
-
-      <div className="nk-foto-kemasan">
-        <div className="nk-foto-daftar">
-          {foto.map((f) => (
-            <img key={f.url} src={f.url} alt={`Foto kemasan ${f.nama}`} />
-          ))}
-          <button type="button" className="nk-foto-tambah" onClick={() => inputFoto.current?.click()}>
-            <PIcon name="camera" size={20} />
-            <span>{foto.length ? "Tambah foto" : "Foto kemasan depan & belakang"}</span>
-          </button>
-        </div>
-        <div className="nk-foto-aksi">
-          <button className="nk-btn sekunder kecil" disabled={!foto.length || proses} onClick={() => fileTerakhir.current && bacaAi(fileTerakhir.current)}>
-            <PIcon name="sparkle" size={14} /> {proses ? "Membaca…" : "Baca otomatis dengan AI"}
-          </button>
-          <small>Foto hanya dibaca untuk mengisi kolom; hasilnya tetap kamu periksa.</small>
-        </div>
-        <input
-          ref={inputFoto}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          hidden
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            e.target.value = "";
-            if (!file) return;
-            fileTerakhir.current = file;
-            setFoto((f) => [...f, { url: URL.createObjectURL(file), nama: file.name }]);
-          }}
-        />
-        {pesanAi && (
-          <p className={`nk-pesan-ai ${pesanAi.jenis}`}>
-            <PIcon name={pesanAi.jenis === "ok" ? "sparkle" : "info"} size={14} /> {pesanAi.teks}
-          </p>
-        )}
-      </div>
-
-      <ol className="nk-label-isian">
-        {KETERANGAN_WAJIB.map((k, i) => {
-          const isian = draf[k.kunci];
-          const hint = isian.tidakBerlaku ? null : hintFormat(k.kunci, isian.nilai, profil.kota);
-          const izinDraf = mode === "draf" && k.kunci === "nomorIzin";
-          return (
-            <li key={k.kunci} className={isian.tidakBerlaku || izinDraf ? "nonaktif" : ""}>
-              <div className="nk-label-isian-head">
-                <span className="nomor">{i + 1}</span>
-                <b>
-                  <Istilah arti={`Contoh: ${k.contoh}`}>{k.nama}</Istilah>
-                </b>
-                {k.bisaTidakBerlaku && (
-                  <label className="nk-tidak-berlaku" title={k.bisaTidakBerlaku}>
-                    <input type="checkbox" checked={!!isian.tidakBerlaku} onChange={(e) => ubah(k.kunci, { tidakBerlaku: e.target.checked })} />
-                    Tidak berlaku
-                  </label>
-                )}
-              </div>
-              {izinDraf ? (
-                <small className="nk-muted kecil">Mode desain draf: nomor izin belum dinilai. Sisakan ruang untuk nomor izin dan 2D barcode.</small>
-              ) : isian.tidakBerlaku ? (
-                <small className="nk-muted kecil">{k.bisaTidakBerlaku}.</small>
-              ) : (
-                <>
-                  <div className="nk-label-isian-input">
-                    <input value={isian.nilai} placeholder={k.contoh} onChange={(e) => ubah(k.kunci, { nilai: e.target.value, lokasi: isian.lokasi === "tidak_terlihat" && e.target.value ? "utama" : isian.lokasi })} aria-label={k.nama} />
-                    <select value={isian.lokasi} onChange={(e) => ubah(k.kunci, { lokasi: e.target.value as Lokasi })} aria-label={`Letak ${k.nama}`}>
-                      {(Object.keys(LABEL_LOKASI) as Lokasi[]).map((l) => (
-                        <option key={l} value={l}>
-                          {LABEL_LOKASI[l]}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {hint && (
-                    <small className={hint.valid ? "nk-hint ok" : "nk-hint kurang"}>
-                      <PIcon name={hint.valid ? "check" : "alert"} size={12} /> {hint.pesan}
-                    </small>
-                  )}
-                </>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-
-      <label className="nk-field">
-        <span>Teks lain di kemasan (slogan, klaim)</span>
-        <textarea rows={2} value={teksLain} onChange={(e) => setTeksLain(e.target.value)} placeholder="Contoh: Keripik pedas khas Padang" />
-      </label>
-
-      <div className="nk-label-simpan">
-        {berubah && <span className="nk-badge kuning">Belum dikonfirmasi</span>}
-        <button
-          className="nk-btn"
-          onClick={() => onSimpan({ ...produk, nama: nama.trim() || produk.nama, mode, data: draf, teksLain, diperiksaPada: new Date().toISOString().slice(0, 10) })}
-          disabled={!berubah && produk.diperiksaPada !== null}
-        >
-          <PIcon name="check" size={16} /> Konfirmasi & hitung skor
-        </button>
-      </div>
-    </section>
+    <div className="lp-kemasan" aria-hidden="true">
+      <span>{nama}</span>
+      <small>{produk.data.beratBersih.nilai || "—"}</small>
+    </div>
   );
 }
 
-function HasilLabel({ produk }: { produk: ProdukLabel }) {
-  const { profil, demo } = useToko();
-  const hasil = useMemo(() => hitungSkor(produk.data, produk.mode, profil.kota), [produk, profil.kota]);
+// ===========================================================================
+// Daftar produk
+// ===========================================================================
+
+function DaftarProduk() {
+  const { produk, profil } = useToko();
+  const daftar = produk.map((p) => ({ p, h: p.diperiksaPada ? hitungSkor(p.data, p.mode, profil.kota) : null }));
+  return (
+    <div className="fg-halaman">
+      <PageHeader title="Label Produk" subtitle="Periksa kelengkapan 9 keterangan wajib pada kemasan produkmu.">
+        <button className="portal-primary" onClick={() => goTo("label", "tambah")}>
+          <PIcon name="plus" size={16} />
+          Tambah Produk
+        </button>
+      </PageHeader>
+
+      {daftar.length === 0 ? (
+        <section className="lp-kosong">
+          <span>
+            <PIcon name="tag" size={24} />
+          </span>
+          <h3>Belum ada produk</h3>
+          <p>Foto kemasan depan dan belakang, periksa hasil bacanya, lalu lihat apa saja yang perlu dilengkapi.</p>
+          <button className="portal-primary" onClick={() => goTo("label", "tambah")}>
+            <PIcon name="plus" size={16} />
+            Tambah Produk
+          </button>
+        </section>
+      ) : (
+        <div className="lp-grid">
+          {daftar.map(({ p, h }) => (
+            <button key={p.id} className="lp-kartu" onClick={() => goTo("label", h ? p.id : `periksa-${p.id}`)}>
+              <div className="lp-kartu-gambar">
+                <Kemasan produk={p} />
+              </div>
+              <div className="lp-kartu-isi">
+                <div className="lp-kartu-atas">
+                  <h3>{p.nama}</h3>
+                  {h ? <span className={`lp-pil ${kelasSkor(h.kategori)}`}>{h.kategori}</span> : <span className="lp-pil na">Belum diperiksa</span>}
+                </div>
+                <p>
+                  {p.mode === "draf" ? "Desain draf" : "Sudah beredar"}
+                  {p.diperiksaPada && ` · diperiksa ${tanggal(p.diperiksaPada)}`}
+                </p>
+                <div className="lp-skor-bar">
+                  <span>Kelengkapan label</span>
+                  <b>{h ? `${Math.round(h.skor)}/100` : "—"}</b>
+                  <i>
+                    <em className={h ? kelasSkor(h.kategori) : ""} style={{ width: `${h ? h.skor : 0}%` }} />
+                  </i>
+                </div>
+              </div>
+            </button>
+          ))}
+          <button className="lp-kartu lp-tambah" onClick={() => goTo("label", "tambah")}>
+            <PIcon name="plus" size={22} />
+            <b>Tambah produk</b>
+            <span>Foto kemasan untuk diperiksa</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===========================================================================
+// Alur tambah / periksa ulang: 1 Foto kemasan → 2 Periksa → simpan
+// ===========================================================================
+
+type Foto = { file: File; url: string };
+const LANGKAH = ["Foto kemasan", "Periksa hasil baca", "Hasil & rekomendasi"];
+
+function Langkah({ aktif }: { aktif: number }) {
+  return (
+    <ol className="lp-langkah">
+      {LANGKAH.map((l, i) => (
+        <li key={l} className={i < aktif ? "selesai" : i === aktif ? "aktif" : ""}>
+          <span>{i < aktif ? <PIcon name="check" size={13} /> : i + 1}</span>
+          {l}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function SlotFoto({ judul, foto, onPilih, onHapus }: { judul: string; foto: Foto | null; onPilih: (f: File) => void; onHapus: () => void }) {
+  const kamera = useRef<HTMLInputElement>(null);
+  const berkas = useRef<HTMLInputElement>(null);
+  const terima = (f?: File) => f && onPilih(f);
+  return (
+    <div className="lp-slot">
+      <div className="lp-slot-judul">
+        <b>{judul}</b>
+        {foto && (
+          <button onClick={onHapus} aria-label={`Hapus foto ${judul}`}>
+            Hapus
+          </button>
+        )}
+      </div>
+      <div
+        className={`lp-slot-gambar ${foto ? "ada" : ""}`}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          terima(e.dataTransfer.files[0]);
+        }}
+      >
+        {foto ? (
+          <img src={foto.url} alt={judul} />
+        ) : (
+          <div>
+            <PIcon name="camera" size={26} />
+            <span>Belum ada foto</span>
+          </div>
+        )}
+      </div>
+      <div className="lp-slot-aksi">
+        <button className="portal-secondary" onClick={() => kamera.current?.click()}>
+          <PIcon name="camera" size={15} />
+          Ambil foto
+        </button>
+        <button className="portal-secondary" onClick={() => berkas.current?.click()}>
+          <PIcon name="upload" size={15} />
+          Pilih file
+        </button>
+      </div>
+      <input ref={kamera} type="file" accept="image/jpeg,image/png" capture="environment" hidden onChange={(e) => (terima(e.target.files?.[0]), (e.target.value = ""))} />
+      <input ref={berkas} type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden onChange={(e) => (terima(e.target.files?.[0]), (e.target.value = ""))} />
+    </div>
+  );
+}
+
+function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
+  const { profil, demo, kirim } = useToko();
+  const [langkah, setLangkah] = useState(0);
+  const [depan, setDepan] = useState<Foto | null>(null);
+  const [belakang, setBelakang] = useState<Foto | null>(null);
+  const [proses, setProses] = useState(false);
+  const [info, setInfo] = useState<{ jenis: "ok" | "manual"; teks: string } | null>(null);
+  const [dariAi, setDariAi] = useState<Set<KunciLabel>>(new Set());
+  const [draf, setDraf] = useState<DataLabel>(() => produkAwal?.data ?? { ...dataLabelKosong(), asalUsul: { nilai: "", lokasi: "tidak_terlihat", tidakBerlaku: true } });
+  const [nama, setNama] = useState(produkAwal?.nama ?? "");
+  const [mode, setMode] = useState<ModeLabel>(produkAwal?.mode ?? "beredar");
+  const [teksLain, setTeksLain] = useState(produkAwal?.teksLain ?? "");
+  const [galat, setGalat] = useState<string | null>(null);
+
+  const pasang = (setter: (f: Foto | null) => void, lama: Foto | null) => (file: File) => {
+    if (!/^image\/(jpeg|png)$/.test(file.type) && !/\.(jpe?g|png)$/i.test(file.name)) {
+      setGalat("Format foto harus JPG, JPEG, atau PNG.");
+      return;
+    }
+    setGalat(null);
+    if (lama) URL.revokeObjectURL(lama.url);
+    setter({ file, url: URL.createObjectURL(file) });
+  };
+  const ubah = (k: KunciLabel, p: Partial<DataLabel[KunciLabel]>) => {
+    setDraf((d) => ({ ...d, [k]: { ...d[k], ...p } }));
+    setDariAi((s) => {
+      const n = new Set(s);
+      n.delete(k);
+      return n;
+    });
+  };
+
+  const baca = async () => {
+    const foto = [depan, belakang].filter((f): f is Foto => !!f);
+    setProses(true);
+    let terisi = new Set<KunciLabel>();
+    let alasan: string | null = null;
+    if (demo.modeOffline) alasan = "mode offline";
+    else {
+      const hasil = { ...draf };
+      for (const f of foto) {
+        const res = await api.labelScan(f.file);
+        if (!res.ok || !res.data) {
+          alasan = res.alasan ?? "AI tidak aktif";
+          break;
+        }
+        for (const [kunciAi, x] of Object.entries(res.data.fields)) {
+          const cocok = POLA_AI.find(([re]) => re.test(kunciAi));
+          if (!cocok || !x.found || !x.value || terisi.has(cocok[1])) continue;
+          hasil[cocok[1]] = { ...hasil[cocok[1]], nilai: x.value, lokasi: x.lokasi, tidakBerlaku: false };
+          terisi = new Set(terisi).add(cocok[1]);
+        }
+      }
+      if (!alasan) {
+        setDraf(hasil);
+        if (!nama && hasil.namaProduk.nilai) setNama(hasil.namaProduk.nilai);
+      }
+    }
+    setDariAi(terisi);
+    setInfo(
+      alasan
+        ? { jenis: "manual", teks: `Pembacaan otomatis belum tersedia (${alasan}). Isi keterangan di bawah sesuai foto kemasan.` }
+        : { jenis: "ok", teks: `${terisi.size} dari 9 keterangan terbaca dari foto. Cocokkan dengan kemasan, perbaiki yang keliru, lalu tekan Lanjut.` },
+    );
+    setProses(false);
+    setLangkah(1);
+  };
+
+  const lanjut = () => {
+    const namaFinal = nama.trim() || draf.namaProduk.nilai.trim() || "Produk tanpa nama";
+    const produk: ProdukLabel = {
+      id: produkAwal?.id ?? idBaru(),
+      nama: namaFinal,
+      mode,
+      data: draf,
+      teksLain,
+      diperiksaPada: new Date().toISOString().slice(0, 10),
+    };
+    kirim({ type: "simpanProduk", produk, konfirmasi: true, dariAi: dariAi.size > 0 });
+    goTo("label", produk.id);
+  };
+
+  const adaFoto = !!(depan || belakang);
+
+  return (
+    <div className="lp-alur">
+      <button className="lp-kembali" onClick={() => (langkah === 1 ? setLangkah(0) : goTo("label"))}>
+        ← {langkah === 1 ? "Kembali ke foto kemasan" : "Daftar produk"}
+      </button>
+      <div className="lp-alur-kepala">
+        <h2>{produkAwal ? `Periksa ulang: ${produkAwal.nama}` : "Tambah produk"}</h2>
+        <Langkah aktif={langkah} />
+      </div>
+
+      {langkah === 0 && (
+        <section className="lp-panel">
+          <div className="lp-panel-kepala">
+            <h3>Foto kemasan</h3>
+            <p>Ambil foto langsung atau pilih file JPG, JPEG, atau PNG. Pastikan tulisan terlihat jelas dan tidak silau.</p>
+          </div>
+          <div className="lp-foto-grid">
+            <SlotFoto judul="Kemasan depan" foto={depan} onPilih={pasang(setDepan, depan)} onHapus={() => setDepan(null)} />
+            <SlotFoto judul="Kemasan belakang" foto={belakang} onPilih={pasang(setBelakang, belakang)} onHapus={() => setBelakang(null)} />
+          </div>
+          {galat && (
+            <p className="lp-galat" role="alert">
+              {galat}
+            </p>
+          )}
+          <div className="lp-kaki">
+            <button className="lp-tautan" onClick={() => setLangkah(1)}>
+              Isi manual tanpa foto
+            </button>
+            <button className="portal-primary" onClick={baca} disabled={!adaFoto || proses}>
+              {proses ? (
+                <>
+                  <span className="nk-spinner" /> Membaca kemasan…
+                </>
+              ) : (
+                <>
+                  Baca label <PIcon name="arrow" size={15} />
+                </>
+              )}
+            </button>
+          </div>
+        </section>
+      )}
+
+      {langkah === 1 && (
+        <div className={`lp-periksa ${adaFoto ? "dengan-foto" : ""}`}>
+          {adaFoto && (
+            <aside className="lp-periksa-foto">
+              {depan && (
+                <figure>
+                  <img src={depan.url} alt="Kemasan depan" />
+                  <figcaption>Depan</figcaption>
+                </figure>
+              )}
+              {belakang && (
+                <figure>
+                  <img src={belakang.url} alt="Kemasan belakang" />
+                  <figcaption>Belakang</figcaption>
+                </figure>
+              )}
+            </aside>
+          )}
+          <section className="lp-panel">
+            <div className="lp-panel-kepala">
+              <h3>Periksa hasil baca</h3>
+              <p>Pastikan setiap keterangan sama persis dengan yang tertulis di kemasan. Hasil baru tersimpan setelah kamu menekan Lanjut.</p>
+            </div>
+            {info && <p className={`lp-info ${info.jenis}`}>{info.teks}</p>}
+
+            <div className="lp-form-atas">
+              <label className="lp-field">
+                <span>Nama produk</span>
+                <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Contoh: Keripik Balado 200 g" />
+              </label>
+              <div className="lp-field">
+                <span>Status kemasan</span>
+                <div className="lp-pilihan">
+                  {(
+                    [
+                      ["beredar", "Sudah beredar"],
+                      ["draf", "Desain draf"],
+                    ] as const
+                  ).map(([id, l]) => (
+                    <button key={id} className={mode === id ? "aktif" : ""} onClick={() => setMode(id)}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <ol className="lp-isian">
+              {KETERANGAN_WAJIB.map((k, i) => {
+                const isian = draf[k.kunci];
+                const izinDraf = mode === "draf" && k.kunci === "nomorIzin";
+                const hint = isian.tidakBerlaku || izinDraf ? null : hintFormat(k.kunci, isian.nilai, profil.kota);
+                return (
+                  <li key={k.kunci} className={isian.tidakBerlaku || izinDraf ? "nonaktif" : ""}>
+                    <div className="lp-isian-kepala">
+                      <span className="lp-no">{i + 1}</span>
+                      <b>
+                        <Istilah arti={`Contoh: ${k.contoh}`}>{k.nama}</Istilah>
+                      </b>
+                      {dariAi.has(k.kunci) && <em className="lp-tag">terbaca dari foto</em>}
+                      {k.bisaTidakBerlaku && (
+                        <label className="lp-cek">
+                          <input type="checkbox" checked={!!isian.tidakBerlaku} onChange={(e) => ubah(k.kunci, { tidakBerlaku: e.target.checked })} />
+                          Tidak berlaku
+                        </label>
+                      )}
+                    </div>
+                    {izinDraf ? (
+                      <small className="lp-catatan">Desain draf: nomor izin belum dinilai. Sisakan ruang untuk nomor izin dan 2D barcode.</small>
+                    ) : isian.tidakBerlaku ? (
+                      <small className="lp-catatan">{k.bisaTidakBerlaku}.</small>
+                    ) : (
+                      <>
+                        <div className="lp-isian-input">
+                          <input
+                            value={isian.nilai}
+                            placeholder={k.contoh}
+                            onChange={(e) => ubah(k.kunci, { nilai: e.target.value, lokasi: isian.lokasi === "tidak_terlihat" && e.target.value ? "utama" : isian.lokasi })}
+                            aria-label={k.nama}
+                          />
+                          <select value={isian.lokasi} onChange={(e) => ubah(k.kunci, { lokasi: e.target.value as Lokasi })} aria-label={`Letak ${k.nama}`}>
+                            {(Object.keys(LABEL_LOKASI) as Lokasi[]).map((l) => (
+                              <option key={l} value={l}>
+                                {LABEL_LOKASI[l]}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        {hint && <small className={`lp-hint ${hint.valid ? "ok" : "kurang"}`}>{hint.pesan}</small>}
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+            <label className="lp-field">
+              <span>Tulisan lain di kemasan (slogan, klaim)</span>
+              <textarea rows={2} value={teksLain} onChange={(e) => setTeksLain(e.target.value)} placeholder="Contoh: Keripik pedas khas Padang" />
+            </label>
+            <div className="lp-kaki">
+              <button className="portal-secondary" onClick={() => setLangkah(0)}>
+                Kembali
+              </button>
+              <button className="portal-primary" onClick={lanjut}>
+                Lanjut <PIcon name="arrow" size={15} />
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===========================================================================
+// Hasil analisis & rekomendasi
+// ===========================================================================
+
+function HasilProduk({ produk }: { produk: ProdukLabel }) {
+  const { profil, demo, kirim } = useToko();
+  const h = useMemo(() => hitungSkor(produk.data, produk.mode, profil.kota), [produk, profil.kota]);
   const klaim = useMemo(() => cariKlaim(produk.teksLain), [produk.teksLain]);
-  const saran = useMemo(() => susunSaran(hasil), [hasil]);
+  const saran = useMemo(() => susunSaran(h), [h]);
   const [teksDraf, setTeksDraf] = useState<{ teks: string; sumber: "ai" | "templat" } | null>(null);
   const [proses, setProses] = useState(false);
   const [tersalin, setTersalin] = useState(false);
-
+  const [hapus, setHapus] = useState(false);
   useEffect(() => setTeksDraf(null), [produk]);
 
-  if (!produk.diperiksaPada)
-    return (
-      <section className="nk-card nk-label-hasil">
-        <div className="nk-kosong">
-          <span>
-            <PIcon name="tag" size={22} />
-          </span>
-          <b>Belum ada skor</b>
-          <p>Isi 9 keterangan wajib di sebelah, lalu tekan “Konfirmasi & hitung skor”.</p>
-        </div>
-      </section>
-    );
-
   const drafTemplat = drafTeksLabel(produk.data, produk.mode);
-  const tulisUlang = async () => {
+  const teks = teksDraf?.teks ?? drafTemplat;
+  const rapikan = async () => {
     setProses(true);
-    if (demo.modeOffline) {
-      setTeksDraf({ teks: drafTemplat, sumber: "templat" });
-      setProses(false);
-      return;
+    if (demo.modeOffline) setTeksDraf({ teks: drafTemplat, sumber: "templat" });
+    else {
+      const res = await api.labelFix({
+        ...Object.fromEntries(KETERANGAN_WAJIB.map((k) => [k.kunci, produk.data[k.kunci].tidakBerlaku ? "tidak berlaku" : produk.data[k.kunci].nilai || null])),
+        mode: produk.mode,
+        klaimYangPerluDiganti: klaim.map((k) => k.kutipan),
+      });
+      setTeksDraf(res.ok && res.data ? { teks: res.data.label_belakang, sumber: "ai" } : { teks: drafTemplat, sumber: "templat" });
     }
-    const res = await api.labelFix({
-      ...Object.fromEntries(KETERANGAN_WAJIB.map((k) => [k.kunci, produk.data[k.kunci].tidakBerlaku ? "tidak berlaku" : produk.data[k.kunci].nilai || null])),
-      mode: produk.mode,
-      klaimYangPerluDiganti: klaim.map((k) => k.kutipan),
-    });
-    setTeksDraf(res.ok && res.data ? { teks: res.data.label_belakang, sumber: "ai" } : { teks: drafTemplat, sumber: "templat" });
     setProses(false);
   };
-  const teks = teksDraf?.teks ?? drafTemplat;
+  const hitung = (st: StatusItem) => h.items.filter((i) => i.status === st).length;
 
   return (
-    <section className="nk-card nk-label-hasil" aria-labelledby="judul-hasil-label">
-      <div className="nk-label-skor">
-        <Cincin rasio={hasil.skor / 100} ukuran={120} tebal={11}>
-          <div className="nk-kunci-cincin">
-            <strong>{Math.round(hasil.skor)}</strong>
-            <span>dari 100</span>
-          </div>
-        </Cincin>
-        <div>
-          <span className="nk-eyebrow">Skor kelengkapan label</span>
-          <h3 id="judul-hasil-label" className={`teks-${hasil.kategori === "Lengkap" ? "hijau" : hasil.kategori === "Hampir lengkap" ? "kuning" : "merah"}`}>
-            {hasil.kategori}
-          </h3>
-          <p className="nk-muted kecil">
-            Diperiksa {tanggal(produk.diperiksaPada)} · {produk.mode === "draf" ? "desain draf" : "kemasan beredar"}
-          </p>
-          {hasil.catatanDraf && <p className="nk-muted kecil">{hasil.catatanDraf}</p>}
+    <div className="lp-hasil">
+      <button className="lp-kembali" onClick={() => goTo("label")}>
+        ← Daftar produk
+      </button>
+
+      <section className="lp-hero">
+        <div className="lp-hero-gambar">
+          <Kemasan produk={produk} />
         </div>
-      </div>
-      <Pernyataan />
-
-      <table className="nk-tabel nk-label-tabel">
-        <thead>
-          <tr>
-            <th>Keterangan</th>
-            <th>Status</th>
-            <th className="kanan">Poin</th>
-          </tr>
-        </thead>
-        <tbody>
-          {hasil.items.map((i) => (
-            <tr key={i.kunci}>
-              <td>
-                <b>{i.nama}</b>
-                {i.catatan.length > 0 && <small>{i.catatan.join(" ")}</small>}
-              </td>
-              <td>
-                <span className={`nk-badge status-${KELAS_STATUS[i.status]}`}>{i.status}</span>
-              </td>
-              <td className="kanan nowrap">{i.status === "Tidak berlaku" ? "—" : `${i.poin.toLocaleString("id-ID")}/${i.bobot}`}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {klaim.length > 0 && (
-        <div className="nk-klaim">
-          <b>
-            <PIcon name="alert" size={15} /> Klaim yang perlu dihindari
-          </b>
-          {klaim.map((k) => (
-            <div key={k.kutipan}>
-              <p>
-                “<mark>{k.kutipan}</mark>” — {k.alasan}
-              </p>
-              <small>Ganti dengan: {k.saran}</small>
+        <div className="lp-hero-info">
+          <span className="lp-eyebrow">{produk.mode === "draf" ? "Desain draf" : "Kemasan sudah beredar"}</span>
+          <h2>{produk.nama}</h2>
+          <p>Diperiksa {produk.diperiksaPada ? tanggal(produk.diperiksaPada) : "—"}</p>
+          <div className="lp-hitung">
+            <span>
+              <b>{hitung("Sesuai")}</b> sesuai
+            </span>
+            <span>
+              <b>{hitung("Ada tapi kurang")}</b> kurang
+            </span>
+            <span>
+              <b>{hitung("Tidak ada")}</b> belum ada
+            </span>
+            <span>
+              <b>{hitung("Tidak berlaku")}</b> tidak berlaku
+            </span>
+          </div>
+          <div className="lp-hero-aksi">
+            <button className="portal-secondary" onClick={() => goTo("label", `periksa-${produk.id}`)}>
+              <PIcon name="camera" size={15} />
+              Periksa ulang
+            </button>
+            <button className="lp-tautan bahaya" onClick={() => setHapus(true)}>
+              Hapus produk
+            </button>
+          </div>
+        </div>
+        <div className={`lp-hero-skor ${kelasSkor(h.kategori)}`}>
+          <Cincin rasio={h.skor / 100} ukuran={128} tebal={10}>
+            <div className="lp-skor-angka">
+              <strong>{Math.round(h.skor)}</strong>
+              <span>dari 100</span>
             </div>
-          ))}
-          <small className="nk-muted kecil">Periksa ke BPOM sebelum mencetak ulang kemasan.</small>
+          </Cincin>
+          <b>{h.kategori}</b>
+          <small>{PERNYATAAN}</small>
         </div>
-      )}
+      </section>
 
-      {saran.length > 0 && (
-        <div className="nk-saran-label">
-          <b>Saran perbaikan (urut dari yang paling berpengaruh)</b>
-          <ol>
-            {saran.map((s) => (
-              <li key={s.kunci}>{s.teks}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      <div className="nk-draf-label">
-        <div className="nk-card-head">
-          <div>
-            <span className="nk-eyebrow">Draf teks label belakang</span>
-            <small className="nk-muted kecil">{teksDraf?.sumber === "ai" ? "Ditulis AI dari data yang kamu konfirmasi" : "Dari data yang kamu konfirmasi; yang belum ada ditandai [ISI: …]"}</small>
+      <div className="lp-hasil-grid">
+        <section className="lp-panel">
+          <div className="lp-panel-kepala">
+            <h3>Hasil pemeriksaan</h3>
+            <p>9 keterangan wajib label pangan olahan{h.catatanDraf ? ` · ${h.catatanDraf}` : ""}</p>
           </div>
-          <div className="nk-draf-aksi">
+          <ul className="lp-cek-list">
+            {h.items.map((i) => (
+              <li key={i.kunci}>
+                <span className={`lp-titik ${KELAS_STATUS[i.status]}`} />
+                <div>
+                  <b>{i.nama}</b>
+                  {i.catatan.length > 0 && <small>{i.catatan.join(" ")}</small>}
+                </div>
+                <span className={`lp-pil ${KELAS_STATUS[i.status]}`}>{i.status}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="lp-panel">
+          <div className="lp-panel-kepala">
+            <h3>Rekomendasi</h3>
+            <p>Urut dari yang paling berpengaruh ke skor.</p>
+          </div>
+          {saran.length === 0 && klaim.length === 0 ? (
+            <p className="lp-selesai">
+              <PIcon name="check" size={16} /> Semua keterangan wajib sudah sesuai.
+            </p>
+          ) : (
+            <ol className="lp-saran">
+              {saran.map((x) => {
+                const item = h.items.find((i) => i.kunci === x.kunci)!;
+                return (
+                  <li key={x.kunci}>
+                    <b>{item.nama}</b>
+                    <p>{x.teks}</p>
+                  </li>
+                );
+              })}
+              {klaim.map((k) => (
+                <li key={k.kutipan} className="klaim">
+                  <b>Hindari klaim “{k.kutipan}”</b>
+                  <p>
+                    {k.alasan} Ganti dengan: <i>{k.saran}</i>
+                  </p>
+                </li>
+              ))}
+            </ol>
+          )}
+          <button className="lp-tautan" onClick={() => goTo("label", `periksa-${produk.id}`)}>
+            Perbaiki isian →
+          </button>
+        </section>
+      </div>
+
+      <section className="lp-panel">
+        <div className="lp-panel-kepala lp-draf-kepala">
+          <div>
+            <h3>Draf teks label belakang</h3>
+            <p>{teksDraf?.sumber === "ai" ? "Dirapikan AI dari data yang kamu periksa." : "Disusun dari data yang kamu periksa; yang belum ada ditandai [ISI: …]."}</p>
+          </div>
+          <div className="lp-draf-aksi">
             <button
-              className="nk-btn sekunder kecil"
+              className="portal-secondary"
               onClick={() => {
                 navigator.clipboard?.writeText(teks).then(() => {
                   setTersalin(true);
@@ -349,104 +589,31 @@ function HasilLabel({ produk }: { produk: ProdukLabel }) {
                 });
               }}
             >
-              <PIcon name={tersalin ? "check" : "file"} size={14} /> {tersalin ? "Tersalin" : "Salin"}
+              {tersalin ? "Tersalin" : "Salin"}
             </button>
-            <button className="nk-btn kecil" onClick={tulisUlang} disabled={proses}>
-              <PIcon name="sparkle" size={14} /> {proses ? "Menulis…" : "Rapikan dengan AI"}
+            <button className="portal-primary" onClick={rapikan} disabled={proses}>
+              {proses ? "Merapikan…" : "Rapikan dengan AI"}
             </button>
           </div>
         </div>
-        <pre>{teks}</pre>
-      </div>
-    </section>
-  );
-}
-
-export function LabelProduk() {
-  const { produk, profil, kirim } = useToko();
-  const [pilihan, setPilihan] = useState<string | null>(produk[0]?.id ?? null);
-  const [hapus, setHapus] = useState<ProdukLabel | null>(null);
-  const aktif = produk.find((p) => p.id === pilihan) ?? produk[0];
-  const [toast, setToast] = useState<string | null>(null);
-
-  const tambah = () => {
-    const baru: ProdukLabel = { id: idBaru(), nama: `Produk ${produk.length + 1}`, mode: "draf", data: dataLabelKosong(), teksLain: "", diperiksaPada: null };
-    kirim({ type: "simpanProduk", produk: baru });
-    setPilihan(baru.id);
-  };
-
-  return (
-    <div className="nk-halaman nk-label">
-      <div className="nk-label-produk">
-        {produk.map((p) => {
-          const skor = p.diperiksaPada ? Math.round(hitungSkor(p.data, p.mode, profil.kota).skor) : null;
-          return (
-            <button key={p.id} className={`nk-produk-chip ${aktif?.id === p.id ? "aktif" : ""}`} onClick={() => setPilihan(p.id)}>
-              <PIcon name="tag" size={15} />
-              <span>{p.nama}</span>
-              <em>{skor === null ? "Belum dicek" : `${skor}/100`}</em>
-            </button>
-          );
-        })}
-        <button className="nk-btn hantu kecil" onClick={tambah}>
-          <PIcon name="plus" size={14} /> Tambah produk
-        </button>
-        {aktif && produk.length > 1 && (
-          <button className="nk-btn hantu kecil bahaya-teks" onClick={() => setHapus(aktif)}>
-            <PIcon name="trash" size={14} /> Hapus
-          </button>
-        )}
-      </div>
-
-      {aktif ? (
-        <div className="nk-label-grid">
-          <FormLabel
-            produk={aktif}
-            onSimpan={(p) => {
-              kirim({ type: "simpanProduk", produk: p, konfirmasi: true });
-              setToast("Data label dikonfirmasi, skor diperbarui.");
-              window.setTimeout(() => setToast(null), 2500);
-            }}
-          />
-          <HasilLabel produk={aktif} />
-        </div>
-      ) : (
-        <section className="nk-card">
-          <div className="nk-kosong">
-            <span>
-              <PIcon name="tag" size={22} />
-            </span>
-            <b>Belum ada produk</b>
-            <p>Tambahkan produk untuk memeriksa kelengkapan labelnya.</p>
-            <button className="nk-btn" onClick={tambah}>
-              <PIcon name="plus" size={16} /> Tambah produk
-            </button>
-          </div>
-        </section>
-      )}
-
-      <p className="nk-pernyataan">
-        <PIcon name="info" size={15} />
-        Pemeriksaan mengacu pada keterangan wajib Peraturan BPOM tentang Label Pangan Olahan. Ini alat bantu persiapan, bukan keputusan kredit atau persetujuan izin;
-        konfirmasikan ke BPOM atau Dinas Kesehatan setempat.
-      </p>
+        <pre className="lp-draf">{teks}</pre>
+      </section>
 
       {hapus && (
         <Modal
           judul="Hapus produk?"
-          onTutup={() => setHapus(null)}
+          onTutup={() => setHapus(false)}
           lebar={400}
           aksi={
             <>
-              <button className="nk-btn sekunder" onClick={() => setHapus(null)}>
+              <button className="nk-btn sekunder" onClick={() => setHapus(false)}>
                 Batal
               </button>
               <button
                 className="nk-btn bahaya"
                 onClick={() => {
-                  kirim({ type: "hapusProduk", id: hapus.id });
-                  setPilihan(null);
-                  setHapus(null);
+                  kirim({ type: "hapusProduk", id: produk.id });
+                  goTo("label");
                 }}
               >
                 Hapus
@@ -454,14 +621,26 @@ export function LabelProduk() {
             </>
           }
         >
-          <p>“{hapus.nama}” dan hasil pemeriksaannya akan dihapus.</p>
+          <p>“{produk.nama}” dan hasil pemeriksaannya akan dihapus dari daftar.</p>
         </Modal>
-      )}
-      {toast && (
-        <div className="nk-toast" role="status">
-          <PIcon name="check" size={16} /> {toast}
-        </div>
       )}
     </div>
   );
+}
+
+// ===========================================================================
+
+export function LabelProduk({ sub }: { sub: string | null }) {
+  const { produk } = useToko();
+  if (sub === "tambah") return <AlurPeriksa key="baru" produkAwal={null} />;
+  if (sub?.startsWith("periksa-")) {
+    const p = produk.find((x) => x.id === sub.slice("periksa-".length));
+    return p ? <AlurPeriksa key={p.id} produkAwal={p} /> : <DaftarProduk />;
+  }
+  if (sub) {
+    const p = produk.find((x) => x.id === sub);
+    if (p?.diperiksaPada) return <HasilProduk produk={p} />;
+    if (p) return <AlurPeriksa key={p.id} produkAwal={p} />;
+  }
+  return <DaftarProduk />;
 }

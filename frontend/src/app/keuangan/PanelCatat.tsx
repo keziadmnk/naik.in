@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../../api";
 import { PIcon } from "../../components/icons";
 import { Modal } from "../../components/ui";
-import type { Kategori } from "../../data/types";
+import { METODE, type Kategori } from "../../data/types";
 import { barisDariTabel, barisKosong, kunciBaru, parseCsv, parseTanggal, tebakKategori, type BarisDraf } from "../../lib/importer";
 import { useToko } from "../../state/store";
 import { useCatat } from "../AppShell";
@@ -94,7 +94,8 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
   const [galat, setGalat] = useState<string | null>(null);
   const [pilihFoto, setPilihFoto] = useState(false);
   const [jenisFoto, setJenisFoto] = useState<"buku_kas" | "nota">("nota");
-  const panel = useRef<HTMLElement>(null);
+  const [halamanManual, setHalamanManual] = useState<{ tanggal?: string } | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   const jalankan = async (tugas: () => Promise<HasilBaca>, pesan: string) => {
     setGalat(null);
@@ -113,72 +114,103 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
     jalankan(() => bacaFile(file, kategori, hariIni, demo.modeOffline), `Membaca ${file.name}…`);
   };
 
-  const manual = (tanggal?: string) =>
-    onHasil({ sumber: { jenis: "manual", label: "Input manual" }, draf: [barisKosong(hariIni, tanggal ? { tanggal } : {})] });
+  const manual = (tanggal?: string) => setHalamanManual({ tanggal });
 
   // Permintaan dari tombol "+" (HP), navigasi cepat, atau temuan "Catat sekarang"
   useEffect(() => {
     if (!permintaan) return;
     panel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     if (permintaan.mode === "manual") manual(permintaan.tanggal);
-    if (permintaan.mode === "scan") setPilihFoto(true);
-    if (permintaan.mode === "unggah") inputFile.current?.click();
+    if (permintaan.mode === "scan") {
+      setHalamanManual(null);
+      setPilihFoto(true);
+    }
+    if (permintaan.mode === "unggah") {
+      setHalamanManual(null);
+      setTimeout(() => inputFile.current?.click(), 0);
+    }
     selesai();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [permintaan]);
 
   return (
-    <section className="nk-card nk-catat" ref={panel} aria-labelledby="judul-catat">
-      <div className="nk-card-head">
-        <div>
-          <span className="nk-eyebrow">Tambah catatan</span>
-          <h3 id="judul-catat">Catat</h3>
-        </div>
+    halamanManual ? (
+      <div ref={panel}>
+        <InputManual
+          tanggalAwal={halamanManual.tanggal}
+          onKembali={() => setHalamanManual(null)}
+          onPeriksa={(baris) => onHasil({ sumber: { jenis: "manual", label: "Input manual" }, draf: [baris] })}
+        />
       </div>
-      <div
-        className={`nk-dropzone ${seret ? "seret" : ""}`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setSeret(true);
-        }}
-        onDragLeave={() => setSeret(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setSeret(false);
-          terimaFile(e.dataTransfer.files[0]);
-        }}
-      >
-        <span className="nk-dropzone-ikon">
-          <PIcon name="upload" size={24} />
-        </span>
-        <b>Scan atau unggah</b>
-        <p>Seret file ke sini, atau pilih cara di bawah</p>
-        <div className="nk-dropzone-aksi">
-          <button className="nk-btn" onClick={() => setPilihFoto(true)} disabled={!!proses}>
-            <PIcon name="camera" size={17} /> Scan foto
-          </button>
-          <button className="nk-btn sekunder" onClick={() => inputFile.current?.click()} disabled={!!proses}>
-            <PIcon name="file" size={17} /> Unggah file
-          </button>
+    ) : (
+    <div className="upload-layout fg-scan-penuh" ref={panel}>
+      <div className="upload-main">
+        <div className="subsection-heading">
+          <span>AI Financial Scanner</span>
+          <h3>Scan & Analisis Data Keuangan</h3>
+          <p>Unggah catatan transaksi usahamu untuk dibaca dan dirapikan otomatis. Semua hasil masuk layar Periksa dulu sebelum disimpan.</p>
         </div>
-        <small>CSV, XLSX, PDF, JPG, PNG</small>
-        {proses && (
-          <div className="nk-dropzone-proses" role="status">
-            <i className="nk-spinner" /> {proses}
-          </div>
+        <label
+          className={`dropzone ${seret ? "has-file" : ""}`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setSeret(true);
+          }}
+          onDragLeave={() => setSeret(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setSeret(false);
+            terimaFile(e.dataTransfer.files[0]);
+          }}
+        >
+          <input type="file" accept={TERIMA} onChange={(e) => (terimaFile(e.target.files?.[0]), (e.target.value = ""))} />
+          {proses ? (
+            <>
+              <i>
+                <span className="nk-spinner" />
+              </i>
+              <h4>{proses}</h4>
+              <p>Tunggu sebentar…</p>
+            </>
+          ) : (
+            <>
+              <i>
+                <PIcon name="upload" size={28} />
+              </i>
+              <h4>Tarik dan letakkan file di sini</h4>
+              <p>atau klik untuk memilih dari perangkatmu</p>
+              <small>CSV, XLSX, PDF, JPG, atau PNG</small>
+            </>
+          )}
+        </label>
+        {galat && (
+          <p className="nk-galat" role="alert">
+            <PIcon name="alert" size={15} /> {galat}
+          </p>
         )}
+        <div className="file-types">
+          {["Buku Kas", "Mutasi Rekening", "Rekap QRIS", "Nota Penjualan", "Nota Pengeluaran"].map((item) => (
+            <span key={item}>
+              <PIcon name="file" size={16} />
+              {item}
+            </span>
+          ))}
+        </div>
+        <div className="upload-actions">
+          <button className="portal-secondary" onClick={() => manual()} disabled={!!proses}>
+            <PIcon name="pen" size={16} />
+            Input Manual
+          </button>
+          <button className="portal-secondary" onClick={() => inputFile.current?.click()} disabled={!!proses}>
+            <PIcon name="upload" size={16} />
+            Pilih File
+          </button>
+          <button className="portal-primary" onClick={() => setPilihFoto(true)} disabled={!!proses}>
+            <PIcon name="camera" size={16} />
+            Scan Foto dengan AI
+          </button>
+        </div>
       </div>
-      {galat && (
-        <p className="nk-galat" role="alert">
-          <PIcon name="alert" size={15} /> {galat}
-        </p>
-      )}
-      <button className="nk-btn hantu penuh" onClick={() => manual()}>
-        <PIcon name="pen" size={16} /> Input manual
-      </button>
-      <p className="nk-catat-catatan">
-        <PIcon name="check" size={14} /> Semua hasil masuk ke layar <b>Periksa dulu</b> sebelum disimpan.
-      </p>
 
       <input ref={inputFile} type="file" accept={TERIMA} hidden onChange={(e) => (terimaFile(e.target.files?.[0]), (e.target.value = ""))} />
       <input
@@ -224,6 +256,86 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
           {demo.modeOffline && <p className="nk-muted kecil">Mode offline: foto tetap bisa dipakai sebagai acuan, isinya kamu ketik sendiri.</p>}
         </Modal>
       )}
-    </section>
+    </div>
+    )
+  );
+}
+
+/** Formulir "Input Transaksi Manual" (desain Figma). Hasilnya tetap lewat layar Periksa dulu. */
+function InputManual({ onPeriksa, onKembali, tanggalAwal }: { onPeriksa: (b: BarisDraf) => void; onKembali: () => void; tanggalAwal?: string }) {
+  const { kategori, hariIni } = useToko();
+  const [b, setB] = useState<BarisDraf>(() => barisKosong(hariIni, { arah: "masuk", kategoriId: "penjualan", metode: "QRIS", ...(tanggalAwal ? { tanggal: tanggalAwal, tanggalAsli: tanggalAwal } : {}) }));
+  const ubah = (p: Partial<BarisDraf>) => setB((x) => ({ ...x, ...p }));
+  return (
+    <aside className="manual-card fg-manual-halaman">
+      <button className="fg-kembali" onClick={onKembali}>
+        ← Kembali ke Upload & Scan
+      </button>
+      <span>Input manual</span>
+      <h3>Input Transaksi Manual</h3>
+      <p>Tambahkan satu transaksi tanpa mengunggah dokumen.</p>
+      <label className="form-field">
+        <span>Tanggal Transaksi</span>
+        <div className="field-control">
+          <input type="date" value={b.tanggal} max={hariIni} onChange={(e) => ubah({ tanggal: e.target.value, tanggalAsli: e.target.value })} />
+        </div>
+      </label>
+      <label className="form-field">
+        <span>Jenis</span>
+        <select
+          value={b.arah}
+          onChange={(e) => {
+            const arah = e.target.value as BarisDraf["arah"];
+            ubah({ arah, kategoriId: arah === "masuk" ? "penjualan" : "bahan-baku" });
+          }}
+        >
+          <option value="masuk">Pemasukan</option>
+          <option value="keluar">Pengeluaran</option>
+        </select>
+      </label>
+      <label className="form-field">
+        <span>Kategori</span>
+        <select value={b.kategoriId} onChange={(e) => ubah({ kategoriId: e.target.value })}>
+          {kategori
+            .filter((k) => k.arah === b.arah)
+            .map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.nama}
+              </option>
+            ))}
+        </select>
+      </label>
+      <label className="form-field">
+        <span>Nominal</span>
+        <div className="field-control">
+          <input inputMode="numeric" placeholder="0" value={b.nominal ? b.nominal.toLocaleString("id-ID") : ""} onChange={(e) => ubah({ nominal: Number(e.target.value.replace(/\D/g, "")) || 0 })} />
+        </div>
+      </label>
+      <label className="form-field">
+        <span>Metode Pembayaran</span>
+        <select value={b.metode} onChange={(e) => ubah({ metode: e.target.value as BarisDraf["metode"] })}>
+          {METODE.map((m) => (
+            <option key={m}>{m}</option>
+          ))}
+        </select>
+      </label>
+      <label className="form-field">
+        <span>Keterangan</span>
+        <div className="field-control">
+          <input placeholder="Contoh: Penjualan harian" value={b.uraian} onChange={(e) => ubah({ uraian: e.target.value })} />
+        </div>
+      </label>
+      <button
+        className="portal-primary"
+        onClick={() => {
+          onPeriksa({ ...b, key: kunciBaru() });
+          setB(barisKosong(hariIni, { arah: b.arah, kategoriId: b.kategoriId, metode: b.metode }));
+        }}
+      >
+        <PIcon name="plus" size={15} />
+        Tambah Transaksi
+      </button>
+      <small className="nk-muted kecil">Kamu akan diminta memeriksa dulu sebelum transaksi tersimpan.</small>
+    </aside>
   );
 }

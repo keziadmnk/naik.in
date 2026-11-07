@@ -28,7 +28,7 @@ function skala(min: number, max: number, langkah = 4) {
   return { bawah, atas, tik };
 }
 
-type Seri = { kunci: string; label: string; warna: string; jenis: "batang" | "garis"; putus?: boolean };
+type Seri = { kunci: string; label: string; warna: string; jenis: "batang" | "garis"; putus?: boolean; area?: boolean };
 
 /**
  * Grafik gabungan: batang (omzet / uang masuk & keluar) + garis (laba / HPP / selisih).
@@ -86,6 +86,13 @@ export function GrafikGabungan({
           .filter((s) => s.jenis === "garis")
           .map((s) => (
             <g key={s.kunci}>
+              {s.area && data.length > 1 && (
+                <polygon
+                  fill={s.warna}
+                  opacity={0.14}
+                  points={`${xTengah(0)},${y(0)} ${data.map((d, i) => `${xTengah(i)},${y(Number(d[s.kunci] ?? 0))}`).join(" ")} ${xTengah(data.length - 1)},${y(0)}`}
+                />
+              )}
               <polyline
                 fill="none"
                 stroke={s.warna}

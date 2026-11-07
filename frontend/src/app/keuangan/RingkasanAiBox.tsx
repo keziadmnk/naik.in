@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import { api } from "../../api";
 import { PIcon } from "../../components/icons";
+import { GaugeFigma } from "../../components/figma";
+import { dalamRentang, kelengkapan, rentangPeriode, ringkas } from "../../lib/finance";
 import { tanggal } from "../../lib/format";
+import { goTo } from "../../routes";
 import { hitungAngka, poinTemplat } from "../../lib/ringkasan";
 import { useToko } from "../../state/store";
 
@@ -43,32 +46,56 @@ export function RingkasanAiBox() {
     setProses(false);
   };
 
+  // Indikator persentase dari 6 bulan catatan terkonfirmasi (bukan skor karangan)
+  const r6 = rentangPeriode("6b", hariIni);
+  const enam = ringkas(dalamRentang(transaksi.filter((t) => !perluDicek.has(t.id)), r6.dari, r6.sampai), kategori);
+  const k = kelengkapan(transaksi, kategori, hariIni, hariLibur);
+  const bagi = (a: number, b: number) => (b > 0 ? (a / b) * 100 : 0);
+  const gauge = [
+    { nilai: bagi(enam.laba, enam.penjualan), label: "Margin Laba Usaha", sub: "laba ÷ penjualan" },
+    { nilai: bagi(enam.hpp, enam.penjualan), label: "Rasio HPP", sub: "bahan & kemasan ÷ penjualan" },
+    { nilai: bagi(enam.operasional, enam.penjualan), label: "Biaya Operasional", sub: "operasional ÷ penjualan" },
+    { nilai: bagi(enam.pribadi, enam.uangKeluar), label: "Porsi Pengeluaran Pribadi", sub: "pribadi ÷ uang keluar" },
+    { nilai: k.rasio * 100, label: "Kelengkapan Catatan", sub: `${k.mingguLengkap} dari ${k.totalMinggu} minggu` },
+  ];
+
   return (
-    <section className="nk-card nk-ai" aria-labelledby="judul-ai">
-      <div className="nk-card-head">
-        <div>
-          <span className="nk-eyebrow">
-            <PIcon name="sparkle" size={13} /> {sumber === "ai" ? "Dijelaskan AI" : "Ringkasan templat"}
-          </span>
-          <h3 id="judul-ai">Ringkasan analisis kondisi keuangan (AI)</h3>
-        </div>
-      </div>
-      <ul className="nk-ai-poin">
-        {poin.map((p, i) => (
-          <li key={i}>{p}</li>
+    <div className="analysis-content">
+      <div className="analysis-gauges">
+        {gauge.map((g) => (
+          <GaugeFigma key={g.label} nilai={g.nilai} label={g.label} sub={g.sub} />
         ))}
-      </ul>
-      <div className="nk-ai-kaki">
-        <span className="nk-stempel">
-          <PIcon name="check" size={13} />
-          Diperbarui {tanggal(tersimpan?.diperbaruiPada ?? hariIni)}, dari {data.angka.jumlahTransaksi} transaksi terkonfirmasi
-        </span>
-        <button className="nk-btn sekunder kecil" onClick={perbarui} disabled={proses}>
-          <PIcon name="refresh" size={15} /> {proses ? "Memperbarui…" : "Perbarui analisis"}
-        </button>
       </div>
-      {catatan && <p className="nk-muted kecil">{catatan}</p>}
-      <small className="nk-ai-catatan">AI menjelaskan angka yang dihitung sistem. Periode: 30 hari terakhir.</small>
-    </section>
+      <article className="ai-summary-card">
+        <div className="ai-summary-icon">
+          <PIcon name="sparkle" size={24} />
+        </div>
+        <div>
+          <span>{sumber === "ai" ? "NAIK.IN AI Financial Summary" : "Ringkasan templat · AI belum dipakai"}</span>
+          <h2>Ringkasan analisis kondisi keuangan (AI)</h2>
+          <ul className="fg-ai-poin">
+            {poin.map((x, i) => (
+              <li key={i}>{x}</li>
+            ))}
+          </ul>
+          <div className="recommendations">
+            <span>
+              <PIcon name="check" size={13} />
+              Diperbarui {tanggal(tersimpan?.diperbaruiPada ?? hariIni)}, dari {data.angka.jumlahTransaksi} transaksi terkonfirmasi
+            </span>
+          </div>
+          <div className="fg-ai-aksi">
+            <button onClick={perbarui} disabled={proses}>
+              <PIcon name="refresh" size={15} /> {proses ? "Memperbarui…" : "Perbarui analisis"}
+            </button>
+            <button onClick={() => goTo("kur")}>
+              Lanjut ke Simulasi KUR <PIcon name="arrow" size={15} />
+            </button>
+          </div>
+          {catatan && <small className="fg-ai-catatan">{catatan}</small>}
+          <small className="fg-ai-catatan">AI menjelaskan angka yang dihitung sistem. Periode ringkasan: 30 hari terakhir; indikator di atas: 6 bulan.</small>
+        </div>
+      </article>
+    </div>
   );
 }
