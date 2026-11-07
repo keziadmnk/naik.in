@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, tanggal, uuid } from "@/lib/server/rute";
 
-// POST /api/loan-simulations — simpan hasil Simulasi Kesiapan KUR (angka dari engine frontend).
 const rp = z.number().finite();
 const skema = z.object({
   id: uuid,

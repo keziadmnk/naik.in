@@ -1,11 +1,10 @@
 import { createHash } from "node:crypto";
 import { createServerAdapter } from "../data/server-adapter";
 import { asJsonValue } from "../data/types";
-import { createGeminiClient, type GeminiClient } from "./client";
+import { batasWaktuPerModel, createGeminiClient, pesanGalatAi, type GeminiClient } from "./client";
 import { taskPrompts } from "./prompts";
 import { taskSchemas, type AiInputPart, type AiResult, type AiTask, type AiTaskOutput } from "./schemas";
 
-const AI_TIMEOUT_MS = 25_000;
 const MAX_PARALLEL = 2;
 const RETRY_COUNT = 1;
 const RETRY_BASE_MS = 250;
@@ -35,13 +34,19 @@ function inputBytes(parts: AiInputPart[]): Uint8Array {
 }
 
 async function hashInput(task: AiTask, parts: AiInputPart[]): Promise<string> {
-  return createHash("sha256").update(task).update(inputBytes(parts)).digest("hex");
+  return createHash("sha256")
+    .update(task)
+    .update(taskPrompts[task])
+    .update(process.env.GEMINI_MODEL ?? "")
+    .update(inputBytes(parts))
+    .digest("hex");
 }
 
 async function callWithTimeout(client: GeminiClient, task: AiTask, parts: AiInputPart[]): Promise<string> {
+  const total = batasWaktuPerModel(task) * 2 + 10_000;
   return Promise.race([
     client.generate(task, parts),
-    new Promise<string>((_, reject) => setTimeout(() => reject(new Error("AI timeout setelah 25 detik.")), AI_TIMEOUT_MS)),
+    new Promise<string>((_, reject) => setTimeout(() => reject(new Error(`AI timeout setelah ${Math.round(total / 1000)} detik.`)), total)),
   ]);
 }
 
@@ -74,7 +79,7 @@ export async function runAiTask<T extends AiTask>(task: T, parts: AiInputPart[],
         await new Promise((resolve) => setTimeout(resolve, RETRY_BASE_MS * 2 ** attempt));
       }
     }
-    return { ok: false, fallback: true, alasan: lastError instanceof Error ? lastError.message : "Validasi keluaran AI gagal." };
+    return { ok: false, fallback: true, alasan: pesanGalatAi(lastError) };
   } finally {
     release();
   }

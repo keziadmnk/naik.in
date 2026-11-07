@@ -11,7 +11,7 @@ type Bagian = "profil" | "biaya" | "kategori" | "pengingat" | "data" | "bantuan"
 
 const BAGIAN: { id: Bagian; label: string; ikon: PIconName }[] = [
   { id: "profil", label: "Profil usaha", ikon: "home" },
-  { id: "biaya", label: "Biaya rutin & rumah tangga", ikon: "wallet" },
+  { id: "biaya", label: "Biaya rutin usaha", ikon: "wallet" },
   { id: "kategori", label: "Kategori", ikon: "tag" },
   { id: "pengingat", label: "Pengingat", ikon: "bell" },
   { id: "data", label: "Data & privasi", ikon: "lock" },
@@ -36,11 +36,11 @@ function BiayaRutinForm() {
   const ubah = (id: string, p: Partial<BiayaRutin>) => setDaftar(daftar.map((b) => (b.id === id ? { ...b, ...p } : b)));
   const total = (j: BiayaRutin["jenis"]) => daftar.filter((b) => b.jenis === j).reduce((a, b) => a + b.nominalBulanan, 0);
   return (
-    <Kartu judul="Biaya rutin & kebutuhan rumah tangga" teks="Dipakai nanti di Simulasi Kesiapan KUR untuk menguji apakah kas cukup setelah kebutuhan rutin.">
-      {(["usaha", "rumah_tangga"] as const).map((jenis) => (
+    <Kartu judul="Biaya rutin usaha" teks="Biaya tetap usaha setiap bulan, misalnya sewa kios dan listrik.">
+      {(["usaha"] as const).map((jenis) => (
         <div key={jenis} className="nk-biaya-grup">
           <h4>
-            {jenis === "usaha" ? "Biaya rutin usaha" : "Kebutuhan rumah tangga"} <span>{rupiah(total(jenis))}/bulan</span>
+            Biaya rutin usaha <span>{rupiah(total(jenis))}/bulan</span>
           </h4>
           {daftar
             .filter((b) => b.jenis === jenis)
@@ -71,7 +71,7 @@ function KategoriForm() {
   const [kelompok, setKelompok] = useState<Kelompok>("operasional");
   const tambahan = new Set(kategoriTambahan.map((k) => k.id));
   return (
-    <Kartu judul="Kategori" teks="Kategori menentukan apakah transaksi dihitung sebagai penjualan, HPP, biaya operasional, atau pribadi.">
+    <Kartu judul="Kategori" teks="Kategori menentukan apakah transaksi dihitung sebagai penjualan, HPP, atau biaya operasional.">
       <div className="nk-kategori-list">
         {(Object.keys(NAMA_KELOMPOK) as Kelompok[]).map((k) => (
           <div key={k}>
@@ -204,7 +204,7 @@ export function Pengaturan() {
             </details>
             <details className="nk-faq">
               <summary>Apa beda laba usaha dan selisih kas?</summary>
-              <p>Laba usaha hanya menghitung penjualan dikurangi HPP dan biaya operasional. Selisih kas menghitung semua uang masuk dan keluar, termasuk pengeluaran pribadi.</p>
+              <p>Laba usaha hanya menghitung penjualan dikurangi HPP dan biaya operasional. Selisih kas menghitung semua uang masuk dan keluar, termasuk pemasukan lain di luar penjualan.</p>
             </details>
             <details className="nk-faq">
               <summary>Kenapa ada minggu “belum lengkap”?</summary>

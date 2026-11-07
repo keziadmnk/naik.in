@@ -1,6 +1,3 @@
-// Komponen tampilan bergaya desain Figma (kelas CSS dari portal.css).
-// Hanya tampilan — data & logika tetap dari engine/store.
-
 import { useId, type CSSProperties, type ReactNode } from "react";
 import { PIcon } from "./icons";
 
@@ -46,7 +43,6 @@ export function PageTabs<T extends string>({
   );
 }
 
-/** Grafik mini kartu metrik (gaya Figma), digambar dari data sungguhan. */
 export function MiniTren({ nilai, turun = false }: { nilai: number[]; turun?: boolean }) {
   const id = useId().replace(/:/g, "");
   const n = nilai.length;
@@ -56,7 +52,6 @@ export function MiniTren({ nilai, turun = false }: { nilai: number[]; turun?: bo
   const y = (v: number) => 8 + (1 - (v - min) / (max - min || 1)) * 40;
   const x = (i: number) => (i / (n - 1)) * 160;
   const titik = nilai.map((v, i) => [x(i), y(v)] as const);
-  // kurva halus (Catmull-Rom → Bézier)
   let d = `M${titik[0][0]} ${titik[0][1]}`;
   for (let i = 0; i < n - 1; i += 1) {
     const [x0, y0] = titik[Math.max(0, i - 1)];
@@ -79,7 +74,6 @@ export function MiniTren({ nilai, turun = false }: { nilai: number[]; turun?: bo
   );
 }
 
-/** Gauge melingkar Figma (.gauge) untuk persentase 0–100. */
 export function GaugeFigma({ nilai, label, sub }: { nilai: number; label: string; sub: string }) {
   const v = Math.max(0, Math.min(100, Math.round(nilai)));
   return (

@@ -4,10 +4,9 @@ import { Modal } from "../components/ui";
 import { api } from "../api";
 import { tandaiMasuk, useToko } from "../state/store";
 import { goTo, type AppRoute } from "../routes";
+import logoNaikin from "../assets/logo-naikin.png";
+import simbolNaikin from "../assets/logo-naikin-simbol.png";
 
-// ---------------------------------------------------------------------------
-// Permintaan "Catat" (dari tombol + di HP, navigasi cepat Beranda, temuan, dll.)
-// ---------------------------------------------------------------------------
 
 export type ModeCatat = "scan" | "unggah" | "manual";
 export type PermintaanCatat = { mode: ModeCatat; tanggal?: string };
@@ -20,19 +19,26 @@ const KonteksCatat = createContext<{
 
 export const useCatat = () => useContext(KonteksCatat);
 
-// ---------------------------------------------------------------------------
 
 type ItemNav = { route: AppRoute; label: string; pendek: string; icon: PIconName };
 
-/** Tepat lima menu, berurutan. Pengaturan tidak ada di sini (hanya lewat dropdown avatar). */
 export const NAV: ItemNav[] = [
-  { route: "beranda", label: "Beranda", pendek: "Beranda", icon: "home" },
+  { route: "beranda", label: "Beranda", pendek: "Beranda", icon: "grid" },
   { route: "keuangan", label: "Keuangan", pendek: "Keuangan", icon: "wallet" },
-  { route: "kur", label: "Simulasi Kesiapan KUR", pendek: "Simulasi KUR", icon: "calc" },
-  { route: "label", label: "Label Produk", pendek: "Label", icon: "tag" },
+  { route: "kur", label: "Simulasi KUR", pendek: "Simulasi KUR", icon: "calc" },
+  { route: "label", label: "Label Produk", pendek: "Label", icon: "scan" },
   { route: "laporan", label: "Laporan", pendek: "Laporan", icon: "report" },
 ];
 
+
+function LogoSidebar() {
+  return (
+    <button className="nk-logo-gambar" onClick={() => goTo("beranda")} aria-label="NAIK.IN — ke Beranda">
+      <img className="lengkap" src={logoNaikin} alt="NAIK.IN" />
+      <img className="simbol" src={simbolNaikin} alt="" aria-hidden="true" />
+    </button>
+  );
+}
 
 function Logo() {
   return (
@@ -219,7 +225,7 @@ export function AppShell({ route, children }: { route: AppRoute; children: React
       <div className="nk-shell">
         <aside className="nk-sidebar" aria-label="Navigasi utama">
           <div className="nk-sidebar-logo">
-            <Logo />
+            <LogoSidebar />
           </div>
           <nav>
             {NAV.map((item) => (
@@ -299,6 +305,7 @@ export function AppShell({ route, children }: { route: AppRoute; children: React
         {konfirmasiKeluar && (
           <Modal
             judul="Keluar dari akun?"
+            nada="bahaya"
             onTutup={() => setKonfirmasiKeluar(false)}
             lebar={420}
             aksi={

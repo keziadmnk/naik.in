@@ -4,12 +4,11 @@ import { bacaJson, denganKonteks, GalatApi, uuid } from "@/lib/server/rute";
 type Params = { params: Promise<{ id: string }> };
 
 const lokasi = z.enum(["utama", "lain", "tidak_terlihat"]);
-const isian = z.object({ nilai: z.string().max(1000), lokasi, tidakBerlaku: z.boolean().optional() });
+const isian = z.object({ nilai: z.string().max(1000), lokasi, tidakBerlaku: z.boolean().optional(), tidakTerbaca: z.boolean().optional() });
 const KUNCI = ["namaProduk", "daftarBahan", "beratBersih", "produsen", "halal", "kodeProduksi", "kedaluwarsa", "nomorIzin", "asalUsul"] as const;
 
 const skema = z.object({
   nama: z.string().trim().min(1).max(150),
-  // Diisi bila pengguna menekan "Konfirmasi & hitung skor": satu baris label_checks baru.
   pemeriksaan: z
     .object({
       mode: z.enum(["draf", "beredar"]),
@@ -24,7 +23,6 @@ const skema = z.object({
     .optional(),
 });
 
-// PUT /api/products/:id — buat/ubah produk; sertakan `pemeriksaan` untuk menyimpan hasil cek label.
 export async function PUT(request: Request, { params }: Params) {
   return denganKonteks(async ({ user, businessId, db }) => {
     const id = uuid.parse((await params).id);
@@ -45,7 +43,6 @@ export async function PUT(request: Request, { params }: Params) {
   });
 }
 
-// DELETE /api/products/:id — hapus lunak (riwayat pemeriksaan tetap ada)
 export async function DELETE(_request: Request, { params }: Params) {
   return denganKonteks(async ({ businessId, db }) => {
     const id = uuid.parse((await params).id);

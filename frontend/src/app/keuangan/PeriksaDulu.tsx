@@ -3,15 +3,11 @@ import { PIcon } from "../../components/icons";
 import type { Arah, Metode, Transaksi } from "../../data/types";
 import { METODE } from "../../data/types";
 import { rupiah } from "../../lib/format";
-import { barisKosong, tebakKategori, validasiDraf, type BarisDraf } from "../../lib/importer";
+import { barisKosong, tebakKategori, validasiDraf, type BarisDraf, type KolomDraf } from "../../lib/importer";
 import { idBaru, useToko } from "../../state/store";
 
 export type SumberDraf = { jenis: "manual" | "unggah_file" | "scan_foto"; label: string; pratinjau?: string; catatan?: string };
 
-/**
- * Layar "Periksa dulu": hasil scan / impor / input manual bisa diedit di sini.
- * Tidak ada yang masuk riwayat sebelum tombol "Konfirmasi dan simpan" ditekan.
- */
 export function PeriksaDulu({
   sumber,
   drafAwal,
@@ -26,7 +22,6 @@ export function PeriksaDulu({
   const { kategori, transaksi, hariIni, kirim } = useToko();
   const [draf, setDraf] = useState<BarisDraf[]>(drafAwal.length ? drafAwal : [barisKosong(hariIni)]);
   const [konfirmasiBatal, setKonfirmasiBatal] = useState(false);
-  // Baris yang belum diisi sama sekali tidak ditandai merah dan tidak ikut disimpan.
   const belumDiisi = (d: BarisDraf) => !d.uraian.trim() && !d.nominal;
   const validasi = useMemo(
     () => validasiDraf(draf.map((d) => (belumDiisi(d) ? { ...d, disertakan: false } : d)), transaksi, hariIni),
@@ -38,15 +33,33 @@ export function PeriksaDulu({
       d.map((b) => {
         if (b.key !== key) return b;
         const baru = { ...b, ...perubahan };
-        // Ganti arah → pastikan kategori sesuai arah
         if (perubahan.arah && kategori.find((k) => k.id === baru.kategoriId)?.arah !== perubahan.arah)
           baru.kategoriId = tebakKategori(baru.uraian, perubahan.arah, kategori);
         if (perubahan.tanggal !== undefined) baru.tanggalAsli = perubahan.tanggal;
+        if (b.ragu && (perubahan.tanggal !== undefined || perubahan.uraian !== undefined || perubahan.nominal !== undefined)) baru.ragu = false;
+        if (b.isianRagu) {
+          const sisa = { ...b.isianRagu };
+          for (const k of Object.keys(perubahan) as (keyof BarisDraf)[]) delete sisa[k as KolomDraf];
+          baru.isianRagu = Object.keys(sisa).length ? sisa : undefined;
+        }
         return baru;
       }),
     );
 
+  const kolomTidakJelas = (d: BarisDraf): Partial<Record<KolomDraf, string>> => {
+    const hasil: Partial<Record<KolomDraf, string>> = {};
+    for (const [k, x] of Object.entries(d.isianRagu ?? {}) as [KolomDraf, { pesan: string; saran?: string }][])
+      hasil[k] = x.saran ? `${x.pesan} (kemungkinan: ${x.saran})` : x.pesan;
+    if (!d.tanggal) hasil.tanggal ??= "Tanggal tidak terbaca";
+    else if (d.tanggal > hariIni) hasil.tanggal ??= "Tanggal di masa depan";
+    if (!d.uraian.trim()) hasil.uraian ??= "Uraian kosong";
+    if (!d.nominal || d.nominal <= 0) hasil.nominal ??= "Nominal tidak terbaca";
+    return hasil;
+  };
+
   const disertakan = draf.filter((d) => d.disertakan && !belumDiisi(d));
+  const jumlahTidakJelas = disertakan.reduce((a, d) => a + Object.keys(kolomTidakJelas(d)).length, 0);
+  const jumlahDuplikat = disertakan.filter((d) => (validasi.masalah[d.key] ?? []).some((m) => /riwayat|lebih dari sekali/.test(m.pesan))).length;
   const galatDisertakan = disertakan.filter((d) => (validasi.masalah[d.key] ?? []).some((m) => m.tingkat === "galat")).length;
   const totalMasuk = disertakan.filter((d) => d.arah === "masuk").reduce((a, d) => a + d.nominal, 0);
   const totalKeluar = disertakan.filter((d) => d.arah === "keluar").reduce((a, d) => a + d.nominal, 0);
@@ -99,19 +112,16 @@ export function PeriksaDulu({
               Rentang tanggal: <b>{validasi.rentangFile.label}</b>
             </span>
           )}
-          <span className={galatDisertakan ? "galat" : "ok"}>
-            <PIcon name={galatDisertakan ? "alert" : "check"} size={14} />
-            {galatDisertakan ? `${galatDisertakan} baris perlu diperbaiki` : "Tidak ada baris bermasalah"}
-          </span>
-          {validasi.jumlahPeringatan > 0 && (
-            <span className="peringatan">
-              <PIcon name="info" size={14} /> {validasi.jumlahPeringatan} peringatan
-            </span>
-          )}
         </div>
         {sumber.catatan && (
           <p className="nk-periksa-catatan">
             <PIcon name="info" size={15} /> {sumber.catatan}
+          </p>
+        )}
+        {jumlahTidakJelas > 0 && (
+          <p className="nk-periksa-catatan nk-periksa-peringatan" role="alert">
+            <PIcon name="alert" size={15} /> Terdapat {jumlahTidakJelas} data yang tidak jelas (kotak merah). Periksa kembali sebelum konfirmasi.
+            {jumlahDuplikat > 0 && ` ${jumlahDuplikat} baris juga kemungkinan sudah ada di riwayat.`}
           </p>
         )}
 
@@ -138,30 +148,30 @@ export function PeriksaDulu({
               </thead>
               <tbody>
                 {draf.map((d) => {
-                  const masalah = validasi.masalah[d.key] ?? [];
-                  const galat = d.disertakan && masalah.some((m) => m.tingkat === "galat");
-                  const peringatan = d.disertakan && !galat && masalah.length > 0;
+                  const isian = d.disertakan ? kolomTidakJelas(d) : {};
+                  const merah = (k: KolomDraf) => (isian[k] ? "isian-cek" : undefined);
+                  const judul = (k: KolomDraf) => isian[k];
                   return (
                     <Fragment key={d.key}>
-                      <tr className={`${galat ? "baris-galat" : peringatan ? "baris-peringatan" : ""} ${d.disertakan ? "" : "baris-mati"}`}>
+                      <tr className={d.disertakan ? undefined : "baris-mati"}>
                         <td data-label="Sertakan">
                           <input type="checkbox" checked={d.disertakan} onChange={(e) => ubah(d.key, { disertakan: e.target.checked })} aria-label="Sertakan baris" />
                           {d.baris && <small className="nk-no-baris">#{d.baris}</small>}
                         </td>
                         <td data-label="Tanggal">
-                          <input type="date" value={d.tanggal} max={hariIni} onChange={(e) => ubah(d.key, { tanggal: e.target.value })} aria-label="Tanggal" />
+                          <input type="date" className={merah("tanggal")} title={judul("tanggal")} value={d.tanggal} max={hariIni} onChange={(e) => ubah(d.key, { tanggal: e.target.value })} aria-label="Tanggal" />
                         </td>
                         <td data-label="Uraian">
-                          <input value={d.uraian} placeholder="Contoh: Beli cabai 5 kg" onChange={(e) => ubah(d.key, { uraian: e.target.value })} aria-label="Uraian" />
+                          <input className={merah("uraian")} title={judul("uraian") ?? d.uraian} value={d.uraian} placeholder="Contoh: Beli cabai 5 kg" onChange={(e) => ubah(d.key, { uraian: e.target.value })} aria-label="Uraian" />
                         </td>
                         <td data-label="Jenis">
-                          <select value={d.arah} onChange={(e) => ubah(d.key, { arah: e.target.value as Arah })} aria-label="Jenis">
+                          <select className={merah("arah")} title={judul("arah")} value={d.arah} onChange={(e) => ubah(d.key, { arah: e.target.value as Arah })} aria-label="Jenis">
                             <option value="masuk">Masuk</option>
                             <option value="keluar">Keluar</option>
                           </select>
                         </td>
                         <td data-label="Kategori">
-                          <select value={d.kategoriId} onChange={(e) => ubah(d.key, { kategoriId: e.target.value })} aria-label="Kategori">
+                          <select className={merah("kategoriId")} title={judul("kategoriId")} value={d.kategoriId} onChange={(e) => ubah(d.key, { kategoriId: e.target.value })} aria-label="Kategori">
                             {kategori
                               .filter((k) => k.arah === d.arah)
                               .map((k) => (
@@ -181,7 +191,8 @@ export function PeriksaDulu({
                         <td data-label="Nominal" className="kanan">
                           <input
                             inputMode="numeric"
-                            className="kanan"
+                            className={`kanan ${merah("nominal") ?? ""}`}
+                            title={judul("nominal")}
                             value={d.nominal ? d.nominal.toLocaleString("id-ID") : ""}
                             placeholder="0"
                             onChange={(e) => ubah(d.key, { nominal: Number(e.target.value.replace(/\D/g, "")) || 0 })}
@@ -194,17 +205,6 @@ export function PeriksaDulu({
                           </button>
                         </td>
                       </tr>
-                      {d.disertakan && masalah.length > 0 && (
-                        <tr className="baris-masalah">
-                          <td colSpan={8}>
-                            {masalah.map((m) => (
-                              <span key={m.pesan} className={m.tingkat}>
-                                <PIcon name={m.tingkat === "galat" ? "alert" : "info"} size={13} /> {m.pesan}
-                              </span>
-                            ))}
-                          </td>
-                        </tr>
-                      )}
                     </Fragment>
                   );
                 })}
@@ -233,7 +233,7 @@ export function PeriksaDulu({
               <PIcon name="check" size={16} /> Konfirmasi dan simpan{disertakan.length ? ` (${disertakan.length})` : ""}
             </button>
           </div>
-          {!bisaSimpan && disertakan.length > 0 && <small className="nk-periksa-hint">Perbaiki atau hapus centang baris yang ditandai merah untuk menyimpan.</small>}
+          {!bisaSimpan && disertakan.length > 0 && <small className="nk-periksa-hint">Lengkapi kotak merah yang masih kosong, atau hapus centang barisnya, untuk menyimpan.</small>}
         </footer>
 
         {konfirmasiBatal && (

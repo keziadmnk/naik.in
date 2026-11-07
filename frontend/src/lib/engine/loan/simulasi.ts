@@ -1,9 +1,3 @@
-// Risiko kredit macet (NPL) indikatif — simulasi Monte Carlo dengan block bootstrap.
-//
-// Satu bulan simulasi = jumlah dua blok acak; tiap blok = laba dua minggu berurutan
-// dari 26 minggu usaha. Seed tetap → hasil selalu sama. Angka acak yang sama dipakai
-// untuk semua plafon (common random numbers), sehingga risiko naik monoton seiring beban.
-
 import {
   BLOK_PER_BULAN, BULAN_SULIT_BERUNTUN_NPL, HORIZON_NPL_MAKS, HORIZON_PROYEKSI, JUMLAH_SIMULASI, SEED_SIMULASI,
 } from "../../config/thresholds";
@@ -22,11 +16,9 @@ function mulberry32(seed: number) {
 export type JalurSimulasi = {
   jumlah: number;
   bulan: number;
-  /** laba bulanan simulasi, baris = jalur, kolom = bulan ke-i */
   laba: Float64Array;
 };
 
-/** Buat jalur laba bulanan simulasi (sekali per dataset; tidak bergantung pada plafon). */
 export function buatJalur(blok: number[], jumlah = JUMLAH_SIMULASI, bulan = Math.max(HORIZON_NPL_MAKS, HORIZON_PROYEKSI), seed = SEED_SIMULASI): JalurSimulasi {
   const laba = new Float64Array(jumlah * bulan);
   if (!blok.length) return { jumlah, bulan, laba };
@@ -40,9 +32,7 @@ export function buatJalur(blok: number[], jumlah = JUMLAH_SIMULASI, bulan = Math
 }
 
 export type HasilRisiko = {
-  /** Persentase bulan simulasi yang sisa kasnya negatif. */
   peluangBulanSulit: number;
-  /** Peluang ≥3 bulan sulit bayar berturut-turut dalam min(tenor, 12) bulan. */
   npl: number;
   horizon: number;
 };
@@ -67,7 +57,6 @@ export function risikoNpl(jalur: JalurSimulasi, kebutuhanRT: number, beban: numb
   return { peluangBulanSulit: bulanSulit / (jalur.jumlah * horizon), npl: macet / jalur.jumlah, horizon };
 }
 
-/** Proyeksi saldo kas bebas kumulatif 12 bulan: median dan pita persentil 10–90. */
 export function proyeksiKipas(jalur: JalurSimulasi, kebutuhanRT: number, beban: number, bulan = HORIZON_PROYEKSI) {
   const n = Math.min(bulan, jalur.bulan);
   const saldo = new Float64Array(jalur.jumlah);

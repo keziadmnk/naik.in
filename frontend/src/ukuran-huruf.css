@@ -1,0 +1,879 @@
+.nk-shell .auth-message > span,
+.nk-shell .auth-kicker {
+  font-size: 12.5px;
+}
+.nk-shell .auth-dash-head {
+  font-size: 12.5px;
+}
+.nk-shell .auth-dashboard > small {
+  font-size: 12.5px;
+}
+.nk-shell .auth-dash-stats {
+  font-size: 12.5px;
+}
+.nk-shell .auth-float b {
+  font-size: 12.5px;
+}
+.nk-shell .auth-float small {
+  font-size: 12px;
+}
+.nk-shell .auth-back {
+  font-size: 12.5px;
+}
+.nk-shell .form-field > span,
+.nk-shell .select-label > span {
+  font-size: 12.5px;
+}
+.nk-shell .form-field > small {
+  font-size: 12.5px;
+}
+.nk-shell .form-alert {
+  font-size: 12.5px;
+}
+.nk-shell .form-options,
+.nk-shell .terms {
+  font-size: 12.5px;
+}
+.nk-shell .form-options button {
+  font-size: 12.5px;
+}
+.nk-shell .auth-switch {
+  font-size: 12.5px;
+}
+.nk-shell .demo-credentials {
+  font-size: 12.5px;
+}
+.nk-shell .onboarding-page > header > button {
+  font-size: 12.5px;
+}
+.nk-shell .onboarding-heading > span {
+  font-size: 12.5px;
+}
+.nk-shell .stepper i {
+  font-size: 12.5px;
+}
+.nk-shell .stepper span {
+  font-size: 12.5px;
+}
+.nk-shell .onboarding-content > p {
+  font-size: 12.5px;
+}
+.nk-shell .choice-group > label {
+  font-size: 12.5px;
+}
+.nk-shell .choice-grid button {
+  font-size: 12.5px;
+}
+.nk-shell .question-row b {
+  font-size: 12.5px;
+}
+.nk-shell .question-row small {
+  font-size: 12.5px;
+}
+.nk-shell .question-row button {
+  font-size: 12.5px;
+}
+.nk-shell .start-options b {
+  font-size: 12.5px;
+}
+.nk-shell .start-options small {
+  font-size: 12.5px;
+}
+.nk-shell .app-sidebar nav button {
+  font-size: 12.5px;
+}
+.nk-shell .sidebar-help b {
+  font-size: 12.5px;
+}
+.nk-shell .sidebar-help p {
+  font-size: 12.5px;
+}
+.nk-shell .sidebar-help button {
+  font-size: 12.5px;
+}
+.nk-shell .app-sidebar > small {
+  font-size: 12px;
+}
+.nk-shell .page-title small {
+  font-size: 12px;
+}
+.nk-shell .avatar {
+  font-size: 12.5px;
+}
+.nk-shell .account-button b {
+  font-size: 12.5px;
+}
+.nk-shell .account-button small {
+  font-size: 12px;
+}
+.nk-shell .account-menu-head b {
+  font-size: 12.5px;
+}
+.nk-shell .account-menu-head small {
+  font-size: 12px;
+}
+.nk-shell .account-menu > button {
+  font-size: 12.5px;
+}
+.nk-shell .dashboard-welcome > div:first-child > span {
+  font-size: 12px;
+}
+.nk-shell .dashboard-welcome p {
+  font-size: 12.5px;
+}
+.nk-shell .business-meta b {
+  font-size: 12.5px;
+}
+.nk-shell .business-meta span {
+  font-size: 12.5px;
+}
+.nk-shell .business-meta small {
+  font-size: 12px;
+}
+.nk-shell .period-tabs button,
+.nk-shell .view-toggle button,
+.nk-shell .downside-toggle button {
+  font-size: 12.5px;
+}
+.nk-shell .icon-text-button {
+  font-size: 12.5px;
+}
+.nk-shell .metric-top > span {
+  font-size: 12.5px;
+}
+.nk-shell .metric-change b {
+  font-size: 12px;
+}
+.nk-shell .metric-change span {
+  font-size: 12px;
+}
+.nk-shell .panel-title span,
+.nk-shell .subsection-heading > span,
+.nk-shell .section-title > span,
+.nk-shell .simulator-head > div > span,
+.nk-shell .ai-loan-recommendation > div > span {
+  font-size: 12px;
+}
+.nk-shell .chart-legend {
+  font-size: 12px;
+}
+.nk-shell .chart-y {
+  font-size: 12px;
+}
+.nk-shell .chart-x {
+  font-size: 12px;
+}
+.nk-shell .ai-panel-head small {
+  font-size: 12px;
+}
+.nk-shell .insight-list p {
+  font-size: 12.5px;
+}
+.nk-shell .ai-insight-panel > button,
+.nk-shell .ai-summary-card button {
+  font-size: 12.5px;
+}
+.nk-shell .quick-section > div:first-child p {
+  font-size: 12.5px;
+}
+.nk-shell .quick-grid b {
+  font-size: 12.5px;
+}
+.nk-shell .quick-grid small {
+  font-size: 12px;
+}
+.nk-shell .inner-page-header p {
+  font-size: 12.5px;
+}
+.nk-shell .disclaimer {
+  font-size: 12.5px;
+}
+.nk-shell .demo-strip {
+  font-size: 12.5px;
+}
+.nk-shell .page-tabs button {
+  font-size: 12.5px;
+}
+.nk-shell .page-tabs button i {
+  font-size: 12px;
+}
+.nk-shell .summary-metrics span,
+.nk-shell .summary-metrics small {
+  font-size: 12px;
+}
+.nk-shell .completion-ring span {
+  font-size: 12px;
+}
+.nk-shell .month-dots span {
+  font-size: 12px;
+}
+.nk-shell .completeness > p {
+  font-size: 12px;
+}
+.nk-shell .completeness > button {
+  font-size: 12px;
+}
+.nk-shell .donut b {
+  font-size: 12.5px;
+}
+.nk-shell .donut span {
+  font-size: 12px;
+}
+.nk-shell .donut-wrap > div:last-child span {
+  font-size: 12px;
+}
+.nk-shell .trend-panel p,
+.nk-shell .cash-health p {
+  font-size: 12px;
+}
+.nk-shell .score-circle span {
+  font-size: 12px;
+}
+.nk-shell .cash-health > strong {
+  font-size: 12.5px;
+}
+.nk-shell .subsection-heading p {
+  font-size: 12.5px;
+}
+.nk-shell .dropzone h4 {
+  font-size: 12.5px;
+}
+.nk-shell .dropzone p {
+  font-size: 12.5px;
+}
+.nk-shell .dropzone small {
+  font-size: 12px;
+}
+.nk-shell .file-types button {
+  font-size: 12px;
+}
+.nk-shell .manual-card > span {
+  font-size: 12px;
+}
+.nk-shell .manual-card > p {
+  font-size: 12.5px;
+}
+.nk-shell .scan-progress > span {
+  font-size: 12.5px;
+}
+.nk-shell .scan-progress > p {
+  font-size: 12.5px;
+}
+.nk-shell .scan-progress > div {
+  font-size: 12.5px;
+}
+.nk-shell .subsection-heading > b {
+  font-size: 12.5px;
+}
+.nk-shell .table-wrap th {
+  font-size: 12px;
+}
+.nk-shell .table-wrap td {
+  font-size: 12.5px;
+}
+.nk-shell .table-wrap td input {
+  font-size: 12.5px;
+}
+.nk-shell .status,
+.nk-shell .type {
+  font-size: 12px;
+}
+.nk-shell .confirm-note {
+  font-size: 12.5px;
+}
+.nk-shell .table-tools input {
+  font-size: 12.5px;
+}
+.nk-shell .table-tools > button {
+  font-size: 12.5px;
+}
+.nk-shell .pagination {
+  font-size: 12px;
+}
+.nk-shell .pagination button {
+  font-size: 12px;
+}
+.nk-shell .transaction-drawer header span {
+  font-size: 12px;
+}
+.nk-shell .drawer-amount span {
+  font-size: 12.5px;
+}
+.nk-shell .drawer-amount small {
+  font-size: 12px;
+}
+.nk-shell .drawer-details > div {
+  font-size: 12.5px;
+}
+.nk-shell .audit-note b {
+  font-size: 12.5px;
+}
+.nk-shell .audit-note small {
+  font-size: 12px;
+}
+.nk-shell .anomaly-intro p {
+  font-size: 12px;
+}
+.nk-shell .anomaly-intro > b {
+  font-size: 12.5px;
+}
+.nk-shell .anomaly-info > span {
+  font-size: 12px;
+}
+.nk-shell .anomaly-info h3 {
+  font-size: 12.5px;
+}
+.nk-shell .anomaly-info small {
+  font-size: 12px;
+}
+.nk-shell .anomaly-info p {
+  font-size: 12.5px;
+}
+.nk-shell .anomaly-actions button {
+  font-size: 12px;
+}
+.nk-shell .anomaly-actions > span {
+  font-size: 12.5px;
+}
+.nk-shell .classification > label {
+  font-size: 12.5px;
+}
+.nk-shell .classification button {
+  font-size: 12px;
+}
+.nk-shell .gauge span {
+  font-size: 12px;
+}
+.nk-shell .analysis-gauges h3 {
+  font-size: 12.5px;
+}
+.nk-shell .analysis-gauges p {
+  font-size: 12px;
+}
+.nk-shell .ai-summary-card span {
+  font-size: 12px;
+}
+.nk-shell .ai-summary-card p {
+  font-size: 12.5px;
+}
+.nk-shell .recommendations span {
+  font-size: 12px;
+}
+.nk-shell .validation-card > div:first-child > span {
+  font-size: 12px;
+}
+.nk-shell .validation-card p {
+  font-size: 12px;
+}
+.nk-shell .timeline i {
+  font-size: 12px;
+}
+.nk-shell .timeline b {
+  font-size: 12px;
+}
+.nk-shell .timeline small {
+  font-size: 12px;
+}
+.nk-shell .validation-card > button {
+  font-size: 12px;
+}
+.nk-shell .ai-loan-recommendation p {
+  font-size: 12.5px;
+}
+.nk-shell .recommendation-values small {
+  font-size: 12px;
+}
+.nk-shell .recommendation-values b {
+  font-size: 12.5px;
+}
+.nk-shell .ai-loan-recommendation > button {
+  font-size: 12px;
+}
+.nk-shell .rate-badge small {
+  font-size: 12px;
+}
+.nk-shell .rate-badge b {
+  font-size: 12.5px;
+}
+.nk-shell .rate-badge i,
+.nk-shell .risk-indicator i {
+  font-size: 12px;
+}
+.nk-shell .select-label small {
+  font-size: 12px;
+}
+.nk-shell .range-block > div > span {
+  font-size: 12.5px;
+}
+.nk-shell .range-track-wrap em:after {
+  font-size: 12px;
+}
+.nk-shell .range-labels {
+  font-size: 12px;
+}
+.nk-shell .tenor-control > span {
+  font-size: 12.5px;
+}
+.nk-shell .tenor-control button {
+  font-size: 12.5px;
+}
+.nk-shell .simulation-outputs article > span {
+  font-size: 12px;
+}
+.nk-shell .simulation-outputs article > small {
+  font-size: 12px;
+}
+.nk-shell .section-title p {
+  font-size: 12.5px;
+}
+.nk-shell .layer-card header > i {
+  font-size: 12.5px;
+}
+.nk-shell .layer-card header span {
+  font-size: 12px;
+}
+.nk-shell .layer-stats span {
+  font-size: 12px;
+}
+.nk-shell .layer-stats b {
+  font-size: 12.5px;
+}
+.nk-shell .layer-card > p {
+  font-size: 12px;
+}
+.nk-shell .comparison-bars > div > span {
+  font-size: 12.5px;
+}
+.nk-shell .comparison-bars em {
+  font-size: 12px;
+}
+.nk-shell .coverage-cards span {
+  font-size: 12px;
+}
+.nk-shell .coverage-cards small {
+  font-size: 12px;
+}
+.nk-shell .readiness-status > div:nth-child(2) > span {
+  font-size: 12px;
+}
+.nk-shell .readiness-status p {
+  font-size: 12.5px;
+}
+.nk-shell .readiness-status small {
+  font-size: 12px;
+}
+.nk-shell .risk-indicator span {
+  font-size: 12px;
+}
+.nk-shell .reserve-visual span {
+  font-size: 12px;
+}
+.nk-shell .reserve-visual b {
+  font-size: 12px;
+}
+.nk-shell .reserve-chart > p {
+  font-size: 12px;
+}
+.nk-shell .reserve-ai > span {
+  font-size: 12px;
+}
+.nk-shell .reserve-ai p {
+  font-size: 12.5px;
+}
+.nk-shell .reserve-ai ul {
+  font-size: 12px;
+}
+.nk-shell .reserve-ai button {
+  font-size: 12px;
+}
+.nk-shell .product-filter input {
+  font-size: 12.5px;
+}
+.nk-shell .product-filter > button {
+  font-size: 12.5px;
+}
+.nk-shell .product-pack > span {
+  font-size: 12px;
+}
+.nk-shell .product-pack > small {
+  font-size: 12px;
+}
+.nk-shell .product-pack > em {
+  font-size: 12px;
+}
+.nk-shell .product-card p,
+.nk-shell .product-card small {
+  font-size: 12px;
+}
+.nk-shell .product-score span,
+.nk-shell .product-score b {
+  font-size: 12px;
+}
+.nk-shell .product-card > div > button {
+  font-size: 12.5px;
+}
+.nk-shell .add-product-card b {
+  font-size: 12.5px;
+}
+.nk-shell .add-product-card span {
+  font-size: 12px;
+}
+.nk-shell .pack-upload-grid b {
+  font-size: 12.5px;
+}
+.nk-shell .pack-upload-grid span {
+  font-size: 12px;
+}
+.nk-shell .upload-tips ul {
+  font-size: 12.5px;
+}
+.nk-shell .upload-tips small {
+  font-size: 12px;
+}
+.nk-shell .callout {
+  font-size: 12px;
+}
+.nk-shell .ocr-pack > button {
+  font-size: 12.5px;
+}
+.nk-shell .ocr-warning {
+  font-size: 12px;
+}
+.nk-shell .product-mini .product-pack > b {
+  font-size: 12.5px;
+}
+.nk-shell .product-mini span {
+  font-size: 12px;
+}
+.nk-shell .product-mini p {
+  font-size: 12px;
+}
+.nk-shell .readiness-gauge span {
+  font-size: 12px;
+}
+.nk-shell .readiness-counts span {
+  font-size: 12px;
+}
+.nk-shell .checklist-heading > div > span {
+  font-size: 12px;
+}
+.nk-shell .checklist-heading p {
+  font-size: 12px;
+}
+.nk-shell .checklist-heading > b {
+  font-size: 12.5px;
+}
+.nk-shell .checklist-grid article > span > b {
+  font-size: 12.5px;
+}
+.nk-shell .checklist-grid article > span > small {
+  font-size: 12px;
+}
+.nk-shell .checklist-grid article > button {
+  font-size: 12px;
+}
+.nk-shell .additional-checks > p {
+  font-size: 12px;
+}
+.nk-shell .additional-checks b {
+  font-size: 12px;
+}
+.nk-shell .additional-checks small {
+  font-size: 12px;
+}
+.nk-shell .additional-checks em {
+  font-size: 12px;
+}
+.nk-shell .regulatory-note b {
+  font-size: 12.5px;
+}
+.nk-shell .regulatory-note small {
+  font-size: 12px;
+}
+.nk-shell .regulatory-note button {
+  font-size: 12px;
+}
+.nk-shell .ai-recommendation-head small {
+  font-size: 12px;
+}
+.nk-shell .ai-recommendation-head p {
+  font-size: 12px;
+}
+.nk-shell .priority {
+  font-size: 12px;
+}
+.nk-shell .product-recommendations article h3 {
+  font-size: 12.5px;
+}
+.nk-shell .product-recommendations article p {
+  font-size: 12px;
+}
+.nk-shell .product-recommendations article small {
+  font-size: 12px;
+}
+.nk-shell .product-recommendations article button {
+  font-size: 12px;
+}
+.nk-shell .save-product-result b {
+  font-size: 12.5px;
+}
+.nk-shell .save-product-result p {
+  font-size: 12px;
+}
+.nk-shell .report-type-grid p {
+  font-size: 12.5px;
+}
+.nk-shell .report-type-grid button {
+  font-size: 12px;
+}
+.nk-shell .library-head p {
+  font-size: 12px;
+}
+.nk-shell .library-head button {
+  font-size: 12px;
+}
+.nk-shell .report-modal header span {
+  font-size: 12px;
+}
+.nk-shell .report-modal header button {
+  font-size: 12px;
+}
+.nk-shell .pdf-brand > span {
+  font-size: 12px;
+}
+.nk-shell .pdf-heading > span {
+  font-size: 12px;
+}
+.nk-shell .pdf-heading p {
+  font-size: 12px;
+}
+.nk-shell .pdf-summary span {
+  font-size: 12px;
+}
+.nk-shell .pdf-summary b {
+  font-size: 12.5px;
+}
+.nk-shell .pdf-page section > h3 {
+  font-size: 12.5px;
+}
+.nk-shell .pdf-page section > p {
+  font-size: 12px;
+}
+.nk-shell .pdf-findings i {
+  font-size: 12px;
+}
+.nk-shell .pdf-findings p {
+  font-size: 12px;
+}
+.nk-shell .pdf-page footer b {
+  font-size: 12px;
+}
+.nk-shell .pdf-page footer p {
+  font-size: 12px;
+}
+.nk-shell .pdf-page footer span {
+  font-size: 12px;
+}
+.nk-shell .profile-card p {
+  font-size: 12.5px;
+}
+.nk-shell .profile-card button {
+  font-size: 12px;
+}
+.nk-shell .profile-card small {
+  font-size: 12px;
+}
+.nk-shell .settings-heading p {
+  font-size: 12px;
+}
+.nk-shell .toggle-row b {
+  font-size: 12.5px;
+}
+.nk-shell .toggle-row small {
+  font-size: 12px;
+}
+.nk-shell .storage-bar span {
+  font-size: 12.5px;
+}
+.nk-shell .security-row b {
+  font-size: 12.5px;
+}
+.nk-shell .security-row small {
+  font-size: 12px;
+}
+.nk-shell .danger-zone h3 {
+  font-size: 12.5px;
+}
+.nk-shell .danger-zone p {
+  font-size: 12px;
+}
+.nk-shell .danger-zone button {
+  font-size: 12px;
+}
+.nk-shell .nk-avatar-nama small {
+  font-size: 12.5px;
+}
+.nk-shell .nk-eyebrow {
+  font-size: 12.5px;
+}
+.nk-shell .nk-badge {
+  font-size: 12.5px;
+}
+.nk-shell .nk-tip-btn {
+  font-size: 12.5px;
+}
+.nk-shell .nk-chart .sumbu {
+  font-size: 12.5px;
+}
+.nk-shell .nk-rincian-kategori small {
+  font-size: 12.5px;
+}
+.nk-shell .nk-no-baris {
+  font-size: 12.5px;
+}
+.nk-shell .nk-celah dt {
+  font-size: 12.5px;
+}
+.nk-shell .nk-slider-pin span {
+  font-size: 12.5px;
+}
+.nk-shell .nk-slider-skala {
+  font-size: 12.5px;
+}
+.nk-shell .nk-rek-box small {
+  font-size: 12.5px;
+}
+.nk-shell .nk-gauge .skala {
+  font-size: 12.5px;
+}
+.nk-shell .nk-produk-chip em {
+  font-size: 12.5px;
+}
+.nk-shell .nk-dok-profil small,
+.nk-shell .nk-dok-angka small {
+  font-size: 12.5px;
+}
+.nk-shell .nk-dok-tabel th {
+  font-size: 12.5px;
+}
+.nk-shell .nk-dok-tabel td.kelompok {
+  font-size: 12.5px;
+}
+.nk-shell .fg-produk-aksi > button:first-child {
+  font-size: 12.5px;
+}
+.nk-shell .fg-donut-svg span {
+  font-size: 12.5px;
+}
+.nk-shell .fg-cincin .nk-kunci-cincin span {
+  font-size: 12.5px;
+}
+.nk-shell .file-types span {
+  font-size: 12.5px;
+}
+.nk-shell .fg-ai-catatan {
+  font-size: 12.5px;
+}
+.nk-shell .analysis-gauges .gauge span {
+  font-size: 12.5px;
+}
+.nk-shell .ai-loan-recommendation .fg-sumber {
+  font-size: 12.5px;
+}
+.nk-shell .fg-npl em {
+  font-size: 12.5px;
+}
+.nk-shell .fg-link-terang {
+  font-size: 12.5px;
+}
+.nk-shell .fg-draf small {
+  font-size: 12.5px;
+}
+.nk-shell .fg-sim-penuh .simulation-outputs article > span {
+  font-size: 12.5px;
+}
+.nk-shell .fg-sim-penuh .simulation-outputs article > small {
+  font-size: 12.5px;
+}
+.nk-shell .lp-eyebrow {
+  font-size: 12.5px;
+}
+.nk-shell .lp-pil {
+  font-size: 12.5px;
+}
+.nk-shell .lp-kemasan span {
+  font-size: 12.5px;
+}
+.nk-shell .lp-kemasan small {
+  font-size: 12.5px;
+}
+.nk-shell .lp-langkah li span {
+  font-size: 12.5px;
+}
+.nk-shell .lp-no {
+  font-size: 12.5px;
+}
+.nk-shell .lp-tag {
+  font-size: 12.5px;
+}
+.nk-shell .lp-skor-angka span {
+  font-size: 12.5px;
+}
+.nk-shell .lp-hero-skor small {
+  font-size: 12.5px;
+}
+.nk-shell .lp-saran li::before {
+  font-size: 12.5px;
+}
+.nk-shell .lp-skor-langsung small {
+  font-size: 12.5px;
+}
+
+@media (max-width: 640px) {
+  .nk-shell .inner-page-header p {
+    font-size: 12.5px;
+  }
+  .nk-shell .inner-page-header > .portal-primary {
+    font-size: 12.5px;
+  }
+  .nk-shell .stepper span {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .nk-shell .nk-bottomnav button {
+    font-size: 12.5px;
+  }
+  .nk-shell .nk-tabel-edit td[data-label]::before {
+    font-size: 12.5px;
+  }
+}
+
+@media print {
+  .nk-shell .nk-dokumen {
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 767px) {
+  .nk-shell .period-tabs {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nk-shell .period-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .nk-shell .period-tabs button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .nk-shell .metric-change {
+    flex-wrap: wrap;
+  }
+  .nk-shell .metric-change span {
+    white-space: normal;
+  }
+}

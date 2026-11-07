@@ -1,6 +1,3 @@
-// Rekomendasi tindakan terstruktur (dengan angka) + kalimat templat.
-// AI boleh menulis ulang kalimatnya, tetapi angka selalu berasal dari struktur ini.
-
 import { BULAN_CADANGAN, BULAN_MENABUNG_CADANGAN, KELENGKAPAN_MINIMUM, MINGGU_JENDELA } from "../../config/thresholds";
 import { rentang, rupiah } from "../../format";
 import { LABEL_STATUS, plafonHijauTerbesar, tenorHijauTerdekat, type Kapasitas, type Penilaian, type Rekomendasi } from "./hitung";
@@ -16,10 +13,10 @@ export type JenisTindakan =
 
 export type Tindakan = {
   jenis: JenisTindakan;
-  prioritas: number; // 1 = paling penting
+  prioritas: number;
   judul: string;
   angka: Record<string, number | string>;
-  teks: string; // kalimat templat
+  teks: string;
 };
 
 export type KonteksTindakan = {
@@ -28,7 +25,6 @@ export type KonteksTindakan = {
   konservatif: boolean;
   kelengkapan: { rasio: number; mingguBelumValid: { dari: string; sampai: string }[] };
   pribadiTercampur: { jumlah: number; total: number };
-  /** laba usaha bulanan kalender yang sudah lengkap, urut lama → baru */
   labaBulanan: { bulan: string; laba: number }[];
 };
 
@@ -110,15 +106,14 @@ export function susunTindakan(c: KonteksTindakan): Tindakan[] {
   return hasil.sort((a, b) => a.prioritas - b.prioritas);
 }
 
-/** Penjelasan titik rekomendasi (2–3 kalimat), dipakai bila AI tidak tersedia. */
 export function penjelasanRekomendasi(r: Rekomendasi, k: Kapasitas): string {
   if (!r.adaHijau)
-    return `Belum ada plafon yang masuk zona Hijau: saat bulan sepi, laba ${rupiah(k.labaStress)} belum cukup untuk uang dapur ${rupiah(k.kebutuhanRT)} ditambah cicilan. Titik awal diatur ke ${rupiah(r.plafon)} sebagai acuan terkecil. Benahi dulu catatan, pisahkan pengeluaran pribadi, atau tambah laba di minggu sepi sebelum mengajukan.`;
-  return `Rekomendasi ${rupiah(r.plafon)} dengan tenor ${r.tenor} bulan membuat cicilan ${rupiah(r.penilaian.cicilanBaru)} per bulan, masih di bawah 90% batas aman ${rupiah(r.batasAman)}. Batas itu diambil dari angka terkecil antara 30% laba rata-rata dan sisa laba bulan sepi setelah uang dapur keluarga. Dengan begitu, cicilan tetap terbayar meski usaha sedang sepi.`;
+    return `Belum ada plafon yang masuk zona Hijau: saat bulan sepi, laba ${rupiah(k.labaStress)} belum cukup untuk membayar cicilan. Titik awal diatur ke ${rupiah(r.plafon)} sebagai acuan terkecil. Benahi dulu catatan atau tambah laba di minggu sepi sebelum mengajukan.`;
+  return `Rekomendasi ${rupiah(r.plafon)} dengan tenor ${r.tenor} bulan membuat cicilan ${rupiah(r.penilaian.cicilanBaru)} per bulan, masih di bawah 90% batas aman ${rupiah(r.batasAman)}. Batas itu diambil dari angka terkecil antara 30% laba rata-rata dan laba bulan sepi. Dengan begitu, cicilan tetap terbayar meski usaha sedang sepi.`;
 }
 
 export function kalimatStatus(p: Penilaian): string {
-  if (p.status === "hijau") return `${LABEL_STATUS.hijau}: cicilan tetap terbayar saat rata-rata maupun saat bulan sepi, tanpa memotong uang dapur.`;
+  if (p.status === "hijau") return `${LABEL_STATUS.hijau}: cicilan tetap terbayar saat rata-rata maupun saat bulan sepi.`;
   if (p.status === "kuning")
     return `${LABEL_STATUS.kuning}: rata-rata aman, tetapi saat bulan sepi kas ${p.sisaStress < 0 ? `kurang ${rupiah(-p.sisaStress)}` : "tipis"}. Siapkan tabungan cadangan cicilan.`;
   if (p.alasan.includes("cadangan_tidak_realistis")) return `${LABEL_STATUS.merah}: kekurangan saat bulan sepi terlalu besar untuk ditutup tabungan cadangan. Turunkan plafon atau perpanjang tenor.`;

@@ -18,7 +18,6 @@ const HIJAU = "#3c9c74";
 const KUNING = "#d9a441";
 const MERAH = "#d0503f";
 
-/** Gauge setengah lingkaran 0–100%. */
 export function GaugeRisiko({ nilai }: { nilai: number }) {
   const w = 200;
   const h = 112;
@@ -51,7 +50,6 @@ export function GaugeRisiko({ nilai }: { nilai: number }) {
   );
 }
 
-/** Batang sisa kas untuk tiga skenario; batang negatif merah, garis nol ditandai. */
 export function BatangSkenario({ data }: { data: { label: string; sub: string; nilai: number }[] }) {
   const [ref, lebar] = useLebar<HTMLDivElement>();
   const tinggi = 220;
@@ -59,16 +57,15 @@ export function BatangSkenario({ data }: { data: { label: string; sub: string; n
   const bawah = 44;
   const maksPos = Math.max(0, ...data.map((d) => d.nilai));
   const maksNeg = Math.max(0, ...data.map((d) => -d.nilai));
-  // Sisakan ruang untuk label nilai di bawah batang negatif
   const area = tinggi - atas - bawah - (maksNeg > 0 ? 24 : 0);
   const total = maksPos + maksNeg || 1;
-  const y0 = atas + (area * maksPos) / total; // garis nol
+  const y0 = atas + (area * maksPos) / total;
   const skala = area / total;
   const slot = lebar / data.length;
   const bw = Math.min(64, slot * 0.46);
   return (
     <div ref={ref} className="nk-chart">
-      <svg width={lebar} height={tinggi} role="img" aria-label="Sisa kas setelah cicilan dan uang dapur per skenario">
+      <svg width={lebar} height={tinggi} role="img" aria-label="Sisa kas setelah cicilan per skenario">
         {data.map((d, i) => {
           const x = slot * i + slot / 2;
           const hBar = Math.abs(d.nilai) * skala;
@@ -91,7 +88,6 @@ export function BatangSkenario({ data }: { data: { label: string; sub: string; n
   );
 }
 
-/** Grafik kipas: median + pita persentil 10–90 saldo kas bebas kumulatif. */
 export function GrafikKipas({ data }: { data: { bulan: number; p10: number; p50: number; p90: number }[] }) {
   const [ref, lebar] = useLebar<HTMLDivElement>();
   const [sorot, setSorot] = useState<number | null>(null);

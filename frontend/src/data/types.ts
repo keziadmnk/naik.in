@@ -1,9 +1,5 @@
-// Model data frontend. Struktur ini sejalan dengan skema database di
-// backend/db/migrations/002_keuangan.sql (lihat docs/DATABASE.md).
-
 export type Arah = "masuk" | "keluar";
 
-/** Kelompok menentukan ke mana sebuah kategori dihitung di rekap kas. */
 export type Kelompok = "penjualan" | "pemasukan_lain" | "hpp" | "operasional" | "pribadi";
 
 export type Metode = "Tunai" | "QRIS" | "Transfer" | "Marketplace";
@@ -14,23 +10,21 @@ export type Kategori = {
   nama: string;
   arah: Arah;
   kelompok: Kelompok;
-  /** Khusus kelompok operasional: biaya tetap (mis. sewa) dirata-rata per minggu di Simulasi KUR. */
   tetap?: boolean;
 };
 
 export type SumberTransaksi = "contoh" | "manual" | "unggah_file" | "scan_foto";
 
-/** Transaksi di riwayat. Hanya baris yang sudah dikonfirmasi pengguna yang boleh menjadi Transaksi. */
 export type Transaksi = {
   id: string;
-  tanggal: string; // YYYY-MM-DD
+  tanggal: string;
   uraian: string;
   arah: Arah;
   kategoriId: string;
   metode: Metode;
-  nominal: number; // rupiah, bilangan bulat > 0
+  nominal: number;
   sumber: SumberTransaksi;
-  dikonfirmasiAt: string; // ISO datetime
+  dikonfirmasiAt: string;
 };
 
 export type JenisTemuan =
@@ -48,10 +42,10 @@ export type TindakanTemuan = {
 };
 
 export type Temuan = {
-  id: string; // stabil: jenis + id transaksi / rentang tanggal
+  id: string;
   jenis: JenisTemuan;
   judul: string;
-  alasan: string; // alasan deteksi (ditampilkan di panel detail)
+  alasan: string;
   transaksiIds: string[];
   rentang?: { dari: string; sampai: string };
   tindakan: TindakanTemuan[];
@@ -64,19 +58,19 @@ export type ProfilUsaha = {
   namaUsaha: string;
   kategoriUsaha: string;
   kota: string;
-  mulaiUsaha: string; // YYYY-MM-DD
+  mulaiUsaha: string;
 };
 
 export type BiayaRutin = {
   id: string;
   nama: string;
-  jenis: "usaha" | "rumah_tangga";
+  jenis: "usaha";
   nominalBulanan: number;
 };
 
 export type Pengingat = {
   harian: boolean;
-  jam: string; // "20:00"
+  jam: string;
   mingguan: boolean;
 };
 
@@ -89,6 +83,6 @@ export type PengaturanDemo = {
 export type RingkasanAi = {
   poin: string[];
   sumber: "ai" | "templat";
-  diperbaruiPada: string; // YYYY-MM-DD
+  diperbaruiPada: string;
   jumlahTransaksi: number;
 };

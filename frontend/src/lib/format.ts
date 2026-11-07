@@ -1,10 +1,6 @@
-// Utilitas format angka & tanggal (Bahasa Indonesia).
-// Semua tanggal disimpan sebagai string ISO "YYYY-MM-DD" (tanpa jam) agar bebas zona waktu.
-
 export const rupiah = (value: number) =>
   `${value < 0 ? "−" : ""}Rp${Math.abs(Math.round(value)).toLocaleString("id-ID")}`;
 
-/** Rp20,9 jt — untuk kartu & sumbu grafik. */
 export function rupiahRingkas(value: number): string {
   const abs = Math.abs(value);
   const sign = value < 0 ? "−" : "";
@@ -48,33 +44,28 @@ export function daysBetween(fromIso: string, toIsoStr: string): number {
   return Math.round((toDate(toIsoStr).getTime() - toDate(fromIso).getTime()) / 86_400_000);
 }
 
-/** Senin dari minggu yang memuat tanggal tsb. */
 export function weekStart(iso: string): string {
-  const day = toDate(iso).getUTCDay(); // 0 = Minggu
+  const day = toDate(iso).getUTCDay();
   return addDays(iso, day === 0 ? -6 : 1 - day);
 }
 
 export const monthKey = (iso: string) => iso.slice(0, 7);
 
-/** 6 Nov 2026 */
 export function tanggal(iso: string): string {
   const { y, m, d } = parts(iso);
   return `${d} ${BULAN[m - 1]} ${y}`;
 }
 
-/** 6 Nov */
 export function tanggalPendek(iso: string): string {
   const { m, d } = parts(iso);
   return `${d} ${BULAN[m - 1]}`;
 }
 
-/** Jumat, 6 November 2026 */
 export function tanggalPanjang(iso: string): string {
   const { y, m, d } = parts(iso);
   return `${HARI[toDate(iso).getUTCDay()]}, ${d} ${BULAN_PANJANG[m - 1]} ${y}`;
 }
 
-/** 8–14 Jun 2026 atau 29 Jun–5 Jul 2026 */
 export function rentang(fromIso: string, toIsoStr: string): string {
   const a = parts(fromIso);
   const b = parts(toIsoStr);
@@ -84,7 +75,6 @@ export function rentang(fromIso: string, toIsoStr: string): string {
   return `${tanggal(fromIso)}–${tanggal(toIsoStr)}`;
 }
 
-/** "Mei 2026" */
 export function namaBulan(monthKeyStr: string, panjang = false): string {
   const [y, m] = monthKeyStr.split("-").map(Number);
   return `${(panjang ? BULAN_PANJANG : BULAN)[m - 1]} ${y}`;

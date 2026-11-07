@@ -1,5 +1,3 @@
-// Menyiapkan data 26 minggu dari transaksi untuk Simulasi Kesiapan KUR.
-
 import { kategoriMap } from "../../../data/categories";
 import type { Kategori, Transaksi } from "../../../data/types";
 import {
@@ -17,7 +15,6 @@ export type MingguPinjaman = {
   pribadi: number;
   hariTercatat: number;
   valid: boolean;
-  /** Laba_minggu = Omzet − HPP − Opex_variabel − Opex_tetap_rata_mingguan */
   laba: number;
 };
 
@@ -25,10 +22,8 @@ export type DataPinjaman = {
   jendela: { dari: string; sampai: string };
   minggu: MingguPinjaman[];
   mingguValid: number;
-  /** Catatan sudah dimulai sejak awal jendela (data mencakup seluruh jendela). */
   cakupPenuh: boolean;
   terbuka: boolean;
-  /** Perkiraan bulan data yang tersedia di dalam jendela (untuk layar terkunci). */
   bulanTerdata: number;
   opexTetapRataMingguan: number;
   labaMingguValid: number[];
@@ -36,13 +31,10 @@ export type DataPinjaman = {
   labaStress: number;
   labaTerburuk: number;
   mingguTerburuk: MingguPinjaman | null;
-  /** Rata-rata pengeluaran pribadi per bulan (4 minggu) dalam jendela. */
   pribadiRataBulanan: number;
-  /** Blok dua minggu berurutan (keduanya valid) untuk block bootstrap. */
   blok: number[];
 };
 
-/** Kuartil dengan interpolasi linear (persentil 25 = QUARTILE.INC). */
 export function persentil(nilai: number[], p: number): number {
   if (!nilai.length) return 0;
   const urut = [...nilai].sort((a, b) => a - b);
@@ -116,7 +108,6 @@ export function siapkanData(transaksi: Transaksi[], kategori: Kategori[], hariIn
   };
 }
 
-/** Bulan kalender dalam jendela yang punya minggu belum valid — untuk layar terkunci. */
 export function bulanBelumLengkap(data: DataPinjaman): { bulan: string; mingguBelumValid: number }[] {
   const per = new Map<string, number>();
   for (const m of data.minggu) if (!m.valid) per.set(monthKey(m.dari), (per.get(monthKey(m.dari)) ?? 0) + 1);

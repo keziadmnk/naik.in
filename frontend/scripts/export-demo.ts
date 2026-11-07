@@ -1,6 +1,3 @@
-// Ekspor data contoh Bu Sari ke backend/db/seed-data/bu-sari.json
-// agar database & aplikasi memakai data yang persis sama (satu sumber).
-// Jalankan: npm run export:demo
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +9,7 @@ const transaksi = transaksiDemo().map((t) => ({
   tanggal: t.tanggal,
   uraian: t.uraian,
   arah: t.arah,
-  kategori: t.kategoriId, // = categories.kode
+  kategori: t.kategoriId,
   metode: t.metode,
   nominal: t.nominal,
 }));
@@ -40,7 +37,6 @@ writeFileSync(
       biayaRutin: [
         { nama: "Sewa kios", jenis: "usaha", nominalBulanan: 800000 },
         { nama: "Listrik & air usaha", jenis: "usaha", nominalBulanan: 350000 },
-        { nama: "Uang dapur keluarga (minimal)", jenis: "rumah_tangga", nominalBulanan: 2000000 },
       ],
       transaksi,
       produk,

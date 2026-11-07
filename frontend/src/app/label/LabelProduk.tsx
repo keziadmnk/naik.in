@@ -1,26 +1,30 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api } from "../../api";
+import { api, type CekRitelAi, type KlaimAi, type KunciItemLabelAi } from "../../api";
 import { PageHeader } from "../../components/figma";
 import { PIcon } from "../../components/icons";
+import { KameraLangsung, kameraLangsungTersedia } from "../../components/KameraLangsung";
+import { GarisPindai } from "../../components/Pemindai";
 import { Cincin, Istilah, Modal, PERNYATAAN } from "../../components/ui";
 import {
-  KETERANGAN_WAJIB, cariKlaim, cekAlamatProdusen, cekBeratBersih, cekKedaluwarsa, cekNomorIzin, dataLabelKosong,
-  drafTeksLabel, hitungSkor, susunSaran, type DataLabel, type KunciLabel, type Lokasi, type ModeLabel, type StatusItem,
+  KETERANGAN_WAJIB, PANDUAN_LABEL, cariKlaim, cekAlamatProdusen, cekBeratBersih, cekKedaluwarsa, cekNomorIzin, dataLabelKosong,
+  asalUsulTidakBerlaku, drafTeksLabel, hitungSkor, susunSaran, type DataLabel, type DrafLabel, type KunciLabel, type Lokasi, type ModeLabel, type StatusItem,
 } from "../../lib/engine/label";
 import { tanggal } from "../../lib/format";
 import { goTo } from "../../routes";
 import { idBaru, useToko, type ProdukLabel } from "../../state/store";
 
-// Alur halaman:
-//   #/label              → daftar produk
-//   #/label/tambah       → 1 Foto kemasan → 2 Periksa hasil baca → simpan → hasil
-//   #/label/periksa-<id> → alur yang sama untuk memeriksa ulang produk
-//   #/label/<id>         → hasil analisis & rekomendasi produk
 
 const LABEL_LOKASI: Record<Lokasi, string> = {
   utama: "Di depan (utama)",
   lain: "Di belakang/samping",
   tidak_terlihat: "Tidak ada",
+};
+
+const LABEL_STATUS_TAMPIL: Record<StatusItem, string> = {
+  Sesuai: "Sesuai",
+  "Ada tapi kurang": "Ada tapi kurang",
+  "Tidak ada": "Tidak terdeteksi",
+  "Tidak berlaku": "Tidak berlaku",
 };
 
 const KELAS_STATUS: Record<StatusItem, string> = {
@@ -30,17 +34,24 @@ const KELAS_STATUS: Record<StatusItem, string> = {
   "Tidak berlaku": "na",
 };
 
-/** Cocokkan kunci keluaran AI (bebas) ke 9 keterangan wajib. */
-const POLA_AI: [RegExp, KunciLabel][] = [
-  [/nama|merek|brand|product/i, "namaProduk"],
-  [/komposisi|bahan|ingredient/i, "daftarBahan"],
-  [/berat|netto|net|isi/i, "beratBersih"],
-  [/produsen|alamat|producer|pabrik/i, "produsen"],
-  [/halal/i, "halal"],
-  [/kode|produksi|batch|lot/i, "kodeProduksi"],
-  [/kedaluwarsa|kadaluarsa|expir|baik digunakan/i, "kedaluwarsa"],
-  [/izin|pirt|irt|md|permit|bpom/i, "nomorIzin"],
-  [/asal|origin/i, "asalUsul"],
+const PETA_AI: Record<KunciItemLabelAi, KunciLabel> = {
+  product_name_and_brand: "namaProduk",
+  ingredients_list: "daftarBahan",
+  net_weight: "beratBersih",
+  manufacturer_address: "produsen",
+  halal_info: "halal",
+  production_code: "kodeProduksi",
+  expiry_date: "kedaluwarsa",
+  registration_number: "nomorIzin",
+  special_ingredient_origin: "asalUsul",
+};
+const LOKASI_DARI_AI: Record<"MAIN_PANEL" | "OTHER" | "NOT_VISIBLE", Lokasi> = { MAIN_PANEL: "utama", OTHER: "lain", NOT_VISIBLE: "tidak_terlihat" };
+
+const CEK_RITEL: [keyof CekRitelAi, string][] = [
+  ["has_nutrition_facts_ing", "Informasi Nilai Gizi"],
+  ["has_bpom_2d_barcode", "2D barcode BPOM"],
+  ["has_gs1_retail_barcode", "Barcode ritel (GS1)"],
+  ["has_allergen_warning", "Peringatan alergen"],
 ];
 
 function hintFormat(kunci: KunciLabel, nilai: string, kota: string) {
@@ -50,7 +61,6 @@ function hintFormat(kunci: KunciLabel, nilai: string, kota: string) {
 
 const kelasSkor = (kategori: string) => (kategori === "Lengkap" ? "ok" : kategori === "Hampir lengkap" ? "kurang" : "tidak");
 
-/** Ilustrasi kemasan sederhana memakai nama & berat produk sebenarnya. */
 function Kemasan({ produk }: { produk: ProdukLabel }) {
   const nama = (produk.data.namaProduk.nilai || produk.nama).replace(/\s+\d+\s*(g|gr|kg|ml|l)$/i, "");
   return (
@@ -61,9 +71,6 @@ function Kemasan({ produk }: { produk: ProdukLabel }) {
   );
 }
 
-// ===========================================================================
-// Daftar produk
-// ===========================================================================
 
 function DaftarProduk() {
   const { produk, profil } = useToko();
@@ -126,9 +133,6 @@ function DaftarProduk() {
   );
 }
 
-// ===========================================================================
-// Alur tambah / periksa ulang: 1 Foto kemasan → 2 Periksa → simpan
-// ===========================================================================
 
 type Foto = { file: File; url: string };
 const LANGKAH = ["Foto kemasan", "Periksa hasil baca", "Hasil & rekomendasi"];
@@ -146,10 +150,12 @@ function Langkah({ aktif }: { aktif: number }) {
   );
 }
 
-function SlotFoto({ judul, foto, onPilih, onHapus }: { judul: string; foto: Foto | null; onPilih: (f: File) => void; onHapus: () => void }) {
+function SlotFoto({ judul, foto, onPilih, onHapus, memindai = false }: { judul: string; foto: Foto | null; onPilih: (f: File) => void; onHapus: () => void; memindai?: boolean }) {
   const kamera = useRef<HTMLInputElement>(null);
   const berkas = useRef<HTMLInputElement>(null);
+  const [kameraBuka, setKameraBuka] = useState(false);
   const terima = (f?: File) => f && onPilih(f);
+  const ambilFoto = () => (kameraLangsungTersedia() ? setKameraBuka(true) : kamera.current?.click());
   return (
     <div className="lp-slot">
       <div className="lp-slot-judul">
@@ -169,7 +175,10 @@ function SlotFoto({ judul, foto, onPilih, onHapus }: { judul: string; foto: Foto
         }}
       >
         {foto ? (
-          <img src={foto.url} alt={judul} />
+          <>
+            <img src={foto.url} alt={judul} />
+            {memindai && <GarisPindai />}
+          </>
         ) : (
           <div>
             <PIcon name="camera" size={26} />
@@ -178,7 +187,7 @@ function SlotFoto({ judul, foto, onPilih, onHapus }: { judul: string; foto: Foto
         )}
       </div>
       <div className="lp-slot-aksi">
-        <button className="portal-secondary" onClick={() => kamera.current?.click()}>
+        <button className="portal-secondary" onClick={ambilFoto}>
           <PIcon name="camera" size={15} />
           Ambil foto
         </button>
@@ -189,6 +198,21 @@ function SlotFoto({ judul, foto, onPilih, onHapus }: { judul: string; foto: Foto
       </div>
       <input ref={kamera} type="file" accept="image/jpeg,image/png" capture="environment" hidden onChange={(e) => (terima(e.target.files?.[0]), (e.target.value = ""))} />
       <input ref={berkas} type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden onChange={(e) => (terima(e.target.files?.[0]), (e.target.value = ""))} />
+      {kameraBuka && (
+        <KameraLangsung
+          judul={`Foto ${judul.toLowerCase()}`}
+          petunjuk="Arahkan kamera ke kemasan. Pastikan tulisan tajam, tidak silau, dan seluruh label masuk bingkai."
+          onAmbil={(f) => {
+            setKameraBuka(false);
+            onPilih(f);
+          }}
+          onTutup={() => setKameraBuka(false)}
+          onGagal={() => {
+            setKameraBuka(false);
+            kamera.current?.click();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -201,11 +225,16 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
   const [proses, setProses] = useState(false);
   const [info, setInfo] = useState<{ jenis: "ok" | "manual"; teks: string } | null>(null);
   const [dariAi, setDariAi] = useState<Set<KunciLabel>>(new Set());
-  const [draf, setDraf] = useState<DataLabel>(() => produkAwal?.data ?? { ...dataLabelKosong(), asalUsul: { nilai: "", lokasi: "tidak_terlihat", tidakBerlaku: true } });
+  const [draf, setDraf] = useState<DataLabel>(() => produkAwal?.data ?? dataLabelKosong());
   const [nama, setNama] = useState(produkAwal?.nama ?? "");
   const [mode, setMode] = useState<ModeLabel>(produkAwal?.mode ?? "beredar");
   const [teksLain, setTeksLain] = useState(produkAwal?.teksLain ?? "");
   const [galat, setGalat] = useState<string | null>(null);
+  const [ringkasanAi, setRingkasanAi] = useState<string[]>([]);
+  const [klaimAi, setKlaimAi] = useState<KlaimAi[]>([]);
+  const [ritelAi, setRitelAi] = useState<CekRitelAi | null>(null);
+  const [catatanAi, setCatatanAi] = useState<Partial<Record<KunciLabel, string>>>({});
+  const skorSementara = useMemo(() => hitungSkor(draf, mode, profil.kota), [draf, mode, profil.kota]);
 
   const pasang = (setter: (f: Foto | null) => void, lama: Foto | null) => (file: File) => {
     if (!/^image\/(jpeg|png)$/.test(file.type) && !/\.(jpe?g|png)$/i.test(file.name)) {
@@ -217,7 +246,7 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
     setter({ file, url: URL.createObjectURL(file) });
   };
   const ubah = (k: KunciLabel, p: Partial<DataLabel[KunciLabel]>) => {
-    setDraf((d) => ({ ...d, [k]: { ...d[k], ...p } }));
+    setDraf((d) => ({ ...d, [k]: { ...d[k], ...p, ...(p.nilai || p.tidakBerlaku ? { tidakTerbaca: false } : {}) } }));
     setDariAi((s) => {
       const n = new Set(s);
       n.delete(k);
@@ -226,29 +255,39 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
   };
 
   const baca = async () => {
-    const foto = [depan, belakang].filter((f): f is Foto => !!f);
     setProses(true);
     let terisi = new Set<KunciLabel>();
     let alasan: string | null = null;
     if (demo.modeOffline) alasan = "mode offline";
     else {
-      const hasil = { ...draf };
-      for (const f of foto) {
-        const res = await api.labelScan(f.file);
-        if (!res.ok || !res.data) {
-          alasan = res.alasan ?? "AI tidak aktif";
-          break;
+      const res = await api.labelScan({ depan: depan?.file, belakang: belakang?.file });
+      if (!res.ok || !res.data) alasan = res.alasan ?? "AI tidak aktif";
+      else {
+        const { extracted_items, executive_summary, prohibited_claims_detected, additional_retail_checks } = res.data;
+        const hasil: DataLabel = dataLabelKosong();
+        const catatan: Partial<Record<KunciLabel, string>> = {};
+        for (const [kunciAi, x] of Object.entries(extracted_items) as [KunciItemLabelAi, (typeof extracted_items)[KunciItemLabelAi]][]) {
+          const kunci = PETA_AI[kunciAi];
+          if (!kunci) continue;
+          if (x.note?.trim()) catatan[kunci] = x.note.trim();
+          const bisaNa = KETERANGAN_WAJIB.find((k) => k.kunci === kunci)?.bisaTidakBerlaku;
+          if (x.found && x.raw_text?.trim()) {
+            const lokasi = LOKASI_DARI_AI[x.location] === "tidak_terlihat" ? "utama" : LOKASI_DARI_AI[x.location];
+            hasil[kunci] = { ...hasil[kunci], nilai: x.raw_text.trim(), lokasi: !depan && lokasi === "utama" ? "lain" : lokasi, tidakBerlaku: false };
+            terisi = new Set(terisi).add(kunci);
+          } else if (x.status_hint === "UNREADABLE") {
+            hasil[kunci] = { nilai: "", lokasi: "tidak_terlihat", tidakBerlaku: false, tidakTerbaca: true };
+          } else if (x.status_hint === "NOT_APPLICABLE" && bisaNa) {
+            hasil[kunci] = { nilai: "", lokasi: "tidak_terlihat", tidakBerlaku: true };
+          }
         }
-        for (const [kunciAi, x] of Object.entries(res.data.fields)) {
-          const cocok = POLA_AI.find(([re]) => re.test(kunciAi));
-          if (!cocok || !x.found || !x.value || terisi.has(cocok[1])) continue;
-          hasil[cocok[1]] = { ...hasil[cocok[1]], nilai: x.value, lokasi: x.lokasi, tidakBerlaku: false };
-          terisi = new Set(terisi).add(cocok[1]);
-        }
-      }
-      if (!alasan) {
         setDraf(hasil);
-        if (!nama && hasil.namaProduk.nilai) setNama(hasil.namaProduk.nilai);
+        setNama(hasil.namaProduk.nilai);
+        setCatatanAi(catatan);
+        setRingkasanAi(executive_summary.slice(0, 5));
+        setRitelAi(additional_retail_checks);
+        setKlaimAi(prohibited_claims_detected);
+        setTeksLain(prohibited_claims_detected.map((k) => k.quoted_text.trim()).filter(Boolean).join("\n"));
       }
     }
     setDariAi(terisi);
@@ -294,8 +333,8 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
             <p>Ambil foto langsung atau pilih file JPG, JPEG, atau PNG. Pastikan tulisan terlihat jelas dan tidak silau.</p>
           </div>
           <div className="lp-foto-grid">
-            <SlotFoto judul="Kemasan depan" foto={depan} onPilih={pasang(setDepan, depan)} onHapus={() => setDepan(null)} />
-            <SlotFoto judul="Kemasan belakang" foto={belakang} onPilih={pasang(setBelakang, belakang)} onHapus={() => setBelakang(null)} />
+            <SlotFoto judul="Kemasan depan" foto={depan} memindai={proses} onPilih={pasang(setDepan, depan)} onHapus={() => setDepan(null)} />
+            <SlotFoto judul="Kemasan belakang" foto={belakang} memindai={proses} onPilih={pasang(setBelakang, belakang)} onHapus={() => setBelakang(null)} />
           </div>
           {galat && (
             <p className="lp-galat" role="alert">
@@ -344,12 +383,48 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
               <h3>Periksa hasil baca</h3>
               <p>Pastikan setiap keterangan sama persis dengan yang tertulis di kemasan. Hasil baru tersimpan setelah kamu menekan Lanjut.</p>
             </div>
-            {info && <p className={`lp-info ${info.jenis}`}>{info.teks}</p>}
+            {ringkasanAi.length > 0 && (
+              <div className="lp-ringkasan">
+                <h4>Ringkasan Eksekutif AI (5 Poin Utama)</h4>
+                <ol>
+                  {ringkasanAi.map((r) => (
+                    <li key={r}>{r}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
+            {info && (
+              <p className={`lp-info ${info.jenis}`}>
+                {info.teks}
+                {info.jenis === "manual" && (depan || belakang) && !demo.modeOffline && (
+                  <button type="button" className="lp-coba-lagi" onClick={baca} disabled={proses}>
+                    {proses ? "Membaca…" : "Coba baca lagi"}
+                  </button>
+                )}
+              </p>
+            )}
+            <div className={`lp-skor-langsung ${skorSementara.kategori === "Lengkap" ? "ok" : skorSementara.kategori === "Hampir lengkap" ? "kurang" : "tidak"}`} aria-live="polite">
+              <div>
+                <span>Skor kelengkapan sementara</span>
+                <b>
+                  {Math.round(skorSementara.skor)}/100 · {skorSementara.kategori}
+                </b>
+              </div>
+              <i>
+                <em style={{ width: `${Math.round(skorSementara.skor)}%` }} />
+              </i>
+              <small>Berubah otomatis saat isian diperbaiki.</small>
+            </div>
 
             <div className="lp-form-atas">
               <label className="lp-field">
                 <span>Nama produk</span>
-                <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Contoh: Keripik Balado 200 g" />
+                <input
+                  className={info?.jenis === "ok" && !nama.trim() ? "isian-cek" : undefined}
+                  value={nama}
+                  onChange={(e) => setNama(e.target.value)}
+                  placeholder={info?.jenis === "ok" && !nama.trim() ? "Tidak terbaca dari foto — ketik dari kemasan" : "Contoh: Keripik Balado 200 g"}
+                />
               </label>
               <div className="lp-field">
                 <span>Status kemasan</span>
@@ -372,9 +447,12 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
               {KETERANGAN_WAJIB.map((k, i) => {
                 const isian = draf[k.kunci];
                 const izinDraf = mode === "draf" && k.kunci === "nomorIzin";
-                const hint = isian.tidakBerlaku || izinDraf ? null : hintFormat(k.kunci, isian.nilai, profil.kota);
+                const asalUsulLulus = k.kunci === "asalUsul" && asalUsulTidakBerlaku(draf);
+                const na = k.kunci === "asalUsul" ? asalUsulLulus : !!isian.tidakBerlaku;
+                const belumTerdeteksi = info?.jenis === "ok" && !isian.tidakTerbaca && !isian.nilai.trim();
+                const hint = na || izinDraf ? null : hintFormat(k.kunci, isian.nilai, profil.kota);
                 return (
-                  <li key={k.kunci} className={isian.tidakBerlaku || izinDraf ? "nonaktif" : ""}>
+                  <li key={k.kunci} className={na || izinDraf ? "nonaktif" : ""}>
                     <div className="lp-isian-kepala">
                       <span className="lp-no">{i + 1}</span>
                       <b>
@@ -390,14 +468,15 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
                     </div>
                     {izinDraf ? (
                       <small className="lp-catatan">Desain draf: nomor izin belum dinilai. Sisakan ruang untuk nomor izin dan 2D barcode.</small>
-                    ) : isian.tidakBerlaku ? (
-                      <small className="lp-catatan">{k.bisaTidakBerlaku}.</small>
+                    ) : na ? (
+                      <small className="lp-catatan">{asalUsulLulus ? "Tidak berlaku (lulus): produk sudah mencantumkan keterangan halal." : `${k.bisaTidakBerlaku}.`}</small>
                     ) : (
                       <>
                         <div className="lp-isian-input">
                           <input
+                            className={isian.tidakTerbaca || (k.kunci === "asalUsul" && belumTerdeteksi) ? "isian-cek" : undefined}
                             value={isian.nilai}
-                            placeholder={k.contoh}
+                            placeholder={isian.tidakTerbaca ? "Tidak terbaca dari foto — ketik dari kemasan" : k.contoh}
                             onChange={(e) => ubah(k.kunci, { nilai: e.target.value, lokasi: isian.lokasi === "tidak_terlihat" && e.target.value ? "utama" : isian.lokasi })}
                             aria-label={k.nama}
                           />
@@ -409,7 +488,14 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
                             ))}
                           </select>
                         </div>
+                        {isian.tidakTerbaca && <small className="lp-hint tidak">Ada di kemasan tetapi tidak terbaca dari foto (buram/silau/terpotong). Ketik manual atau foto ulang lebih dekat.</small>}
+                        {belumTerdeteksi && (
+                          <small className="lp-tidak-terdeteksi">
+                            <b>Tidak terdeteksi.</b> {PANDUAN_LABEL[k.kunci]}
+                          </small>
+                        )}
                         {hint && <small className={`lp-hint ${hint.valid ? "ok" : "kurang"}`}>{hint.pesan}</small>}
+                        {dariAi.has(k.kunci) && catatanAi[k.kunci] && <small className="lp-catatan-ai">Catatan baca: {catatanAi[k.kunci]}</small>}
                       </>
                     )}
                   </li>
@@ -420,6 +506,29 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
               <span>Tulisan lain di kemasan (slogan, klaim)</span>
               <textarea rows={2} value={teksLain} onChange={(e) => setTeksLain(e.target.value)} placeholder="Contoh: Keripik pedas khas Padang" />
             </label>
+            {klaimAi.length > 0 && (
+              <div className="lp-klaim-ai">
+                <h4>Klaim yang sebaiknya diganti</h4>
+                <ul>
+                  {klaimAi.map((k) => (
+                    <li key={k.quoted_text}>
+                      <q>{k.quoted_text}</q> — {k.violation_reason}
+                      <span>Saran: {k.suggested_replacement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {ritelAi && (
+              <div className="lp-ritel">
+                <span>Untuk masuk ritel modern:</span>
+                {CEK_RITEL.map(([k, l]) => (
+                  <em key={k} className={ritelAi[k] ? "ada" : ""}>
+                    <PIcon name={ritelAi[k] ? "check" : "close"} size={12} /> {l}
+                  </em>
+                ))}
+              </div>
+            )}
             <div className="lp-kaki">
               <button className="portal-secondary" onClick={() => setLangkah(0)}>
                 Kembali
@@ -435,18 +544,15 @@ function AlurPeriksa({ produkAwal }: { produkAwal: ProdukLabel | null }) {
   );
 }
 
-// ===========================================================================
-// Hasil analisis & rekomendasi
-// ===========================================================================
 
 function HasilProduk({ produk }: { produk: ProdukLabel }) {
   const { profil, demo, kirim } = useToko();
   const h = useMemo(() => hitungSkor(produk.data, produk.mode, profil.kota), [produk, profil.kota]);
   const klaim = useMemo(() => cariKlaim(produk.teksLain), [produk.teksLain]);
   const saran = useMemo(() => susunSaran(h), [h]);
-  const [teksDraf, setTeksDraf] = useState<{ teks: string; sumber: "ai" | "templat" } | null>(null);
+  const [teksDraf, setTeksDraf] = useState<{ teks: DrafLabel; sumber: "ai" | "templat" } | null>(null);
   const [proses, setProses] = useState(false);
-  const [tersalin, setTersalin] = useState(false);
+  const [tersalin, setTersalin] = useState<"depan" | "belakang" | null>(null);
   const [hapus, setHapus] = useState(false);
   useEffect(() => setTeksDraf(null), [produk]);
 
@@ -461,7 +567,7 @@ function HasilProduk({ produk }: { produk: ProdukLabel }) {
         mode: produk.mode,
         klaimYangPerluDiganti: klaim.map((k) => k.kutipan),
       });
-      setTeksDraf(res.ok && res.data ? { teks: res.data.label_belakang, sumber: "ai" } : { teks: drafTemplat, sumber: "templat" });
+      setTeksDraf(res.ok && res.data ? { teks: { depan: res.data.label_depan, belakang: res.data.label_belakang }, sumber: "ai" } : { teks: drafTemplat, sumber: "templat" });
     }
     setProses(false);
   };
@@ -489,7 +595,7 @@ function HasilProduk({ produk }: { produk: ProdukLabel }) {
               <b>{hitung("Ada tapi kurang")}</b> kurang
             </span>
             <span>
-              <b>{hitung("Tidak ada")}</b> belum ada
+              <b>{hitung("Tidak ada")}</b> tidak terdeteksi
             </span>
             <span>
               <b>{hitung("Tidak berlaku")}</b> tidak berlaku
@@ -529,9 +635,8 @@ function HasilProduk({ produk }: { produk: ProdukLabel }) {
                 <span className={`lp-titik ${KELAS_STATUS[i.status]}`} />
                 <div>
                   <b>{i.nama}</b>
-                  {i.catatan.length > 0 && <small>{i.catatan.join(" ")}</small>}
                 </div>
-                <span className={`lp-pil ${KELAS_STATUS[i.status]}`}>{i.status}</span>
+                <span className={`lp-pil ${KELAS_STATUS[i.status]}`}>{LABEL_STATUS_TAMPIL[i.status]}</span>
               </li>
             ))}
           </ul>
@@ -576,32 +681,50 @@ function HasilProduk({ produk }: { produk: ProdukLabel }) {
       <section className="lp-panel">
         <div className="lp-panel-kepala lp-draf-kepala">
           <div>
-            <h3>Draf teks label belakang</h3>
+            <h3>Draf teks label</h3>
             <p>{teksDraf?.sumber === "ai" ? "Dirapikan AI dari data yang kamu periksa." : "Disusun dari data yang kamu periksa; yang belum ada ditandai [ISI: …]."}</p>
           </div>
           <div className="lp-draf-aksi">
-            <button
-              className="portal-secondary"
-              onClick={() => {
-                navigator.clipboard?.writeText(teks).then(() => {
-                  setTersalin(true);
-                  window.setTimeout(() => setTersalin(false), 2000);
-                });
-              }}
-            >
-              {tersalin ? "Tersalin" : "Salin"}
-            </button>
             <button className="portal-primary" onClick={rapikan} disabled={proses}>
               {proses ? "Merapikan…" : "Rapikan dengan AI"}
             </button>
           </div>
         </div>
-        <pre className="lp-draf">{teks}</pre>
+        <div className="lp-draf-dua">
+          {(
+            [
+              ["depan", "Teks kemasan depan", "Bagian utama: nama & jenis produk, berat bersih, halal, nomor izin edar."],
+              ["belakang", "Teks kemasan belakang", "Komposisi, produsen, kode produksi, kedaluwarsa, asal usul bahan."],
+            ] as const
+          ).map(([sisi, judul, ket]) => (
+            <div key={sisi} className="lp-draf-sisi">
+              <div className="lp-draf-sisi-kepala">
+                <div>
+                  <b>{judul}</b>
+                  <small>{ket}</small>
+                </div>
+                <button
+                  className="portal-secondary"
+                  onClick={() => {
+                    navigator.clipboard?.writeText(teks[sisi]).then(() => {
+                      setTersalin(sisi);
+                      window.setTimeout(() => setTersalin(null), 2000);
+                    });
+                  }}
+                >
+                  {tersalin === sisi ? "Tersalin" : "Salin"}
+                </button>
+              </div>
+              <pre className="lp-draf">{teks[sisi]}</pre>
+            </div>
+          ))}
+        </div>
       </section>
 
       {hapus && (
         <Modal
           judul="Hapus produk?"
+          nada="bahaya"
           onTutup={() => setHapus(false)}
           lebar={400}
           aksi={
@@ -628,7 +751,6 @@ function HasilProduk({ produk }: { produk: ProdukLabel }) {
   );
 }
 
-// ===========================================================================
 
 export function LabelProduk({ sub }: { sub: string | null }) {
   const { produk } = useToko();

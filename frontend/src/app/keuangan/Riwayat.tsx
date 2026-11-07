@@ -15,7 +15,6 @@ const LABEL_SUMBER: Record<Transaksi["sumber"], string> = {
 
 const PER_HALAMAN = 25;
 
-/** Drawer detail transaksi (desain Figma). */
 export function DetailTransaksi({ id, onTutup }: { id: string; onTutup: () => void }) {
   const { transaksi, kategori, kirim } = useToko();
   const [hapus, setHapus] = useState(false);
@@ -74,7 +73,7 @@ export function DetailTransaksi({ id, onTutup }: { id: string; onTutup: () => vo
           </div>
           <div>
             <span>Laba usaha</span>
-            <b>{peta[t.kategoriId]?.kelompok === "pribadi" ? "Tidak dihitung (pribadi)" : "Dihitung"}</b>
+            <b>{peta[t.kategoriId]?.kelompok === "pemasukan_lain" ? "Tidak dihitung (bukan penjualan)" : "Dihitung"}</b>
           </div>
         </div>
         {hapus ? (

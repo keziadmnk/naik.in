@@ -166,7 +166,6 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
         return setError(result.message ?? "Email atau kata sandi tidak sesuai.");
       }
       tandaiMasuk(true);
-      // Mode server: semua data akun dimuat dari database
       const dariServer = await muatUlang();
       setLoading(false);
       if (!dariServer) {
@@ -190,7 +189,6 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
       const dariServer = await muatUlang();
       setLoading(false);
       if (!dariServer) {
-        // Mode lokal: akun baru mulai tanpa catatan
         kirim({ type: "reset" });
         kirim({ type: "demo", demo: { akunKosong: true } });
       }

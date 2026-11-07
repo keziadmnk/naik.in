@@ -1,6 +1,3 @@
-/* =====================================================================
-   Label Produk
-   ===================================================================== */
 .nk-label-produk {
   display: flex;
   flex-wrap: wrap;
@@ -294,9 +291,6 @@
   word-break: break-word;
 }
 
-/* =====================================================================
-   Laporan
-   ===================================================================== */
 .nk-laporan-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -581,7 +575,6 @@
   }
 }
 
-/* ---------- Status sinkronisasi database ---------- */
 .nk-sinkron-galat {
   display: flex;
   flex-wrap: wrap;
@@ -614,7 +607,6 @@
   }
 }
 
-/* ---------- Cetak / Simpan PDF ---------- */
 @media print {
   @page {
     size: A4;

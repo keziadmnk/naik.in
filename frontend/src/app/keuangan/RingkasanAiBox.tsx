@@ -17,7 +17,6 @@ export function RingkasanAiBox() {
     [transaksi, kategori, temuan, perluDicek, hariIni, hariLibur],
   );
 
-  // Ringkasan tersimpan dipakai bila jumlah transaksinya masih sama; jika data berubah, tampilkan templat terbaru.
   const tersimpan = ringkasanAi && ringkasanAi.jumlahTransaksi === data.angka.jumlahTransaksi ? ringkasanAi : null;
   const poin = tersimpan?.poin ?? poinTemplat(data);
   const sumber = tersimpan?.sumber ?? "templat";
@@ -46,7 +45,6 @@ export function RingkasanAiBox() {
     setProses(false);
   };
 
-  // Indikator persentase dari 6 bulan catatan terkonfirmasi (bukan skor karangan)
   const r6 = rentangPeriode("6b", hariIni);
   const enam = ringkas(dalamRentang(transaksi.filter((t) => !perluDicek.has(t.id)), r6.dari, r6.sampai), kategori);
   const k = kelengkapan(transaksi, kategori, hariIni, hariLibur);
@@ -55,7 +53,6 @@ export function RingkasanAiBox() {
     { nilai: bagi(enam.laba, enam.penjualan), label: "Margin Laba Usaha", sub: "laba ÷ penjualan" },
     { nilai: bagi(enam.hpp, enam.penjualan), label: "Rasio HPP", sub: "bahan & kemasan ÷ penjualan" },
     { nilai: bagi(enam.operasional, enam.penjualan), label: "Biaya Operasional", sub: "operasional ÷ penjualan" },
-    { nilai: bagi(enam.pribadi, enam.uangKeluar), label: "Porsi Pengeluaran Pribadi", sub: "pribadi ÷ uang keluar" },
     { nilai: k.rasio * 100, label: "Kelengkapan Catatan", sub: `${k.mingguLengkap} dari ${k.totalMinggu} minggu` },
   ];
 

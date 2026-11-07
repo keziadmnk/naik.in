@@ -13,7 +13,6 @@ const skemaUbah = z
   })
   .strict();
 
-// PATCH /api/transactions/:id — ubah kategori/tanggal/dll. (mis. tindakan dari "Perlu Dicek")
 export async function PATCH(request: Request, { params }: Params) {
   return denganKonteks(async ({ businessId, db }) => {
     const id = uuid.parse((await params).id);
@@ -42,7 +41,6 @@ export async function PATCH(request: Request, { params }: Params) {
   });
 }
 
-// DELETE /api/transactions/:id — hapus lunak (tetap bisa diaudit)
 export async function DELETE(_request: Request, { params }: Params) {
   return denganKonteks(async ({ businessId, db }) => {
     const id = uuid.parse((await params).id);

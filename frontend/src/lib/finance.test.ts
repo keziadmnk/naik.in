@@ -12,14 +12,13 @@ describe("data contoh Bu Sari — angka spesifikasi harus muncul dari perhitunga
   it("rekap bulanan Mei–Okt sesuai tabel", () => {
     const tabel = bulan.map((b) => [b.kunci, juta(b.penjualan), juta(b.hpp), juta(b.operasional), juta(b.laba), juta(b.pribadi)]);
     expect(tabel).toEqual([
-      ["2026-05", 19.8, 10.9, 3.8, 5.1, 2.1],
-      ["2026-06", 18.6, 10.3, 3.6, 4.7, 2.6],
-      ["2026-07", 22.9, 12.5, 4.2, 6.2, 2.8],
-      ["2026-08", 21.7, 11.9, 4.0, 5.8, 2.4],
-      ["2026-09", 21.1, 11.6, 3.9, 5.6, 2.1],
-      ["2026-10", 21.3, 11.8, 3.9, 5.6, 2.1],
+      ["2026-05", 19.8, 10.9, 3.8, 5.1, 0],
+      ["2026-06", 18.6, 10.3, 3.6, 4.7, 0],
+      ["2026-07", 22.9, 12.5, 4.2, 6.2, 0],
+      ["2026-08", 21.7, 11.9, 4.0, 5.8, 0],
+      ["2026-09", 21.1, 11.6, 3.9, 5.6, 0],
+      ["2026-10", 21.3, 11.8, 3.9, 5.6, 0],
     ]);
-    // Angka harus tepat, bukan sekadar hasil pembulatan
     expect(bulan[0].penjualan).toBe(19_800_000);
     expect(bulan[5].laba).toBe(5_600_000);
   });
@@ -31,7 +30,7 @@ describe("data contoh Bu Sari — angka spesifikasi harus muncul dari perhitunga
     expect(total.hpp / total.penjualan).toBeCloseTo(0.55, 2);
     expect(total.operasional / 6).toBe(3_900_000);
     expect(total.laba / 6).toBe(5_500_000);
-    expect(total.pribadi / 6).toBe(2_350_000);
+    expect(total.pribadi).toBe(0);
   });
 
   it("kelengkapan catatan: 24 dari 26 minggu (92%)", () => {

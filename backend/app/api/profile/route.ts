@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, GalatApi, tanggal } from "@/lib/server/rute";
 
-// PUT /api/profile — data akun & profil usaha. Membuat usaha baru bila belum ada (onboarding).
 const skema = z.object({
   namaPemilik: z.string().trim().min(1).max(120).optional(),
   email: z.string().trim().email().optional(),
@@ -9,7 +8,6 @@ const skema = z.object({
   namaUsaha: z.string().trim().min(1).max(150).optional(),
   kategoriUsaha: z.string().trim().min(1).max(60).optional(),
   kota: z.string().trim().max(80).optional(),
-  // "" = belum diisi
   mulaiUsaha: tanggal.or(z.literal("").transform(() => undefined)).optional(),
 });
 

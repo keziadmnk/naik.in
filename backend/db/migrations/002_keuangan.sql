@@ -1,15 +1,3 @@
--- =====================================================================
--- 002 — Keuangan, "Periksa dulu", temuan Perlu Dicek, pengaturan
--- Rancangan lengkap & alasan desain: docs/DATABASE.md
---
--- Aturan inti yang dijaga di level database:
---   1. Transaksi hanya ada setelah dikonfirmasi (dikonfirmasi_at NOT NULL).
---      Hasil impor/scan/AI menunggu di import_rows sampai dikonfirmasi.
---   2. Nominal selalu bilangan bulat rupiah > 0; arah ditentukan kolom `arah`.
---   3. Arah transaksi harus sama dengan arah kategorinya (trigger).
--- =====================================================================
-
--- ---------- Profil pengguna & usaha ----------
 ALTER TABLE users ADD COLUMN IF NOT EXISTS phone text;
 
 ALTER TABLE businesses ADD COLUMN IF NOT EXISTS kategori_usaha text NOT NULL DEFAULT 'Makanan & Minuman';
@@ -21,11 +9,10 @@ ALTER TABLE businesses ADD COLUMN IF NOT EXISTS onboarding_selesai_at timestampt
 ALTER TABLE businesses ADD COLUMN IF NOT EXISTS diubah timestamptz NOT NULL DEFAULT now();
 COMMENT ON COLUMN businesses.usia_usaha_bln IS 'Usang: hitung lama usaha dari mulai_usaha.';
 
--- ---------- Kategori ----------
 CREATE TABLE IF NOT EXISTS categories (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  business_id uuid REFERENCES businesses(id) ON DELETE CASCADE, -- NULL = kategori bawaan sistem
-  kode text NOT NULL,                                             -- slug stabil, mis. 'bahan-baku'
+  business_id uuid REFERENCES businesses(id) ON DELETE CASCADE,
+  kode text NOT NULL,
   nama text NOT NULL,
   arah text NOT NULL CHECK (arah IN ('masuk', 'keluar')),
   kelompok text NOT NULL CHECK (kelompok IN ('penjualan', 'pemasukan_lain', 'hpp', 'operasional', 'pribadi')),
@@ -51,12 +38,11 @@ INSERT INTO categories (business_id, kode, nama, arah, kelompok, urutan) VALUES
   (NULL, 'pribadi',        'Pribadi / rumah tangga',           'keluar', 'pribadi',       110)
 ON CONFLICT DO NOTHING;
 
--- ---------- Impor: layar "Periksa dulu" ----------
 CREATE TABLE IF NOT EXISTS import_batches (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
   sumber text NOT NULL CHECK (sumber IN ('manual', 'unggah_file', 'scan_foto')),
-  upload_id uuid REFERENCES uploads(id) ON DELETE SET NULL, -- file/foto asli (opsional)
+  upload_id uuid REFERENCES uploads(id) ON DELETE SET NULL,
   nama_file text,
   tipe_file text CHECK (tipe_file IS NULL OR tipe_file IN ('csv', 'xlsx', 'pdf', 'jpg', 'png')),
   status text NOT NULL DEFAULT 'draf' CHECK (status IN ('draf', 'dikonfirmasi', 'dibatalkan')),
@@ -71,22 +57,21 @@ CREATE TABLE IF NOT EXISTS import_batches (
 CREATE TABLE IF NOT EXISTS import_rows (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   batch_id uuid NOT NULL REFERENCES import_batches(id) ON DELETE CASCADE,
-  nomor_baris integer,                  -- baris di file asli (NULL untuk input manual/scan)
-  data_mentah jsonb,                    -- isi asli baris / keluaran OCR
-  tanggal date,                         -- NULL bila tanggal tidak terbaca
+  nomor_baris integer,
+  data_mentah jsonb,
+  tanggal date,
   tanggal_asli text,
   uraian text NOT NULL DEFAULT '',
   arah text CHECK (arah IN ('masuk', 'keluar')),
   category_id uuid REFERENCES categories(id),
   metode text CHECK (metode IN ('Tunai', 'QRIS', 'Transfer', 'Marketplace')),
   nominal bigint CHECK (nominal IS NULL OR nominal >= 0),
-  masalah jsonb NOT NULL DEFAULT '[]',  -- [{tingkat:'galat'|'peringatan', pesan:'...'}]
+  masalah jsonb NOT NULL DEFAULT '[]',
   disertakan boolean NOT NULL DEFAULT true,
-  transaction_id uuid                   -- terisi setelah dikonfirmasi
+  transaction_id uuid
 );
 CREATE INDEX IF NOT EXISTS import_rows_batch_idx ON import_rows(batch_id);
 
--- ---------- Transaksi (riwayat) ----------
 CREATE TABLE IF NOT EXISTS transactions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
@@ -98,11 +83,11 @@ CREATE TABLE IF NOT EXISTS transactions (
   nominal bigint NOT NULL CHECK (nominal > 0),
   sumber text NOT NULL CHECK (sumber IN ('contoh', 'manual', 'unggah_file', 'scan_foto')),
   import_batch_id uuid REFERENCES import_batches(id) ON DELETE SET NULL,
-  dikonfirmasi_at timestamptz NOT NULL,   -- aturan: tidak ada transaksi tanpa konfirmasi
+  dikonfirmasi_at timestamptz NOT NULL,
   dikonfirmasi_oleh uuid REFERENCES users(id) ON DELETE SET NULL,
   dibuat timestamptz NOT NULL DEFAULT now(),
   diubah timestamptz NOT NULL DEFAULT now(),
-  dihapus_at timestamptz                  -- hapus lunak, agar rekap bisa diaudit
+  dihapus_at timestamptz
 );
 CREATE INDEX IF NOT EXISTS transactions_business_tanggal_idx ON transactions(business_id, tanggal) WHERE dihapus_at IS NULL;
 CREATE INDEX IF NOT EXISTS transactions_category_idx ON transactions(category_id);
@@ -127,7 +112,6 @@ DROP TRIGGER IF EXISTS transactions_cek_arah ON transactions;
 CREATE TRIGGER transactions_cek_arah BEFORE INSERT OR UPDATE ON transactions
   FOR EACH ROW EXECUTE FUNCTION cek_arah_kategori();
 
--- ---------- Hari tutup/libur (dihitung sebagai hari tercatat) ----------
 CREATE TABLE IF NOT EXISTS closed_days (
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
   tanggal date NOT NULL,
@@ -136,11 +120,10 @@ CREATE TABLE IF NOT EXISTS closed_days (
   PRIMARY KEY (business_id, tanggal)
 );
 
--- ---------- Temuan "Perlu Dicek" ----------
 CREATE TABLE IF NOT EXISTS findings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
-  kunci text NOT NULL,                  -- id stabil, mis. 'duplikat:<transaction_id>' / 'hari_belum_dicatat:2026-10-29'
+  kunci text NOT NULL,
   jenis text NOT NULL CHECK (jenis IN (
     'kemungkinan_pribadi', 'pemasukan_bukan_penjualan', 'duplikat',
     'nominal_tidak_biasa', 'tanggal_bermasalah', 'hari_belum_dicatat')),
@@ -148,9 +131,9 @@ CREATE TABLE IF NOT EXISTS findings (
   transaksi_terkait uuid[] NOT NULL DEFAULT '{}',
   rentang_dari date,
   rentang_sampai date,
-  alasan text NOT NULL,                 -- ditampilkan sebagai "alasan deteksi AI"
+  alasan text NOT NULL,
   status text NOT NULL DEFAULT 'terbuka' CHECK (status IN ('terbuka', 'ditindak', 'diabaikan')),
-  tindakan text,                        -- mis. 'jadikan_pribadi', 'hapus_duplikat', 'tandai_libur'
+  tindakan text,
   dibuat timestamptz NOT NULL DEFAULT now(),
   ditindak_at timestamptz,
   ditindak_oleh uuid REFERENCES users(id) ON DELETE SET NULL,
@@ -162,7 +145,6 @@ CREATE TABLE IF NOT EXISTS findings (
 );
 CREATE INDEX IF NOT EXISTS findings_terbuka_idx ON findings(business_id) WHERE status = 'terbuka';
 
--- ---------- Pengaturan ----------
 CREATE TABLE IF NOT EXISTS recurring_costs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
@@ -193,23 +175,20 @@ CREATE TABLE IF NOT EXISTS user_settings (
   CONSTRAINT user_settings_demo_eksklusif CHECK (NOT (demo_akun_kosong AND demo_data_tiga_bulan))
 );
 
--- ---------- Ringkasan AI ----------
 CREATE TABLE IF NOT EXISTS ai_summaries (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id uuid NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
   periode_dari date NOT NULL,
   periode_sampai date NOT NULL,
-  jumlah_transaksi integer NOT NULL,    -- "dari N transaksi terkonfirmasi"
-  angka jsonb NOT NULL,                 -- angka yang dihitung sistem (input ke AI)
-  poin text[] NOT NULL,                 -- 4–5 poin yang ditampilkan
+  jumlah_transaksi integer NOT NULL,
+  angka jsonb NOT NULL,
+  poin text[] NOT NULL,
   sumber text NOT NULL CHECK (sumber IN ('ai', 'templat')),
   dibuat timestamptz NOT NULL DEFAULT now(),
   CHECK (periode_dari <= periode_sampai)
 );
 CREATE INDEX IF NOT EXISTS ai_summaries_terbaru_idx ON ai_summaries(business_id, dibuat DESC);
 
--- ---------- View rekap kas ----------
--- Laba usaha = penjualan − HPP − operasional. Selisih kas = semua masuk − semua keluar.
 CREATE OR REPLACE VIEW v_transaksi AS
 SELECT t.*, c.kode AS kategori_kode, c.nama AS kategori_nama, c.kelompok
 FROM transactions t
@@ -219,7 +198,7 @@ WHERE t.dihapus_at IS NULL;
 CREATE OR REPLACE VIEW v_rekap_mingguan AS
 SELECT
   business_id,
-  date_trunc('week', tanggal)::date AS minggu_mulai,        -- Senin
+  date_trunc('week', tanggal)::date AS minggu_mulai,
   (date_trunc('week', tanggal) + interval '6 days')::date AS minggu_akhir,
   SUM(nominal) FILTER (WHERE arah = 'masuk') AS uang_masuk,
   SUM(nominal) FILTER (WHERE kelompok = 'penjualan') AS penjualan,
@@ -257,7 +236,6 @@ SELECT
 FROM v_transaksi
 GROUP BY business_id, date_trunc('month', tanggal);
 
--- Minggu lengkap = minimal 6 dari 7 hari punya transaksi atau ditandai libur.
 CREATE OR REPLACE VIEW v_kelengkapan_mingguan AS
 WITH hari AS (
   SELECT business_id, tanggal FROM v_transaksi

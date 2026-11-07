@@ -3,7 +3,6 @@ import { bacaJson, denganKonteks, GalatApi, uuid } from "@/lib/server/rute";
 
 type Params = { params: Promise<{ id: string }> };
 
-// PATCH /api/loan-simulations/:id — { diLaporan: true } menjadikannya satu-satunya simulasi di laporan.
 export async function PATCH(request: Request, { params }: Params) {
   return denganKonteks(async ({ businessId, db }) => {
     const id = uuid.parse((await params).id);

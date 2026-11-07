@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, GalatApi, idKategori, tanggal, uuid } from "@/lib/server/rute";
 
-// POST /api/transactions — simpan baris yang sudah dikonfirmasi di layar "Periksa dulu".
-// Setiap simpanan dicatat sebagai satu import_batch berstatus 'dikonfirmasi'.
 
 const skema = z.object({
   sumber: z.enum(["manual", "unggah_file", "scan_foto"]),

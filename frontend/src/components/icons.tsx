@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-// Ikon garis (stroke) bersama untuk seluruh aplikasi.
 export type PIconName =
   | "grid"
   | "wallet"

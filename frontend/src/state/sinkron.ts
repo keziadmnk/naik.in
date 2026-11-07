@@ -1,13 +1,9 @@
-// Menerjemahkan aksi store menjadi panggilan API backend (mode server).
-// Store tetap memperbarui tampilan seketika; fungsi di sini menyimpan perubahan ke database.
-
 import { panggil, type HasilPanggil } from "../api";
 import { cariKlaim, hitungSkor } from "../lib/engine/label";
 import type { Aksi, Keadaan } from "./store";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Mengembalikan fungsi pemanggil API untuk aksi ini, atau null bila aksi hanya lokal. */
 export function keApi(a: Aksi, s: Keadaan): (() => Promise<HasilPanggil>) | null {
   switch (a.type) {
     case "simpanTransaksi":
@@ -97,6 +93,6 @@ export function keApi(a: Aksi, s: Keadaan): (() => Promise<HasilPanggil>) | null
     case "hapusSemuaData":
       return () => panggil("POST", "/api/data/hapus-semua", { konfirmasi: "HAPUS" });
     default:
-      return null; // muatServer, keluar, reset: hanya lokal
+      return null;
   }
 }

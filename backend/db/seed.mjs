@@ -6,7 +6,6 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Muat .env atau .env.local jika ada
 const envLocalPath = path.resolve(__dirname, "../.env.local");
 const envPath = path.resolve(__dirname, "../.env");
 if (fs.existsSync(envLocalPath)) {
@@ -38,11 +37,8 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
 const DEMO_EMAIL = "demo@naik.in";
 const DEMO_PASSWORD = "demo123456";
 
-// Data contoh dihasilkan dari generator frontend (npm run export:demo di folder frontend),
-// sehingga database dan aplikasi memakai transaksi yang persis sama.
 const DATA = JSON.parse(fs.readFileSync(path.join(__dirname, "seed-data", "bu-sari.json"), "utf8"));
 
-// Data contoh lama yang diganti oleh data 6 bulan Bu Sari
 const BISNIS_LAMA = ["Keripik Singkong Bu Sari", "Rendang Kemasan Uni Dewi"];
 
 async function seed() {
@@ -52,7 +48,6 @@ async function seed() {
     await client.query("BEGIN");
     const { profil } = DATA;
 
-    // 1. User demo
     let { rows } = await client.query("SELECT id FROM users WHERE email = $1", [DEMO_EMAIL]);
     let userId = rows[0]?.id;
     if (!userId) {
@@ -67,14 +62,12 @@ async function seed() {
       console.log(`- User demo sudah ada, nama diperbarui: ${profil.namaPemilik}`);
     }
 
-    // 2. Ganti data contoh lama
     const lama = await client.query(
       "DELETE FROM businesses WHERE owner_id = $1 AND nama = ANY($2) RETURNING nama",
       [userId, BISNIS_LAMA]
     );
     if (lama.rowCount) console.log(`✔ Data contoh lama dihapus: ${lama.rows.map((r) => r.nama).join(", ")}`);
 
-    // 3. Usaha Bu Sari
     ({ rows } = await client.query("SELECT id FROM businesses WHERE owner_id = $1 AND nama = $2", [userId, profil.namaUsaha]));
     let bisnisId = rows[0]?.id;
     const mulai = new Date(profil.mulaiUsaha);
@@ -106,7 +99,6 @@ async function seed() {
       console.log(`- Usaha sudah ada: ${profil.namaUsaha}`);
     }
 
-    // 4. Transaksi contoh: diganti seluruhnya agar selalu sama dengan seed-data
     await client.query("DELETE FROM findings WHERE business_id = $1", [bisnisId]);
     await client.query("DELETE FROM transactions WHERE business_id = $1 AND sumber = 'contoh'", [bisnisId]);
     const kategori = new Map(
@@ -132,7 +124,6 @@ async function seed() {
     }
     console.log(`✔ ${tx.length} transaksi contoh (4 Mei – 7 Nov 2026) dimasukkan.`);
 
-    // 5. Biaya rutin, pengingat, pengaturan
     await client.query("DELETE FROM recurring_costs WHERE business_id = $1", [bisnisId]);
     for (const [i, b] of DATA.biayaRutin.entries()) {
       await client.query(
@@ -151,7 +142,6 @@ async function seed() {
       [userId]
     );
 
-    // 6. Produk & pemeriksaan label contoh (skor dihitung engine frontend saat ekspor)
     for (const p of DATA.produk ?? []) {
       await client.query(
         `INSERT INTO products (id, business_id, nama) VALUES ($1, $2, $3)
@@ -169,7 +159,6 @@ async function seed() {
 
     await client.query("COMMIT");
 
-    // 6. Cek cepat: rekap bulanan dari view harus sama dengan tabel spesifikasi
     const rekap = await client.query(
       `SELECT to_char(bulan, 'Mon') AS nama_bulan, penjualan, hpp, operasional, laba_usaha, pribadi
        FROM v_rekap_bulanan

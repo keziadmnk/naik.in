@@ -12,6 +12,8 @@ import { hitungAngka, poinTemplat } from "../lib/ringkasan";
 import { goTo } from "../routes";
 import { useToko } from "../state/store";
 import { useCatat } from "./AppShell";
+import { SKOR_LABEL_HAMPIR, SKOR_LABEL_LENGKAP } from "../lib/config/thresholds";
+import { useDataPinjaman, useKapasitasKur } from "./kur/rekomendasiKur";
 
 export function lamaUsaha(mulai: string, hariIni: string): string {
   if (!mulai) return "—";
@@ -22,19 +24,18 @@ export function lamaUsaha(mulai: string, hariIni: string): string {
   return `${bulan} bulan`;
 }
 
-// ---------------------------------------------------------------------------
-// Pilihan periode: Hari ini · 7 hari terakhir · Pilih bulan · Pilih tanggal
-// ---------------------------------------------------------------------------
 
-type JenisPeriode = "hari" | "7h" | "bulan" | "tanggal";
+type JenisPeriode = "hari" | "7h" | "bulan" | "tanggal" | "semua";
 type Periode = { jenis: JenisPeriode; bulan: string; dari: string; sampai: string };
 
 const akhirBulan = (bulan: string) => addDays(`${monthKey(addDays(`${bulan}-01`, 32))}-01`, -1);
 
-/** Rentang periode & periode pembanding (panjang sama, tepat sebelumnya). */
-function hitungRentang(p: Periode, hariIni: string) {
+function hitungRentang(p: Periode, hariIni: string, catatanPertama: string) {
   let dari: string;
   let sampai: string;
+  if (p.jenis === "semua") {
+    return { dari: catatanPertama, sampai: hariIni, sebelumDari: addDays(catatanPertama, -1), sebelumSampai: addDays(catatanPertama, -1), pembanding: "" };
+  }
   if (p.jenis === "hari") dari = sampai = hariIni;
   else if (p.jenis === "7h") {
     sampai = hariIni;
@@ -92,17 +93,21 @@ function ToggleGran({ nilai, onPilih }: { nilai: Granularitas; onPilih: (g: Gran
 }
 
 export function Beranda() {
-  const { profil, transaksi, kategori, hariIni, hariLibur, simulasi, produk, temuan, perluDicek, server } = useToko();
+  const { profil, transaksi, kategori, hariIni, hariLibur, produk, temuan, perluDicek, server } = useToko();
   const { minta } = useCatat();
   const [periode, setPeriode] = useState<Periode>({ jenis: "7h", bulan: monthKey(hariIni), dari: addDays(hariIni, -13), sampai: hariIni });
-  const r = hitungRentang(periode, hariIni);
+  const catatanPertama = useMemo(
+    () => (transaksi.length ? transaksi.reduce((a, t) => (t.tanggal < a ? t.tanggal : a), transaksi[0].tanggal) : hariIni),
+    [transaksi, hariIni],
+  );
+  const r = hitungRentang(periode, hariIni, catatanPertama);
   const panjang = daysBetween(r.dari, r.sampai) + 1;
   const granAuto: Granularitas = panjang <= 31 ? "hari" : panjang <= 120 ? "minggu" : "bulan";
   const [granPilihan, setGranPilihan] = useState<Granularitas | null>(null);
   const gran = granPilihan ?? granAuto;
   const ubahPeriode = (p: Partial<Periode>) => {
     setPeriode((x) => ({ ...x, ...p }));
-    setGranPilihan(null); // kembali ke tampilan grafik otomatis sesuai panjang periode
+    setGranPilihan(null);
   };
 
   const isi = useMemo(() => dalamRentang(transaksi, r.dari, r.sampai), [transaksi, r.dari, r.sampai]);
@@ -112,13 +117,12 @@ export function Beranda() {
   const s = stressOut(transaksi, kategori, hariIni, hariLibur);
   const insight = useMemo(() => poinTemplat(hitungAngka(transaksi, kategori, temuan, perluDicek, hariIni, hariLibur)), [transaksi, kategori, temuan, perluDicek, hariIni, hariLibur]);
 
-  // Bulan yang bisa dipilih: sejak catatan pertama sampai bulan ini
   const pilihanBulan = useMemo(() => {
-    const awal = transaksi.length ? monthKey(transaksi.reduce((a, t) => (t.tanggal < a ? t.tanggal : a), transaksi[0].tanggal)) : monthKey(hariIni);
+    const awal = monthKey(catatanPertama);
     const daftar: string[] = [];
     for (let b = monthKey(hariIni); b >= awal; b = monthKey(addDays(`${b}-01`, -1))) daftar.push(b);
     return daftar;
-  }, [transaksi, hariIni]);
+  }, [catatanPertama, hariIni]);
 
   const titik = (g: Granularitas) => {
     if (g === "hari") {
@@ -139,12 +143,19 @@ export function Beranda() {
   };
   const seriTren = titik(panjang <= 31 ? "hari" : "minggu");
 
-  const sim = simulasi[0];
-  const labelTerakhir = [...produk].filter((p) => p.diperiksaPada).sort((a, b) => (b.diperiksaPada ?? "").localeCompare(a.diperiksaPada ?? ""))[0];
-  const skorLabel = labelTerakhir ? hitungSkor(labelTerakhir.data, labelTerakhir.mode, profil.kota) : null;
+  const dataKur = useDataPinjaman();
+  const { rek: rekKur } = useKapasitasKur(dataKur);
+  const skorLabel = useMemo(() => {
+    const diperiksa = produk.filter((p) => p.diperiksaPada);
+    if (!diperiksa.length) return null;
+    const rata = diperiksa.reduce((a, p) => a + hitungSkor(p.data, p.mode, profil.kota).skor, 0) / diperiksa.length;
+    const tingkat = rata >= SKOR_LABEL_LENGKAP ? "hijau" : rata >= SKOR_LABEL_HAMPIR ? "kuning" : "merah";
+    const kalimat = tingkat === "hijau" ? "Rata-rata sudah lengkap" : tingkat === "kuning" ? "Rata-rata hampir lengkap" : "Rata-rata perlu perbaikan";
+    return { rata, tingkat, kalimat, jumlah: diperiksa.length };
+  }, [produk, profil.kota]);
   const namaSapaan = profil.namaPemilik.replace(/^(ibu|bapak|pak|bu)\s+/i, "").split(" ")[0] || "Pemilik Usaha";
   const kosong = transaksi.length === 0;
-  const vs = `vs ${r.pembanding}`;
+  const vs = periode.jenis === "semua" ? `seluruh catatan sejak ${tanggal(r.dari)}` : `vs ${r.pembanding}`;
 
   const metrik: { label: string; ikon: PIconName; nilai: number; delta: number | null; kebalikan?: boolean; catatan: string; tren: number[]; turun?: boolean; peringatan?: boolean; arti?: string }[] = [
     { label: "Omzet", ikon: "wallet", nilai: sekarang.penjualan, delta: perubahan(sekarang.penjualan, sebelum.penjualan), catatan: vs, tren: seriTren.map((x) => x.omzet) },
@@ -184,12 +195,14 @@ export function Beranda() {
       <div className="fg-status-chip">
         <button onClick={() => goTo("kur")}>
           <PIcon name="calc" size={14} /> Kesiapan KUR:{" "}
-          <b className={sim ? `teks-${sim.status}` : ""}>{sim ? `${LABEL_STATUS[sim.status]} · ${rupiahRingkas(sim.plafon)}` : "Belum disimulasikan"}</b>
+          <b className={dataKur.terbuka ? `teks-${rekKur.penilaian.status}` : ""}>
+            {dataKur.terbuka ? `${LABEL_STATUS[rekKur.penilaian.status]} · ${rupiahRingkas(rekKur.plafon)}` : "Data belum cukup"}
+          </b>
         </button>
         <button onClick={() => goTo("label")}>
           <PIcon name="tag" size={14} /> Skor Label:{" "}
-          <b className={skorLabel ? `teks-${skorLabel.kategori === "Lengkap" ? "hijau" : skorLabel.kategori === "Hampir lengkap" ? "kuning" : "merah"}` : ""}>
-            {skorLabel ? `${Math.round(skorLabel.skor)}/100 · ${skorLabel.kategori}` : "Belum diperiksa"}
+          <b className={skorLabel ? `teks-${skorLabel.tingkat}` : ""} title={skorLabel ? `Rata-rata dari ${skorLabel.jumlah} produk yang sudah diperiksa` : undefined}>
+            {skorLabel ? `${skorLabel.kalimat} (${Math.round(skorLabel.rata)}/100 · ${skorLabel.jumlah} produk)` : "Belum ada produk diperiksa"}
           </b>
         </button>
       </div>
@@ -202,6 +215,7 @@ export function Beranda() {
               ["7h", "7 hari terakhir"],
               ["bulan", "Pilih bulan"],
               ["tanggal", "Pilih tanggal"],
+              ["semua", "Semua data"],
             ] as const
           ).map(([id, label]) => (
             <button key={id} className={periode.jenis === id ? "active" : ""} onClick={() => ubahPeriode({ jenis: id })}>

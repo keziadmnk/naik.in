@@ -1,6 +1,3 @@
-// Perhitungan keuangan. Semua angka ringkasan di aplikasi berasal dari fungsi di sini,
-// dihitung ulang dari daftar transaksi — tidak ada angka yang ditulis tetap.
-
 import { kategoriMap } from "../data/categories";
 import { MIN_HARI_MINGGU_VALID } from "./config/thresholds";
 import type { Kategori, Kelompok, Transaksi } from "../data/types";
@@ -14,9 +11,7 @@ export type Ringkasan = {
   hpp: number;
   operasional: number;
   pribadi: number;
-  /** Laba usaha = penjualan − HPP − biaya operasional (pengeluaran pribadi tidak dihitung). */
   laba: number;
-  /** Selisih kas = semua uang masuk − semua uang keluar. */
   selisih: number;
   jumlahTransaksi: number;
 };
@@ -51,9 +46,6 @@ export function ringkas(transaksi: Transaksi[], kategori: Kategori[]): Ringkasan
 export const dalamRentang = (transaksi: Transaksi[], dari: string, sampai: string) =>
   transaksi.filter((t) => t.tanggal >= dari && t.tanggal <= sampai);
 
-// ---------------------------------------------------------------------------
-// Periode dasbor
-// ---------------------------------------------------------------------------
 
 export type PeriodeId = "30h" | "3b" | "6b";
 export const PERIODE: { id: PeriodeId; label: string; hari: number }[] = [
@@ -70,21 +62,16 @@ export function rentangPeriode(id: PeriodeId, hariIni: string) {
   return { dari, sampai: hariIni, sebelumDari, sebelumSampai };
 }
 
-/** Perubahan relatif; null jika periode pembanding kosong. */
 export function perubahan(sekarang: number, sebelum: number): number | null {
   if (sebelum === 0) return null;
   return (sekarang - sebelum) / Math.abs(sebelum);
 }
 
-// ---------------------------------------------------------------------------
-// Rekap per minggu / bulan
-// ---------------------------------------------------------------------------
 
 export type BarisRekap = Ringkasan & {
   kunci: string;
   dari: string;
   sampai: string;
-  /** Minggu: jumlah hari tercatat (0–7). */
   hariTercatat: number;
   lengkap: boolean;
   perKategori: Record<string, number>;
@@ -94,7 +81,6 @@ export function hariTercatatSet(transaksi: Transaksi[], hariLibur: string[] = []
   return new Set([...transaksi.map((t) => t.tanggal), ...hariLibur]);
 }
 
-/** Minggu dianggap lengkap bila minimal 5 dari 7 hari punya catatan (atau ditandai libur). */
 export const MIN_HARI_MINGGU_LENGKAP = MIN_HARI_MINGGU_VALID;
 
 export function rekapMingguan(
@@ -160,16 +146,12 @@ export function totalRekap(baris: BarisRekap[]): Ringkasan {
   return t;
 }
 
-// ---------------------------------------------------------------------------
-// Kelengkapan catatan & Laba Minggu Tersepi (stress-out)
-// ---------------------------------------------------------------------------
 
 export const MINGGU_ENAM_BULAN = 26;
 
 export const transaksiPertama = (transaksi: Transaksi[]) =>
   transaksi.reduce((a, t) => (t.tanggal < a ? t.tanggal : a), transaksi[0].tanggal);
 
-/** 26 minggu penuh terakhir yang sudah berakhir (Senin–Minggu) sebelum minggu berjalan. */
 export function mingguEnamBulan(hariIni: string) {
   const seninIni = weekStart(hariIni);
   const dari = addDays(seninIni, -7 * MINGGU_ENAM_BULAN);
@@ -199,7 +181,6 @@ export function kelengkapan(transaksi: Transaksi[], kategori: Kategori[], hariIn
   };
 }
 
-/** Kuartil dengan interpolasi linear (metode yang sama dengan Excel QUARTILE.INC). */
 export function kuartil(nilai: number[], q: number): number {
   if (!nilai.length) return 0;
   const urut = [...nilai].sort((a, b) => a - b);
@@ -226,7 +207,6 @@ export function stressOut(transaksi: Transaksi[], kategori: Kategori[], hariIni:
   const laba = valid.map((m) => m.laba);
   const min = valid.reduce<BarisRekap | null>((a, m) => (!a || m.laba < a.laba ? m : a), null);
   return {
-    // Cukup data = catatan sudah dimulai sejak awal jendela 26 minggu.
     cukupData: transaksi.length > 0 && daysBetween(dari, transaksiPertama(transaksi)) <= 6,
     mingguValid: valid.length,
     dibutuhkan: MINGGU_ENAM_BULAN,
@@ -237,9 +217,6 @@ export function stressOut(transaksi: Transaksi[], kategori: Kategori[], hariIni:
   };
 }
 
-// ---------------------------------------------------------------------------
-// Uang keluar per kategori (donat)
-// ---------------------------------------------------------------------------
 
 export function keluarPerKategori(transaksi: Transaksi[], kategori: Kategori[]) {
   const peta = kategoriMap(kategori);

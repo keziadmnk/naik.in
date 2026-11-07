@@ -1,20 +1,9 @@
-// Data contoh: Ibu Sari Wulandari — "Keripik Balado Bu Sari", Padang.
-//
-// Data tercatat 4 Mei – 6 Nov 2026. Generator ini membuat transaksi harian yang,
-// jika dijumlahkan, menghasilkan rekap bulanan pada spesifikasi. Angka ringkasan
-// di aplikasi TIDAK ditulis tetap: semuanya dihitung ulang dari transaksi
-// (lihat lib/finance.ts). Target di bawah hanya bahan baku generator.
-//
-// Untuk database, data yang sama diekspor ke backend/db/seed-data/ lewat
-// `npm run export:demo` (lihat scripts/export-demo.ts).
-
 import { addDays, monthKey, toDate } from "../lib/format";
 import { dataLabelKosong, type DataLabel, type ModeLabel } from "../lib/engine/label";
 import type { Metode, ProfilUsaha, Transaksi } from "./types";
 
-/** "Hari ini" dalam data contoh. */
 export const HARI_INI_DEMO = "2026-11-06";
-export const AWAL_DATA_DEMO = "2026-05-04"; // Senin
+export const AWAL_DATA_DEMO = "2026-05-04";
 
 export const PROFIL_DEMO: ProfilUsaha = {
   namaPemilik: "Ibu Sari Wulandari",
@@ -23,28 +12,21 @@ export const PROFIL_DEMO: ProfilUsaha = {
   namaUsaha: "Keripik Balado Bu Sari",
   kategoriUsaha: "Makanan & Minuman",
   kota: "Padang",
-  mulaiUsaha: "2024-09-06", // 26 bulan sebelum 6 Nov 2026
+  mulaiUsaha: "2024-09-06",
 };
 
-// ---------------------------------------------------------------------------
-// Target generator (rupiah)
-// ---------------------------------------------------------------------------
 
-type TargetBulan = { omzet: number; hpp: number; operasional: number; pribadi: number };
+type TargetBulan = { omzet: number; hpp: number; operasional: number };
 
 const TARGET_BULAN: Record<string, TargetBulan> = {
-  "2026-05": { omzet: 19_800_000, hpp: 10_900_000, operasional: 3_800_000, pribadi: 2_100_000 },
-  "2026-06": { omzet: 18_600_000, hpp: 10_300_000, operasional: 3_600_000, pribadi: 2_600_000 },
-  "2026-07": { omzet: 22_900_000, hpp: 12_500_000, operasional: 4_200_000, pribadi: 2_800_000 },
-  "2026-08": { omzet: 21_700_000, hpp: 11_900_000, operasional: 4_000_000, pribadi: 2_400_000 },
-  "2026-09": { omzet: 21_100_000, hpp: 11_600_000, operasional: 3_900_000, pribadi: 2_100_000 },
-  "2026-10": { omzet: 21_300_000, hpp: 11_800_000, operasional: 3_900_000, pribadi: 2_100_000 },
+  "2026-05": { omzet: 19_800_000, hpp: 10_900_000, operasional: 3_800_000 },
+  "2026-06": { omzet: 18_600_000, hpp: 10_300_000, operasional: 3_600_000 },
+  "2026-07": { omzet: 22_900_000, hpp: 12_500_000, operasional: 4_200_000 },
+  "2026-08": { omzet: 21_700_000, hpp: 11_900_000, operasional: 4_000_000 },
+  "2026-09": { omzet: 21_100_000, hpp: 11_600_000, operasional: 3_900_000 },
+  "2026-10": { omzet: 21_300_000, hpp: 11_800_000, operasional: 3_900_000 },
 };
 
-/**
- * Laba usaha per minggu (Senin–Minggu), minggu ke-1 = 4–10 Mei.
- * Minggu 6 (8–14 Jun) dan 26 (26 Okt–1 Nov) belum lengkap: hanya 3 hari tercatat.
- */
 const LABA_MINGGU: Record<number, number> = {
   1: 1_450_000, 2: 690_000, 3: 1_480_000, 4: 1_480_000, 5: 1_850_000, 6: -300_000,
   7: 480_000, 8: 1_950_000, 9: 1_800_000, 10: 1_600_000, 11: 712_500, 12: 1_600_000,
@@ -53,15 +35,13 @@ const LABA_MINGGU: Record<number, number> = {
   25: 1_817_500, 26: 300_000,
 };
 
-/** Bagian laba minggu yang jatuh di bulan pertama, untuk minggu yang melintasi dua bulan. */
 const LABA_MINGGU_BAGIAN_AWAL: Record<number, number> = {
-  9: 720_000, // 29–30 Jun
-  13: 1_207_500, // 27–31 Jul
-  18: 250_000, // 31 Agu
-  22: 730_000, // 28–30 Sep
+  9: 720_000,
+  13: 1_207_500,
+  18: 250_000,
+  22: 730_000,
 };
 
-/** Hari tanpa catatan sama sekali (minggu belum lengkap). */
 const HARI_KOSONG = new Set([
   "2026-06-10", "2026-06-11", "2026-06-13", "2026-06-14",
   "2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01",
@@ -69,11 +49,7 @@ const HARI_KOSONG = new Set([
 
 const AKHIR_DATA_HISTORIS = "2026-10-31";
 
-// ---------------------------------------------------------------------------
-// Pembantu
-// ---------------------------------------------------------------------------
 
-/** PRNG deterministik agar data contoh selalu sama. */
 function mulberry32(seed: number) {
   let a = seed;
   return () => {
@@ -88,7 +64,6 @@ function mulberry32(seed: number) {
 const UNIT = 500;
 const bulatkan = (value: number) => Math.round(value / UNIT) * UNIT;
 
-/** Bagi `total` sesuai bobot, dibulatkan ke Rp500; sisa pembulatan masuk ke item terakhir. */
 function bagi(total: number, bobot: number[]): number[] {
   const jumlahBobot = bobot.reduce((a, b) => a + b, 0);
   const hasil = bobot.map((b) => bulatkan((total * b) / jumlahBobot));
@@ -97,7 +72,7 @@ function bagi(total: number, bobot: number[]): number[] {
   return hasil;
 }
 
-const FAKTOR_HARI = [1.25, 0.85, 0.95, 1.0, 1.0, 1.1, 1.35]; // Minggu..Sabtu
+const FAKTOR_HARI = [1.25, 0.85, 0.95, 1.0, 1.0, 1.1, 1.35];
 
 type Segmen = { minggu: number; bulan: string; hari: string[]; laba: number };
 
@@ -122,9 +97,6 @@ function susunSegmen(): Segmen[] {
   return segmen;
 }
 
-// ---------------------------------------------------------------------------
-// Generator transaksi historis (4 Mei – 31 Okt)
-// ---------------------------------------------------------------------------
 
 function buatHistoris(): Transaksi[] {
   const rand = mulberry32(20260506);
@@ -156,7 +128,6 @@ function buatHistoris(): Transaksi[] {
     const labaSegmen = segmen.reduce((n, s) => n + s.laba, 0);
     if (labaSegmen !== labaBulan) throw new Error(`Laba segmen ${bulan} (${labaSegmen}) ≠ target (${labaBulan})`);
 
-    // Omzet & HPP per segmen; segmen terakhir menyerap sisa agar total bulan tepat.
     let sisaOmzet = target.omzet;
     let sisaHpp = target.hpp;
     segmen.forEach((s, index) => {
@@ -169,7 +140,6 @@ function buatHistoris(): Transaksi[] {
       sisaHpp -= hpp;
       if (operasional <= 0) throw new Error(`Biaya operasional segmen minggu ${s.minggu} tidak valid`);
 
-      // --- Penjualan: setiap hari, 2–3 transaksi
       const bobotHari = s.hari.map((h) => FAKTOR_HARI[toDate(h).getUTCDay()] * (0.88 + rand() * 0.24));
       bagi(omzet, bobotHari).forEach((omzetHari, i) => {
         const h = s.hari[i];
@@ -181,7 +151,6 @@ function buatHistoris(): Transaksi[] {
         if (adaMarketplace) tambah(h, "Pesanan Shopee", "penjualan", "Marketplace", mp, "masuk");
       });
 
-      // --- HPP: belanja bahan baku tiap ±2 hari + kemasan sekali per segmen
       const hariBelanja = s.hari.filter((_, i) => i % 2 === 0);
       const [bahan, kemasan] = bagi(hpp, [0.86, 0.14]);
       const bahanBaku = ["Beli singkong 30 kg", "Beli cabai merah & bawang", "Beli minyak goreng 2 jeriken", "Beli singkong & bumbu balado"];
@@ -190,7 +159,6 @@ function buatHistoris(): Transaksi[] {
       );
       tambah(s.hari[0], "Plastik & stiker kemasan", "kemasan", "Transfer", kemasan, "keluar");
 
-      // --- Operasional: dibagi ke beberapa pos
       const pos: [string, string, Metode, number][] = [
         ["Upah bantu goreng", "gaji", "Tunai", 0.38],
         ["Isi ulang gas LPG", "gas-listrik", "Tunai", 0.3],
@@ -205,20 +173,10 @@ function buatHistoris(): Transaksi[] {
     });
     if (sisaOmzet !== 0 || sisaHpp !== 0) throw new Error(`Sisa omzet/HPP ${bulan} tidak nol`);
 
-    // --- Pribadi: 3 kali sebulan, pada hari yang tercatat
-    const hariBulan = segmen.flatMap((s) => s.hari);
-    const pilih = (tgl: number) => hariBulan.reduce((a, b) => (Math.abs(Number(b.slice(8)) - tgl) < Math.abs(Number(a.slice(8)) - tgl) ? b : a));
-    const [dapur, anak, lain] = bagi(target.pribadi, [0.55, 0.25, 0.2]);
-    tambah(pilih(5), "Belanja dapur rumah", "pribadi", "Tunai", dapur, "keluar");
-    tambah(pilih(15), "Uang saku anak", "pribadi", "Tunai", anak, "keluar");
-    tambah(pilih(25), "Kebutuhan rumah tangga", "pribadi", "Transfer", lain, "keluar");
   }
   return hasil;
 }
 
-// ---------------------------------------------------------------------------
-// 15 transaksi terbaru (2–7 Nov), termasuk kasus yang perlu dicek
-// ---------------------------------------------------------------------------
 
 const TERBARU: [string, string, string, Metode, number, "masuk" | "keluar"][] = [
   ["2026-11-02", "Penjualan tunai di pasar", "penjualan", "Tunai", 1_250_000, "masuk"],
@@ -254,27 +212,21 @@ function buatTerbaru(): Transaksi[] {
 
 let cache: Transaksi[] | null = null;
 
-/** Semua transaksi contoh (historis + 15 terbaru), urut tanggal. */
 export function transaksiDemo(): Transaksi[] {
   if (!cache) cache = [...buatHistoris(), ...buatTerbaru()].sort((a, b) => a.tanggal.localeCompare(b.tanggal));
   return cache;
 }
 
-/** Mode "data baru 3 dari 6 bulan": hanya data sejak Senin 3 Agustus 2026. */
 export const AWAL_DATA_TIGA_BULAN = "2026-08-03";
 
-// ---------------------------------------------------------------------------
-// Produk contoh untuk Label Produk: plastik polos dengan stiker tulisan tangan
-// ---------------------------------------------------------------------------
 
 export type ProdukLabel = {
   id: string;
   nama: string;
   mode: ModeLabel;
-  /** Data label yang sudah dikonfirmasi pengguna (dasar perhitungan skor). */
   data: DataLabel;
-  teksLain: string; // slogan / klaim di kemasan
-  diperiksaPada: string | null; // YYYY-MM-DD, null = belum dikonfirmasi
+  teksLain: string;
+  diperiksaPada: string | null;
 };
 
 export function produkDemo(): ProdukLabel {

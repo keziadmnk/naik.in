@@ -1,5 +1,3 @@
-// Ringkasan analisis keuangan. Angka dihitung sistem; AI (jika ada) hanya menjelaskan.
-
 import type { Kategori, Temuan, Transaksi } from "../data/types";
 import { dalamRentang, perubahan, rentangPeriode, ringkas, stressOut } from "./finance";
 import { persen, rentang, rupiah, rupiahRingkas } from "./format";
@@ -50,18 +48,11 @@ export function poinTemplat(data: ReturnType<typeof hitungAngka>): string[] {
     `Rasio HPP ${persen(a.rasioHpp)}: dari setiap Rp100 penjualan, sekitar Rp${Math.round(a.rasioHpp * 100)} habis untuk bahan & kemasan` +
       (a.rasioHpp > 0.6 ? " — cukup tinggi, cek harga bahan atau harga jual." : "."),
   );
-  poin.push(
-    a.kemungkinanPribadi > 0
-      ? `Ada ${a.kemungkinanPribadi} pengeluaran yang tampaknya pribadi tapi tercatat sebagai biaya usaha. Pengeluaran pribadi yang sudah dipisah dalam 30 hari terakhir sebesar ${rupiahRingkas(a.pribadi30Hari)}.`
-      : `Pengeluaran pribadi tercatat terpisah: ${rupiahRingkas(a.pribadi30Hari)} dalam 30 hari terakhir.`,
-  );
   if (s.cukupData && s.terendah)
     poin.push(`Minggu tersepi (${rentang(s.terendah.dari, s.terendah.sampai)}) labanya hanya ${rupiah(s.terendah.nilai)}; seperempat minggu labanya di bawah ${rupiah(s.kuartilBawah)}.`);
   else poin.push(`Minggu sepi belum bisa dinilai: baru ${s.mingguValid} dari ${s.dibutuhkan} minggu lengkap tercatat.`);
   poin.push(
-    a.kemungkinanPribadi > 0
-      ? "Saran: pisahkan belanja rumah tangga dari uang usaha agar laba terlihat apa adanya."
-      : s.cukupData
+    s.cukupData
         ? `Saran: jika berencana mencicil, pastikan cicilan per minggu tetap di bawah ${rupiah(s.kuartilBawah)}.`
         : "Saran: catat setiap hari agar data 6 bulan lengkap lebih cepat terkumpul.",
   );

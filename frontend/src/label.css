@@ -1,8 +1,3 @@
-/* =====================================================================
-   Label Produk — daftar → foto → periksa → hasil (tanpa tab)
-   Gaya tenang: kartu putih, garis tipis, satu warna aksen.
-   ===================================================================== */
-
 .lp-alur,
 .lp-hasil {
   display: grid;
@@ -37,7 +32,6 @@
   text-transform: uppercase;
 }
 
-/* ---------- Panel umum ---------- */
 .lp-panel {
   display: grid;
   gap: 18px;
@@ -85,7 +79,6 @@
   border-top-color: #fff;
 }
 
-/* ---------- Pil status ---------- */
 .lp-pil {
   display: inline-flex;
   align-items: center;
@@ -111,7 +104,6 @@
   color: rgba(18, 32, 86, 0.55);
 }
 
-/* ---------- Ilustrasi kemasan ---------- */
 .lp-kemasan {
   display: grid;
   align-content: end;
@@ -143,7 +135,6 @@
   font-size: 9px;
 }
 
-/* ---------- Daftar produk ---------- */
 .lp-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -279,7 +270,6 @@
   line-height: 1.55;
 }
 
-/* ---------- Alur: kepala & langkah ---------- */
 .lp-alur-kepala {
   display: flex;
   flex-wrap: wrap;
@@ -340,7 +330,6 @@
   color: #2a7a59;
 }
 
-/* ---------- Langkah 1: foto ---------- */
 .lp-foto-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -413,7 +402,6 @@
   font-size: 13px;
 }
 
-/* ---------- Langkah 2: periksa ---------- */
 .lp-periksa {
   display: grid;
   gap: 18px;
@@ -580,7 +568,6 @@
   resize: vertical;
 }
 
-/* ---------- Hasil ---------- */
 .lp-hero {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr) 220px;
@@ -811,7 +798,6 @@
   word-break: break-word;
 }
 
-/* ---------- Responsif ---------- */
 @media (max-width: 1023px) {
   .lp-hero {
     grid-template-columns: 120px minmax(0, 1fr);
@@ -876,4 +862,210 @@
   .lp-kaki {
     flex-wrap: wrap;
   }
+}
+
+.lp-ringkasan {
+  padding: 16px 18px;
+  border: 1px solid rgba(18, 32, 86, 0.1);
+  border-radius: 14px;
+  background: #fff;
+}
+.lp-ringkasan h4 {
+  margin: 0 0 10px;
+  color: #122056;
+  font: 700 14px "Plus Jakarta Sans", sans-serif;
+}
+.lp-ringkasan ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: #26335f;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.lp-skor-langsung {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 4px 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f7f6f1;
+}
+.lp-skor-langsung span {
+  display: block;
+  color: rgba(18, 32, 86, 0.55);
+  font-size: 12px;
+}
+.lp-skor-langsung b {
+  color: #122056;
+  font: 700 16px "Plus Jakarta Sans", sans-serif;
+}
+.lp-skor-langsung i {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(18, 32, 86, 0.08);
+}
+.lp-skor-langsung i em {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #c4473a;
+  transition: width 0.3s ease;
+}
+.lp-skor-langsung.kurang i em {
+  background: #d9a441;
+}
+.lp-skor-langsung.ok i em {
+  background: #2a7a59;
+}
+.lp-skor-langsung small {
+  grid-column: 1 / -1;
+  color: rgba(18, 32, 86, 0.45);
+  font-size: 11.5px;
+}
+.lp-catatan-ai {
+  padding-left: 32px;
+  color: rgba(18, 32, 86, 0.55);
+  font-size: 12px;
+  font-style: italic;
+}
+.lp-klaim-ai {
+  padding: 14px 16px;
+  border-left: 3px solid #d9a441;
+  border-radius: 0 12px 12px 0;
+  background: #fdf8ec;
+}
+.lp-klaim-ai h4 {
+  margin: 0 0 8px;
+  color: #122056;
+  font-size: 13.5px;
+}
+.lp-klaim-ai ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: #26335f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.lp-klaim-ai q {
+  font-weight: 600;
+}
+.lp-klaim-ai span {
+  display: block;
+  color: #2a7a59;
+}
+.lp-ritel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  color: rgba(18, 32, 86, 0.55);
+  font-size: 12.5px;
+}
+.lp-ritel em {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(18, 32, 86, 0.06);
+  color: rgba(18, 32, 86, 0.6);
+  font-style: normal;
+}
+.lp-ritel em.ada {
+  background: #e7f4ee;
+  color: #2a7a59;
+}
+@media (max-width: 560px) {
+  .lp-skor-langsung {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nk-shell .lp-panel input.isian-cek {
+  border-color: #d64535 !important;
+  background: #fff8f7;
+  box-shadow: 0 0 0 3px rgba(214, 69, 53, 0.12);
+}
+.nk-shell .lp-panel input.isian-cek::placeholder {
+  color: #c0584b;
+}
+.lp-hint.tidak {
+  color: #b23b2e;
+}
+
+.lp-draf-dua {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.lp-draf-sisi {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.lp-draf-sisi-kepala {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.lp-draf-sisi-kepala b {
+  display: block;
+  color: #122056;
+  font-size: 14px;
+}
+.lp-draf-sisi-kepala small {
+  color: rgba(18, 32, 86, 0.5);
+  font-size: 12px;
+}
+.lp-draf-sisi-kepala .portal-secondary {
+  flex-shrink: 0;
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+@media (max-width: 760px) {
+  .lp-draf-dua {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lp-tidak-terdeteksi {
+  display: block;
+  padding-left: 32px;
+  color: #8a3a31;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.lp-tidak-terdeteksi b {
+  color: #d64535;
+  font-weight: 700;
+}
+.lp-cek-list .lp-tidak-terdeteksi {
+  padding-left: 0;
+}
+.lp-coba-lagi {
+  display: inline-flex;
+  margin-left: 10px;
+  padding: 3px 12px;
+  border: 1px solid #d9a441;
+  border-radius: 99px;
+  background: #fff;
+  color: #8a5a00;
+  font: 600 12.5px "Inter", sans-serif;
+  cursor: pointer;
+}
+.lp-coba-lagi:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.lp-hasil-grid {
+  grid-template-columns: minmax(0, 1fr);
 }

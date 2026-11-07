@@ -3,7 +3,6 @@ import { rupiah, rupiahRingkas } from "../lib/format";
 
 function useLebar<T extends HTMLElement>() {
   const ref = useRef<T>(null);
-  // Mulai kecil agar render pertama tidak memaksa kartu melebar di layar sempit
   const [lebar, setLebar] = useState(240);
   useEffect(() => {
     if (!ref.current) return;
@@ -15,7 +14,6 @@ function useLebar<T extends HTMLElement>() {
   return [ref, lebar] as const;
 }
 
-/** Skala sumbu Y yang "rapi" (0, 5 jt, 10 jt, ...). */
 function skala(min: number, max: number, langkah = 4) {
   const rentang = Math.max(1, max - Math.min(0, min));
   const kasar = rentang / langkah;
@@ -30,9 +28,6 @@ function skala(min: number, max: number, langkah = 4) {
 
 type Seri = { kunci: string; label: string; warna: string; jenis: "batang" | "garis"; putus?: boolean; area?: boolean };
 
-/**
- * Grafik gabungan: batang (omzet / uang masuk & keluar) + garis (laba / HPP / selisih).
- */
 export function GrafikGabungan({
   data,
   seri,
@@ -180,7 +175,6 @@ export function Donat({ data, total, ukuran = 168 }: { data: { nama: string; nom
   );
 }
 
-/** Sparkline laba mingguan dengan penanda minggu terendah, kuartil bawah, dan minggu belum lengkap. */
 export function SparkLaba({
   seri,
   kuartilBawah,
@@ -201,7 +195,6 @@ export function SparkLaba({
   const x = (i: number) => pad + (i / Math.max(1, seri.length - 1)) * (lebar - pad * 2);
   const y = (v: number) => pad + (1 - (v - min) / (max - min)) * (tinggi - pad * 2);
   const titik = seri.map((s, i) => (s.valid ? `${x(i)},${y(s.laba)}` : null));
-  // Putus garis di minggu yang belum lengkap
   const potongan: string[][] = [[]];
   titik.forEach((t) => (t ? potongan[potongan.length - 1].push(t) : potongan.push([])));
   return (

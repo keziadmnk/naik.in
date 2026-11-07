@@ -1,5 +1,3 @@
-// Pembantu rute API data aplikasi: sesi, usaha milik pengguna, validasi, dan galat.
-
 import { cookies } from "next/headers";
 import type { PoolClient } from "pg";
 import { z } from "zod";
@@ -30,7 +28,6 @@ export async function usahaMilik(db: PoolClient, userId: string): Promise<string
   return rows[0]?.id ?? null;
 }
 
-/** Jalankan handler dalam satu transaksi database dengan konteks pengguna yang masuk. */
 export async function denganKonteks<T>(handler: (k: Konteks) => Promise<T>, opsi: { butuhUsaha?: boolean } = { butuhUsaha: true }): Promise<Response> {
   try {
     const user = await penggunaDariSesi();
@@ -67,7 +64,6 @@ export async function bacaJson<T>(request: Request, skema: z.ZodType<T>): Promis
   return skema.parse(isi);
 }
 
-/** Cari id kategori dari kode (kategori sistem atau milik usaha). */
 export async function idKategori(db: PoolClient, businessId: string, kode: string): Promise<{ id: string; arah: string }> {
   const { rows } = await db.query<{ id: string; arah: string }>(
     "SELECT id, arah FROM categories WHERE kode = $1 AND (business_id IS NULL OR business_id = $2) ORDER BY business_id NULLS LAST LIMIT 1",

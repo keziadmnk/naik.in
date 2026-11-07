@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks } from "@/lib/server/rute";
 
-// PUT /api/settings — pengaturan per pengguna: demo, Simulasi KUR, pengingat, biaya rutin, tur.
 const skema = z.object({
   demo: z.object({ akunKosong: z.boolean().optional(), dataTigaBulan: z.boolean().optional(), modeOffline: z.boolean().optional() }).optional(),
   kur: z
@@ -14,7 +13,7 @@ const skema = z.object({
   turSelesai: z.boolean().optional(),
   pengingat: z.object({ harian: z.boolean().optional(), jam: z.string().regex(/^\d{2}:\d{2}$/).optional(), mingguan: z.boolean().optional() }).optional(),
   biayaRutin: z
-    .array(z.object({ nama: z.string().trim().min(1).max(120), jenis: z.enum(["usaha", "rumah_tangga"]), nominalBulanan: z.number().int().min(0) }))
+    .array(z.object({ nama: z.string().trim().min(1).max(120), jenis: z.enum(["usaha"]), nominalBulanan: z.number().int().min(0) }))
     .max(50)
     .optional(),
 });
@@ -25,7 +24,6 @@ export async function PUT(request: Request) {
       const p = await bacaJson(request, skema);
       if (p.demo || p.kur || p.turSelesai !== undefined) {
         await db.query("INSERT INTO user_settings (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING", [user.id]);
-        // Akun kosong & data 3 bulan saling meniadakan
         const akunKosong = p.demo?.akunKosong;
         const tigaBulan = p.demo?.dataTigaBulan;
         await db.query(

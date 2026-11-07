@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, tanggal } from "@/lib/server/rute";
 
-// POST /api/ai-summaries — simpan ringkasan analisis keuangan yang ditampilkan (AI atau templat).
 const skema = z.object({
   periodeDari: tanggal,
   periodeSampai: tanggal,

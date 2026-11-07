@@ -1,13 +1,10 @@
-// Impor & validasi untuk layar "Periksa dulu".
-// Tidak ada baris yang masuk riwayat sebelum pengguna menekan "Konfirmasi dan simpan".
-
 import type { Arah, Kategori, Metode, Transaksi } from "../data/types";
 import { addDays, daysBetween, rentang, tanggal } from "./format";
 
 export type BarisDraf = {
   key: string;
-  baris: number | null; // nomor baris di file (null = input manual / scan)
-  tanggal: string; // YYYY-MM-DD, "" jika tidak terbaca
+  baris: number | null;
+  tanggal: string;
   tanggalAsli: string;
   uraian: string;
   arah: Arah;
@@ -15,7 +12,12 @@ export type BarisDraf = {
   metode: Metode;
   nominal: number;
   disertakan: boolean;
+  ragu?: boolean;
+  catatanAi?: string;
+  isianRagu?: Partial<Record<KolomDraf, { pesan: string; saran?: string }>>;
 };
+
+export type KolomDraf = "tanggal" | "uraian" | "nominal" | "arah" | "kategoriId";
 
 export type Masalah = { tingkat: "galat" | "peringatan"; pesan: string };
 
@@ -38,9 +40,6 @@ export function barisKosong(hariIni: string, sebelumnya?: Partial<BarisDraf>): B
   };
 }
 
-// ---------------------------------------------------------------------------
-// Parsing tanggal & angka
-// ---------------------------------------------------------------------------
 
 const NAMA_BULAN: Record<string, number> = {
   jan: 1, januari: 1, feb: 2, februari: 2, mar: 3, maret: 3, apr: 4, april: 4, mei: 5, may: 5,
@@ -55,11 +54,10 @@ function valid(y: number, m: number, d: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** Terima 2026-11-03, 03/11/2026, 3-11-26, "3 Nov 2026", serial Excel, atau objek Date. */
 export function parseTanggal(input: unknown): string {
   if (input instanceof Date && !Number.isNaN(input.getTime())) return valid(input.getFullYear(), input.getMonth() + 1, input.getDate());
   if (typeof input === "number" && input > 20000 && input < 80000) {
-    return addDays("1899-12-30", Math.floor(input)); // serial tanggal Excel
+    return addDays("1899-12-30", Math.floor(input));
   }
   const s = String(input ?? "").trim().toLowerCase();
   if (!s) return "";
@@ -72,20 +70,15 @@ export function parseTanggal(input: unknown): string {
   return "";
 }
 
-/** "Rp1.250.000", "1,250,000", "1250000", "-350.000" → angka (selalu positif). */
 export function parseNominal(input: unknown): number {
   if (typeof input === "number") return Math.abs(Math.round(input));
   const s = String(input ?? "").replace(/rp|idr|\s/gi, "");
   if (!s) return 0;
-  // Jika ada koma desimal (",00") buang bagian desimal
   const tanpaDesimal = s.replace(/[.,]\d{2}$/, (x) => (/[.,]\d{3}/.test(s) ? "" : x));
   const angka = Number(tanpaDesimal.replace(/[^\d-]/g, ""));
   return Number.isFinite(angka) ? Math.abs(Math.round(angka)) : 0;
 }
 
-// ---------------------------------------------------------------------------
-// Pemetaan kolom file → baris draf
-// ---------------------------------------------------------------------------
 
 const KOLOM = {
   tanggal: ["tanggal", "tgl", "date", "waktu"],
@@ -114,7 +107,6 @@ export function tebakKategori(uraian: string, arah: Arah, kategori: Kategori[]):
     [/ongkir|kirim|jne|j&t|gojek|grab|bensin/, "ongkir"],
     [/kompor|wajan|alat|mesin|blender/, "peralatan"],
     [/pulsa|admin|biaya/, "admin"],
-    [/dapur|rumah|anak|sekolah|beras/, "pribadi"],
   ];
   return aturan.find(([re, id]) => re.test(t) && ada(id))?.[1] ?? "bahan-baku";
 }
@@ -164,7 +156,6 @@ export function barisDariTabel(tabel: unknown[][], kategori: Kategori[]): BarisD
   });
 }
 
-/** CSV sederhana: mendukung pemisah koma/titik koma dan tanda kutip. */
 export function parseCsv(teks: string): string[][] {
   const barisPertama = teks.split(/\r?\n/)[0] ?? "";
   const pemisah = (barisPertama.match(/;/g)?.length ?? 0) > (barisPertama.match(/,/g)?.length ?? 0) ? ";" : ",";
@@ -189,9 +180,6 @@ export function parseCsv(teks: string): string[][] {
   return hasil;
 }
 
-// ---------------------------------------------------------------------------
-// Validasi
-// ---------------------------------------------------------------------------
 
 export type HasilValidasi = {
   masalah: Record<string, Masalah[]>;
@@ -207,7 +195,6 @@ export function validasiDraf(draf: BarisDraf[], riwayat: Transaksi[], hariIni: s
   const masalah: Record<string, Masalah[]> = {};
   const tambah = (key: string, m: Masalah) => (masalah[key] = [...(masalah[key] ?? []), m]);
 
-  // Rentang file = rentang tanggal mayoritas (median ± 45 hari), agar tanggal nyasar terdeteksi.
   const tanggalValid = draf.map((d) => d.tanggal).filter(Boolean).sort();
   let rentangFile: HasilValidasi["rentangFile"] = null;
   let median = "";

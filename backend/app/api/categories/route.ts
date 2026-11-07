@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, GalatApi } from "@/lib/server/rute";
 
-// POST /api/categories — tambah kategori milik usaha. DELETE ?kode=... — nonaktifkan.
 const skema = z.object({
   id: z.string().regex(/^k-[\w-]{4,80}$/),
   nama: z.string().trim().min(1).max(80),
   arah: z.enum(["masuk", "keluar"]),
-  kelompok: z.enum(["penjualan", "pemasukan_lain", "hpp", "operasional", "pribadi"]),
+  kelompok: z.enum(["penjualan", "pemasukan_lain", "hpp", "operasional"]),
   tetap: z.boolean().optional(),
 });
 

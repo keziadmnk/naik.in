@@ -1,5 +1,3 @@
-// Rute berbasis hash: #/keuangan atau #/keuangan/perlu-dicek
-
 export type AppRoute =
   | "login"
   | "register"
@@ -22,6 +20,6 @@ export function goTo(route: AppRoute | "landing", sub?: string) {
 export function bacaRute(hash = window.location.hash): { route: AppRoute; sub: string | null } | null {
   if (!hash.startsWith("#/")) return null;
   const [route, sub] = hash.slice(2).split("/");
-  if (route === "profil") return { route: "akun", sub: null }; // tautan lama
+  if (route === "profil") return { route: "akun", sub: null };
   return SEMUA.includes(route as AppRoute) ? { route: route as AppRoute, sub: sub ?? null } : { route: "beranda", sub: null };
 }

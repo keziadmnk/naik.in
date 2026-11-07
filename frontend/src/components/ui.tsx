@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { PIcon, type PIconName } from "./icons";
 
-/** Istilah teknis + tooltip "Artinya apa?". */
 export function Istilah({ children, arti }: { children: ReactNode; arti: string }) {
   return (
     <span className="nk-istilah">
@@ -48,8 +47,8 @@ export function ArtinyaApa({ arti }: { arti: string }) {
 
 export const ARTI = {
   hpp: "HPP (Harga Pokok Penjualan) adalah biaya bahan baku dan kemasan yang langsung dipakai untuk membuat produk yang dijual.",
-  labaUsaha: "Laba usaha = penjualan dikurangi HPP dan biaya operasional. Pengeluaran pribadi tidak ikut dihitung.",
-  selisihKas: "Selisih kas = semua uang masuk dikurangi semua uang keluar, termasuk pengeluaran pribadi. Menunjukkan uang tunai bertambah atau berkurang.",
+  labaUsaha: "Laba usaha = penjualan dikurangi HPP dan biaya operasional.",
+  selisihKas: "Selisih kas = semua uang masuk dikurangi semua uang keluar. Menunjukkan uang tunai bertambah atau berkurang.",
   operasional: "Biaya operasional adalah biaya menjalankan usaha selain bahan baku, misalnya gas, upah, ongkir, dan sewa.",
   kuartilBawah: "Kuartil bawah: 1 dari 4 minggu labanya berada di bawah angka ini. Gambaran minggu-minggu yang sedang sepi.",
   stressOut: "Uji kas saat sepi: melihat laba di minggu-minggu terburuk untuk menilai apakah cicilan tetap aman dibayar.",
@@ -75,12 +74,14 @@ export function Modal({
   onTutup,
   lebar = 480,
   aksi,
+  nada,
 }: {
   judul: string;
   children: ReactNode;
   onTutup: () => void;
   lebar?: number;
   aksi?: ReactNode;
+  nada?: "bahaya" | "info";
 }) {
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onTutup();
@@ -89,10 +90,22 @@ export function Modal({
   }, [onTutup]);
   return (
     <div className="nk-overlay" onMouseDown={onTutup}>
-      <div className="nk-modal" role="dialog" aria-modal="true" aria-label={judul} style={{ maxWidth: lebar }} onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        className={`nk-modal ${nada ? `nk-modal-nada ${nada}` : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={judul}
+        style={{ maxWidth: lebar }}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <header>
+          {nada && (
+            <span className="nk-modal-ikon" aria-hidden="true">
+              <PIcon name={nada === "bahaya" ? "alert" : "info"} size={22} />
+            </span>
+          )}
           <h3>{judul}</h3>
-          <button className="nk-icon-btn" onClick={onTutup} aria-label="Tutup">
+          <button className="nk-icon-btn nk-modal-tutup" onClick={onTutup} aria-label="Tutup">
             <PIcon name="close" size={18} />
           </button>
         </header>
@@ -103,7 +116,6 @@ export function Modal({
   );
 }
 
-/** Panel geser dari kanan (laptop) / bawah (HP). */
 export function Panel({ judul, children, onTutup }: { judul: string; children: ReactNode; onTutup: () => void }) {
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onTutup();

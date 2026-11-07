@@ -57,7 +57,6 @@ async function browserRead(): Promise<Store> {
     database.close();
     if (value) return { ...emptyStore(), ...value, aiCache: value.aiCache ?? {} };
   } catch {
-    // Fallback to localStorage when IndexedDB is unavailable or blocked.
   }
   const storage = browserStorage();
   if (!storage) return emptyStore();
@@ -83,7 +82,6 @@ async function browserWrite(store: Store): Promise<void> {
     database.close();
     return;
   } catch {
-    // Fallback to localStorage when IndexedDB is unavailable or blocked.
   }
   const storage = browserStorage();
   if (!storage) throw new Error("Penyimpanan lokal tidak tersedia di perangkat ini.");

@@ -1,9 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks, tanggal, uuid } from "@/lib/server/rute";
 
-// POST /api/findings — catat tindakan atas temuan "Perlu Dicek".
-// Deteksi temuan berjalan di frontend; yang disimpan adalah keputusan pengguna,
-// sehingga temuan yang sudah ditindak tidak muncul lagi.
 
 const skema = z.object({
   kunci: z.string().min(1).max(200),

@@ -1,6 +1,3 @@
-// Deteksi temuan "Perlu Dicek". Aturan dibuat sederhana & dapat dijelaskan
-// agar setiap temuan punya alasan yang jelas di panel detail.
-
 import { kategoriMap } from "../data/categories";
 import type { Kategori, Temuan, Transaksi } from "../data/types";
 import { addDays, rentang, rupiah, tanggal } from "./format";
@@ -86,7 +83,6 @@ export function deteksiTemuan(
       });
   }
 
-  // Duplikat: tanggal, uraian, nominal, dan arah sama persis.
   const grup = new Map<string, Transaksi[]>();
   for (const t of transaksi) {
     const kunci = `${t.tanggal}|${t.uraian.trim().toLowerCase()}|${t.nominal}|${t.arah}`;
@@ -109,9 +105,6 @@ export function deteksiTemuan(
       });
   }
 
-  // Nominal tidak biasa (uang keluar): ≥ 4× median kelompok biaya yang sama
-  // (HPP / operasional / pribadi) dan minimal Rp1 juta. Dibandingkan per kelompok
-  // agar kategori yang jarang dipakai (mis. Peralatan) tetap punya pembanding.
   const kelompokDari = (t: Transaksi) => peta[t.kategoriId]?.kelompok ?? "operasional";
   const perKelompok = new Map<string, number[]>();
   for (const t of transaksi)
@@ -135,7 +128,6 @@ export function deteksiTemuan(
       });
   }
 
-  // Hari belum dicatat: rentang hari tanpa catatan di antara awal data dan hari ini.
   if (transaksi.length) {
     const tercatat = new Set([...transaksi.map((t) => t.tanggal), ...opsi.hariLibur]);
     const awal = transaksi.reduce((a, t) => (t.tanggal < a ? t.tanggal : a), transaksi[0].tanggal);

@@ -9,18 +9,16 @@ import { DokumenLaporan, type Bagian } from "./Laporan";
 
 type Jenis = "lengkap" | "keuangan" | "kur" | "label";
 
-const SEMUA: Record<Bagian, boolean> = { ringkasan: true, rekap: true, kategori: true, ketahanan: true, kur: true, label: true, catatan: true };
+const SEMUA: Record<Bagian, boolean> = { ringkasan: true, ketahanan: true, kur: true, label: true, catatan: true };
 const PRESET: Record<Jenis, { judul: string; bagian: Record<Bagian, boolean> }> = {
   lengkap: { judul: "Laporan Kondisi Usaha", bagian: SEMUA },
   keuangan: { judul: "Laporan Kesehatan Keuangan", bagian: { ...SEMUA, kur: false, label: false } },
-  kur: { judul: "Laporan Kesiapan KUR", bagian: { ...SEMUA, rekap: false, kategori: false, label: false, catatan: false } },
-  label: { judul: "Laporan Kesiapan Label Produk", bagian: { ringkasan: false, rekap: false, kategori: false, ketahanan: false, kur: false, label: true, catatan: false } },
+  kur: { judul: "Laporan Kesiapan KUR", bagian: { ...SEMUA, label: false, catatan: false } },
+  label: { judul: "Laporan Kesiapan Label Produk", bagian: { ringkasan: false, ketahanan: false, kur: false, label: true, catatan: false } },
 };
 
 const NAMA_BAGIAN: Record<Bagian, string> = {
   ringkasan: "Ringkasan",
-  rekap: "Rekap bulanan",
-  kategori: "Uang keluar",
   ketahanan: "Ketahanan saat sepi",
   kur: "Simulasi KUR",
   label: "Label produk",
@@ -28,21 +26,37 @@ const NAMA_BAGIAN: Record<Bagian, string> = {
 };
 
 function Pratinjau({ jenis, cetak, onTutup }: { jenis: Jenis; cetak: boolean; onTutup: () => void }) {
+  const { server, muatUlang } = useToko();
   const [bagian, setBagian] = useState(PRESET[jenis].bagian);
+  const [muat, setMuat] = useState<{ status: "memuat" | "db" | "lokal"; per: string | null }>({ status: "memuat", per: null });
+  useEffect(() => {
+    let batal = false;
+    (async () => {
+      const ok = server ? await muatUlang() : false;
+      if (batal) return;
+      const per = new Date().toLocaleString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      setMuat(ok ? { status: "db", per: `${per} (dari database)` } : { status: "lokal", per: null });
+    })();
+    return () => {
+      batal = true;
+    };
+  }, []);
   const tutup = useRef(onTutup);
   tutup.current = onTutup;
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === "Escape" && tutup.current();
     document.addEventListener("keydown", esc);
     document.body.classList.add("fg-mencetak-laporan");
-    // "Unduh PDF" dari tabel: buka pratinjau lalu langsung dialog cetak
-    const t = cetak ? window.setTimeout(() => window.print(), 300) : 0;
     return () => {
       document.removeEventListener("keydown", esc);
       document.body.classList.remove("fg-mencetak-laporan");
-      window.clearTimeout(t);
     };
-  }, [cetak]);
+  }, []);
+  useEffect(() => {
+    if (!cetak || muat.status === "memuat") return;
+    const t = window.setTimeout(() => window.print(), 300);
+    return () => window.clearTimeout(t);
+  }, [cetak, muat.status]);
   return (
     <div className="modal-backdrop fg-pratinjau" onClick={onTutup}>
       <div className="report-modal" role="dialog" aria-modal="true" aria-label={PRESET[jenis].judul} onClick={(e) => e.stopPropagation()}>
@@ -52,7 +66,7 @@ function Pratinjau({ jenis, cetak, onTutup }: { jenis: Jenis; cetak: boolean; on
             <h3>{PRESET[jenis].judul}</h3>
           </div>
           <div>
-            <button onClick={() => window.print()}>
+            <button onClick={() => window.print()} disabled={muat.status === "memuat"}>
               <PIcon name="download" size={16} />
               Unduh PDF
             </button>
@@ -70,8 +84,19 @@ function Pratinjau({ jenis, cetak, onTutup }: { jenis: Jenis; cetak: boolean; on
             </label>
           ))}
         </div>
+        {muat.status === "lokal" && (
+          <p className="fg-lap-peringatan" role="alert">
+            <PIcon name="alert" size={15} /> Data tidak dimuat dari database (tidak tersambung ke server / mode lokal). Angka di laporan ini berasal dari data di perangkat ini.
+          </p>
+        )}
         <div className="fg-pdf">
-          <DokumenLaporan bagian={bagian} judul={PRESET[jenis].judul} />
+          {muat.status === "memuat" ? (
+            <div className="fg-lap-memuat" role="status">
+              <span className="nk-spinner" /> Mengambil data terbaru dari database…
+            </div>
+          ) : (
+            <DokumenLaporan bagian={bagian} judul={PRESET[jenis].judul} dataPer={muat.per} />
+          )}
         </div>
       </div>
     </div>
@@ -85,7 +110,6 @@ export function Laporan() {
   const [pratinjau, setPratinjau] = useState<{ jenis: Jenis; cetak: boolean } | null>(null);
   const [filter, setFilter] = useState("");
 
-  // Periode laporan: 6 bulan kalender penuh terakhir (sama dengan dokumen)
   const awalBulanIni = `${monthKey(hariIni)}-01`;
   let dari = awalBulanIni;
   for (let i = 0; i < 6; i += 1) dari = `${monthKey(addDays(dari, -1))}-01`;
@@ -125,8 +149,8 @@ export function Laporan() {
   const tampil = baris.filter((b) => !filter || b.jenis === filter);
 
   const kartu: [PIconName, string, string, Jenis][] = [
-    ["wallet", "Laporan Kesehatan Keuangan", "Ringkasan arus kas, rekap bulanan, uang keluar, minggu tersepi, dan catatan analisis.", "keuangan"],
-    ["calc", "Laporan Kesiapan KUR", "Simulasi cicilan yang dimasukkan, ketahanan kas saat sepi, dan status persiapan.", "kur"],
+    ["wallet", "Laporan Kesehatan Keuangan", "Ringkasan arus kas, ketahanan saat minggu sepi, dan catatan analisis.", "keuangan"],
+    ["calc", "Laporan Kesiapan KUR", "Simulasi cicilan tersimpan terbaru, ketahanan kas saat sepi, dan status persiapan.", "kur"],
     ["tag", "Laporan Kesiapan Label", "Skor 9 keterangan wajib setiap produk dan keterangan yang perlu dilengkapi.", "label"],
   ];
 
@@ -138,9 +162,7 @@ export function Laporan() {
           Buat Laporan
         </button>
       </PageHeader>
-      <DemoStrip>
-        {server ? "Laporan disusun otomatis dari data di database dan selalu memakai catatan terbaru." : "Laporan disusun dari data demo ilustratif di browser ini."} Cetak atau simpan sebagai PDF dari pratinjau.
-      </DemoStrip>
+      {!server && <DemoStrip>Laporan disusun dari data demo ilustratif di browser ini.</DemoStrip>}
       <div className="report-type-grid">
         {kartu.map(([ikon, judul, teks, jenis]) => (
           <article key={judul}>

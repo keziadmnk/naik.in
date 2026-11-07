@@ -6,6 +6,7 @@
 @import "./fitur.css";
 @import "./figma-ext.css";
 @import "./label.css";
+@import "./ukuran-huruf.css";
 
 :root {
   --navy: #122056;
@@ -49,7 +50,6 @@
   margin: 0 auto;
 }
 
-/* Navigation and hero */
 .hero {
   position: relative;
   min-height: 1180px;
@@ -271,7 +271,6 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Hero product composition */
 .dashboard-stage {
   position: relative;
   z-index: 4;
@@ -835,7 +834,6 @@
   height: 100%;
 }
 
-/* Shared sections */
 .section {
   padding: 110px 0;
   background: var(--off-white);
@@ -942,7 +940,6 @@
   color: var(--white);
 }
 
-/* Pillars */
 .pillars-section {
   padding-top: 70px;
   background: linear-gradient(180deg, var(--off-white), rgba(238, 239, 253, 0.7), var(--off-white));
@@ -1212,7 +1209,6 @@
   border-radius: 18px;
 }
 
-/* Steps */
 .how-section {
   padding-top: 105px;
 }
@@ -1276,7 +1272,6 @@
   line-height: 1.7;
 }
 
-/* CTA and footer */
 .cta-wrap {
   padding-top: 70px;
 }
@@ -1371,7 +1366,6 @@ footer {
   font-size: 9px;
 }
 
-/* Animations */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -1452,7 +1446,6 @@ footer {
   }
 }
 
-/* Tablet */
 @media (max-width: 1024px) {
   .nav-links {
     gap: 20px;
@@ -1487,7 +1480,6 @@ footer {
   }
 }
 
-/* Mobile */
 @media (max-width: 760px) {
   .container {
     width: min(100% - 32px, 560px);
@@ -1788,7 +1780,6 @@ footer {
   }
 }
 
-/* Daftar poin pada kartu fitur landing (revisi menu baru) */
 .feature-points {
   display: grid;
   gap: 6px;

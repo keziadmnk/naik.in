@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../api";
+import { api, type TransaksiOcr } from "../../api";
 import { PIcon } from "../../components/icons";
+import { KameraLangsung, kameraLangsungTersedia } from "../../components/KameraLangsung";
+import { Pemindai } from "../../components/Pemindai";
 import { Modal } from "../../components/ui";
-import { METODE, type Kategori } from "../../data/types";
-import { barisDariTabel, barisKosong, kunciBaru, parseCsv, parseTanggal, tebakKategori, type BarisDraf } from "../../lib/importer";
+import { METODE, type Kategori, type Metode } from "../../data/types";
+import { barisDariTabel, barisKosong, kunciBaru, parseCsv, parseTanggal, tebakKategori, type BarisDraf, type KolomDraf } from "../../lib/importer";
 import { useToko } from "../../state/store";
 import { useCatat } from "../AppShell";
 import type { SumberDraf } from "./PeriksaDulu";
@@ -15,19 +17,54 @@ const TERIMA = ".csv,.xlsx,.pdf,.jpg,.jpeg,.png";
 async function bacaFile(file: File, kategori: Kategori[], hariIni: string, offline: boolean): Promise<HasilBaca> {
   const nama = file.name.toLowerCase();
   const label = `Unggah file · ${file.name}`;
-  if (nama.endsWith(".csv")) {
-    const draf = barisDariTabel(parseCsv(await file.text()), kategori);
-    return { sumber: { jenis: "unggah_file", label, catatan: draf.length ? undefined : "Tidak ada baris yang terbaca. Pastikan baris pertama berisi judul kolom (Tanggal, Uraian, Masuk, Keluar)." }, draf };
-  }
-  if (nama.endsWith(".xlsx")) {
-    const { default: readXlsxFile } = await import("read-excel-file");
-    const baris = await readXlsxFile(file);
-    const draf = barisDariTabel(baris as unknown[][], kategori);
-    return { sumber: { jenis: "unggah_file", label, catatan: draf.length ? undefined : "Tidak ada baris yang terbaca di lembar pertama file." }, draf };
+  if (nama.endsWith(".csv") || nama.endsWith(".xlsx")) {
+    let tabel: unknown[][];
+    if (nama.endsWith(".csv")) tabel = parseCsv(await file.text());
+    else {
+      const { default: readXlsxFile } = await import("read-excel-file");
+      tabel = (await readXlsxFile(file)) as unknown[][];
+    }
+    const draf = barisDariTabel(tabel, kategori);
+    const barisData = tabel.filter((r) => r.some((c) => String(c ?? "").trim())).length - 1;
+    const terbacaLokal = draf.filter((d) => d.uraian.trim() && d.nominal > 0).length;
+    if (!offline && barisData > 0 && terbacaLokal < barisData * 0.8) {
+      const csv = tabel.map((r) => r.map((c) => (c instanceof Date ? c.toISOString().slice(0, 10) : String(c ?? "")).replace(/[\n;]/g, " ")).join(";")).join("\n");
+      const hasilAi = await bacaGambar(new File([csv], file.name.replace(/\.\w+$/, ".csv"), { type: "text/csv" }), kategori, hariIni, offline, "unggah_file", label);
+      const terbacaAi = hasilAi.draf.filter((d) => d.uraian.trim() && d.nominal > 0).length;
+      if (terbacaAi > terbacaLokal) return hasilAi;
+    }
+    return {
+      sumber: {
+        jenis: "unggah_file",
+        label,
+        catatan: draf.length ? undefined : "Tidak ada baris yang terbaca. Pastikan file berisi kolom tanggal, keterangan, dan nominal masuk/keluar.",
+      },
+      draf,
+    };
   }
   if (/\.(pdf|jpe?g|png)$/.test(nama)) return bacaGambar(file, kategori, hariIni, offline, "unggah_file", label);
   throw new Error("Format file belum didukung. Gunakan CSV, XLSX, PDF, JPG, atau PNG.");
 }
+
+type JenisFoto = "buku_kas" | "nota" | "mutasi";
+
+export const buangJumlah = (teks: string) =>
+  teks
+    .trim()
+    .replace(/\s*(?:[×xX]\s*\d+|\(\s*\d+\s*[×xX]?\s*\)|\d+\s*[×xX])\s*$/u, "")
+    .trim();
+
+const METODE_DARI_AI: Record<TransaksiOcr["payment_method"], Metode> = { TUNAI: "Tunai", QRIS: "QRIS", TRANSFER: "Transfer", MARKETPLACE: "Marketplace" };
+const BATAS_YAKIN = 0.7;
+const KOLOM_DARI_AI: Record<TransaksiOcr["field_issues"][number]["field"], KolomDraf> = {
+  date: "tanggal",
+  description: "uraian",
+  amount: "nominal",
+  direction: "arah",
+  category: "kategoriId",
+};
+
+export const barisRagu = (t: TransaksiOcr) => t.is_unclear || t.confidence < BATAS_YAKIN || /\[\?\]/.test(`${t.description} ${t.raw_text ?? ""}`);
 
 async function bacaGambar(
   file: File,
@@ -36,7 +73,7 @@ async function bacaGambar(
   offline: boolean,
   jenis: "unggah_file" | "scan_foto",
   label: string,
-  jenisFoto: "buku_kas" | "nota" = "buku_kas",
+  jenisFoto: JenisFoto = "buku_kas",
 ): Promise<HasilBaca> {
   const pratinjau = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
   const manual = (alasan: string): HasilBaca => ({
@@ -45,43 +82,54 @@ async function bacaGambar(
   });
   if (offline) return manual("Mode offline: pembacaan otomatis tidak tersedia.");
 
-  if (jenisFoto === "nota" && !file.name.toLowerCase().endsWith(".pdf")) {
-    const hasil = await api.ocrNota(file);
-    if (!hasil.ok || !hasil.data) return manual(`Pembacaan otomatis belum tersedia (${hasil.alasan ?? "AI tidak aktif"}).`);
-    const n = hasil.data;
-    const uraian = `Belanja ${n.supplier ?? "nota"}${n.items.length ? `: ${n.items.map((i) => i.nama).filter(Boolean).slice(0, 3).join(", ")}` : ""}`;
-    return {
-      sumber: { jenis, label, pratinjau, catatan: "Hasil baca AI. Periksa tanggal dan nominal sebelum menyimpan." },
-      draf: [{
-        ...barisKosong(hariIni),
-        tanggal: parseTanggal(n.tanggal),
-        tanggalAsli: n.tanggal ?? "",
-        uraian,
-        kategoriId: tebakKategori(uraian, "keluar", kategori),
-        nominal: Math.round(n.total ?? 0),
-      }],
-    };
-  }
-
-  const hasil = await api.ocrBukuKas(file);
+  const petunjuk = file.name.toLowerCase().endsWith(".pdf") || jenisFoto === "mutasi" ? "ocr_pdf_mutasi" : jenisFoto === "nota" ? "ocr_nota" : "ocr_cashbook";
+  const hasil = await api.ocrDokumen(file, petunjuk, hariIni);
   if (!hasil.ok || !hasil.data) return manual(`Pembacaan otomatis belum tersedia (${hasil.alasan ?? "AI tidak aktif"}).`);
-  const draf: BarisDraf[] = hasil.data.rows.map((r) => {
-    const arah = r.masuk ? "masuk" : "keluar";
-    const uraian = r.uraian ?? "";
-    return {
-      key: kunciBaru(),
-      baris: null,
-      tanggal: parseTanggal(r.tanggal),
-      tanggalAsli: r.tanggal ?? "",
-      uraian,
-      arah,
-      kategoriId: tebakKategori(uraian, arah, kategori),
-      metode: "Tunai",
-      nominal: Math.round(r.masuk ?? r.keluar ?? 0),
-      disertakan: true,
-    };
-  });
-  return { sumber: { jenis, label, pratinjau, catatan: "Hasil baca AI. Baris yang ragu ditandai — periksa sebelum menyimpan." }, draf };
+  const { transactions } = hasil.data;
+
+  const draf: BarisDraf[] = transactions
+    .filter((t) => t.direction !== "SETTLEMENT")
+    .map((t) => {
+      const arah = t.direction === "IN" ? "masuk" : "keluar";
+      const uraian = buangJumlah(t.description);
+      const kat = kategori.find((k) => k.id === t.category && k.arah === arah);
+      const ragu = barisRagu(t);
+      const isianRagu: BarisDraf["isianRagu"] = {};
+      for (const f of t.field_issues ?? []) {
+        const kolom = KOLOM_DARI_AI[f.field];
+        const lama = isianRagu[kolom];
+        isianRagu[kolom] = { pesan: lama ? `${lama.pesan}; ${f.problem}` : f.problem, saran: f.suggestion?.trim() || lama?.saran };
+      }
+      if (ragu && !Object.keys(isianRagu).length) {
+        const pesan = t.review_note || "AI ragu membaca bagian ini";
+        if (/\[\?\]/.test(t.description)) isianRagu.uraian = { pesan };
+        else isianRagu.nominal = { pesan };
+      }
+      return {
+        key: kunciBaru(),
+        baris: t.row_index || null,
+        tanggal: parseTanggal(t.transaction_date ?? ""),
+        tanggalAsli: t.transaction_date ?? "",
+        uraian,
+        arah,
+        kategoriId: kat?.id ?? tebakKategori(uraian, arah, kategori),
+        metode: METODE_DARI_AI[t.payment_method] ?? "Tunai",
+        nominal: Math.max(0, Math.round(t.amount ?? 0)),
+        disertakan: true,
+        ragu,
+        catatanAi: ragu ? t.review_note || "AI ragu membaca baris ini. Cocokkan dengan foto." : undefined,
+        isianRagu: Object.keys(isianRagu).length ? isianRagu : undefined,
+      };
+    });
+  return {
+    sumber: {
+      jenis,
+      label,
+      pratinjau,
+      catatan: draf.length ? undefined : "AI tidak menemukan baris transaksi di dokumen ini. Isi manual bila perlu.",
+    },
+    draf: draf.length ? draf : [barisKosong(hariIni)],
+  };
 }
 
 export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
@@ -91,32 +139,40 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
   const inputKamera = useRef<HTMLInputElement>(null);
   const [seret, setSeret] = useState(false);
   const [proses, setProses] = useState<string | null>(null);
+  const [pratinjauProses, setPratinjauProses] = useState<string | null>(null);
   const [galat, setGalat] = useState<string | null>(null);
   const [pilihFoto, setPilihFoto] = useState(false);
-  const [jenisFoto, setJenisFoto] = useState<"buku_kas" | "nota">("nota");
+  const [jenisFoto, setJenisFoto] = useState<JenisFoto>("nota");
+  const [kameraBuka, setKameraBuka] = useState(false);
   const [halamanManual, setHalamanManual] = useState<{ tanggal?: string } | null>(null);
   const panel = useRef<HTMLDivElement>(null);
 
-  const jalankan = async (tugas: () => Promise<HasilBaca>, pesan: string) => {
+  const jalankan = async (tugas: () => Promise<HasilBaca>, pesan: string, file?: File) => {
     setGalat(null);
     setProses(pesan);
+    const url = file && file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
+    setPratinjauProses(url);
     try {
       onHasil(await tugas());
     } catch (e) {
       setGalat(e instanceof Error ? e.message : "File tidak dapat dibaca.");
     } finally {
       setProses(null);
+      setPratinjauProses(null);
+      if (url) URL.revokeObjectURL(url);
     }
   };
 
   const terimaFile = (file: File | undefined) => {
     if (!file) return;
-    jalankan(() => bacaFile(file, kategori, hariIni, demo.modeOffline), `Membaca ${file.name}…`);
+    jalankan(() => bacaFile(file, kategori, hariIni, demo.modeOffline), `Membaca ${file.name}…`, file);
   };
 
   const manual = (tanggal?: string) => setHalamanManual({ tanggal });
 
-  // Permintaan dari tombol "+" (HP), navigasi cepat, atau temuan "Catat sekarang"
+  const bacaFoto = (file: File) =>
+    jalankan(() => bacaGambar(file, kategori, hariIni, demo.modeOffline, "scan_foto", "Scan foto", jenisFoto), "Membaca foto…", file);
+
   useEffect(() => {
     if (!permintaan) return;
     panel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -130,7 +186,6 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
       setTimeout(() => inputFile.current?.click(), 0);
     }
     selesai();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [permintaan]);
 
   return (
@@ -165,13 +220,7 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
         >
           <input type="file" accept={TERIMA} onChange={(e) => (terimaFile(e.target.files?.[0]), (e.target.value = ""))} />
           {proses ? (
-            <>
-              <i>
-                <span className="nk-spinner" />
-              </i>
-              <h4>{proses}</h4>
-              <p>Tunggu sebentar…</p>
-            </>
+            <Pemindai src={pratinjauProses} teks={proses} subteks="AI sedang membaca dokumen. Buku kas yang padat bisa butuh hingga 1 menit." />
           ) : (
             <>
               <i>
@@ -222,9 +271,24 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
         onChange={(e) => {
           const file = e.target.files?.[0];
           e.target.value = "";
-          if (file) jalankan(() => bacaGambar(file, kategori, hariIni, demo.modeOffline, "scan_foto", "Scan foto", jenisFoto), "Membaca foto…");
+          if (file) bacaFoto(file);
         }}
       />
+      {kameraBuka && (
+        <KameraLangsung
+          judul={jenisFoto === "nota" ? "Foto nota belanja" : jenisFoto === "mutasi" ? "Foto mutasi QRIS" : "Foto halaman buku kas"}
+          petunjuk="Letakkan dokumen di tempat terang, foto tegak lurus, dan pastikan seluruh halaman masuk bingkai."
+          onAmbil={(f) => {
+            setKameraBuka(false);
+            bacaFoto(f);
+          }}
+          onTutup={() => setKameraBuka(false)}
+          onGagal={() => {
+            setKameraBuka(false);
+            inputKamera.current?.click();
+          }}
+        />
+      )}
 
       {pilihFoto && (
         <Modal judul="Scan foto" onTutup={() => setPilihFoto(false)} lebar={440}>
@@ -234,6 +298,7 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
               [
                 ["nota", "Nota belanja", "Satu nota / struk pembelian"],
                 ["buku_kas", "Halaman buku kas", "Beberapa baris catatan tulisan tangan"],
+                ["mutasi", "Mutasi QRIS", "Riwayat transaksi QRIS / e-wallet merchant"],
               ] as const
             ).map(([id, judul, teks]) => (
               <button
@@ -241,8 +306,8 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
                 onClick={() => {
                   setJenisFoto(id);
                   setPilihFoto(false);
-                  // Membuka kamera harus terjadi langsung dari klik pengguna
-                  setTimeout(() => inputKamera.current?.click(), 0);
+                  if (kameraLangsungTersedia()) setKameraBuka(true);
+                  else setTimeout(() => inputKamera.current?.click(), 0);
                 }}
               >
                 <PIcon name={id === "nota" ? "file" : "report"} size={20} />
@@ -261,7 +326,6 @@ export function PanelCatat({ onHasil }: { onHasil: (h: HasilBaca) => void }) {
   );
 }
 
-/** Formulir "Input Transaksi Manual" (desain Figma). Hasilnya tetap lewat layar Periksa dulu. */
 function InputManual({ onPeriksa, onKembali, tanggalAwal }: { onPeriksa: (b: BarisDraf) => void; onKembali: () => void; tanggalAwal?: string }) {
   const { kategori, hariIni } = useToko();
   const [b, setB] = useState<BarisDraf>(() => barisKosong(hariIni, { arah: "masuk", kategoriId: "penjualan", metode: "QRIS", ...(tanggalAwal ? { tanggal: tanggalAwal, tanggalAsli: tanggalAwal } : {}) }));

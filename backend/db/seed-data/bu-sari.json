@@ -20,11 +20,6 @@
    "nama": "Listrik & air usaha",
    "jenis": "usaha",
    "nominalBulanan": 350000
-  },
-  {
-   "nama": "Uang dapur keluarga (minimal)",
-   "jenis": "rumah_tangga",
-   "nominalBulanan": 2000000
   }
  ],
  "transaksi": [
@@ -83,14 +78,6 @@
    "kategori": "penjualan",
    "metode": "Tunai",
    "nominal": 313000
-  },
-  {
-   "tanggal": "2026-05-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1155000
   },
   {
    "tanggal": "2026-05-06",
@@ -387,14 +374,6 @@
    "kategori": "ongkir",
    "metode": "Transfer",
    "nominal": 190000
-  },
-  {
-   "tanggal": "2026-05-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 525000
   },
   {
    "tanggal": "2026-05-16",
@@ -709,14 +688,6 @@
    "nominal": 361000
   },
   {
-   "tanggal": "2026-05-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 420000
-  },
-  {
    "tanggal": "2026-05-26",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -1029,14 +1000,6 @@
    "nominal": 194000
   },
   {
-   "tanggal": "2026-06-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1430000
-  },
-  {
    "tanggal": "2026-06-06",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -1227,14 +1190,6 @@
    "kategori": "gaji",
    "metode": "Tunai",
    "nominal": 368000
-  },
-  {
-   "tanggal": "2026-06-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 650000
   },
   {
    "tanggal": "2026-06-16",
@@ -1515,14 +1470,6 @@
    "kategori": "penjualan",
    "metode": "Tunai",
    "nominal": 407500
-  },
-  {
-   "tanggal": "2026-06-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 520000
   },
   {
    "tanggal": "2026-06-26",
@@ -1853,14 +1800,6 @@
    "nominal": 81000
   },
   {
-   "tanggal": "2026-07-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1540000
-  },
-  {
    "tanggal": "2026-07-06",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -2165,14 +2104,6 @@
    "nominal": 284500
   },
   {
-   "tanggal": "2026-07-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 700000
-  },
-  {
    "tanggal": "2026-07-16",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -2451,14 +2382,6 @@
    "kategori": "penjualan",
    "metode": "Marketplace",
    "nominal": 240500
-  },
-  {
-   "tanggal": "2026-07-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 560000
   },
   {
    "tanggal": "2026-07-26",
@@ -2829,14 +2752,6 @@
    "nominal": 271000
   },
   {
-   "tanggal": "2026-08-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1320000
-  },
-  {
    "tanggal": "2026-08-06",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -3115,14 +3030,6 @@
    "kategori": "penjualan",
    "metode": "Marketplace",
    "nominal": 213500
-  },
-  {
-   "tanggal": "2026-08-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 600000
   },
   {
    "tanggal": "2026-08-16",
@@ -3427,14 +3334,6 @@
    "kategori": "penjualan",
    "metode": "Tunai",
    "nominal": 305000
-  },
-  {
-   "tanggal": "2026-08-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 480000
   },
   {
    "tanggal": "2026-08-26",
@@ -3789,14 +3688,6 @@
    "nominal": 156000
   },
   {
-   "tanggal": "2026-09-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1155000
-  },
-  {
    "tanggal": "2026-09-06",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -4093,14 +3984,6 @@
    "nominal": 177000
   },
   {
-   "tanggal": "2026-09-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 525000
-  },
-  {
    "tanggal": "2026-09-16",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -4395,14 +4278,6 @@
    "kategori": "ongkir",
    "metode": "Transfer",
    "nominal": 182000
-  },
-  {
-   "tanggal": "2026-09-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 420000
   },
   {
    "tanggal": "2026-09-26",
@@ -4741,14 +4616,6 @@
    "nominal": 370500
   },
   {
-   "tanggal": "2026-10-05",
-   "uraian": "Belanja dapur rumah",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 1155000
-  },
-  {
    "tanggal": "2026-10-06",
    "uraian": "Penjualan QRIS harian",
    "arah": "masuk",
@@ -5027,14 +4894,6 @@
    "kategori": "penjualan",
    "metode": "Tunai",
    "nominal": 253500
-  },
-  {
-   "tanggal": "2026-10-15",
-   "uraian": "Uang saku anak",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Tunai",
-   "nominal": 525000
   },
   {
    "tanggal": "2026-10-16",
@@ -5339,14 +5198,6 @@
    "kategori": "admin",
    "metode": "QRIS",
    "nominal": 117000
-  },
-  {
-   "tanggal": "2026-10-25",
-   "uraian": "Kebutuhan rumah tangga",
-   "arah": "keluar",
-   "kategori": "pribadi",
-   "metode": "Transfer",
-   "nominal": 420000
   },
   {
    "tanggal": "2026-10-26",

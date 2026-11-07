@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { bacaJson, denganKonteks } from "@/lib/server/rute";
 
-// POST /api/data/hapus-semua — { konfirmasi: "HAPUS" }
-// Menghapus lunak semua transaksi usaha, serta temuan & hari libur. Profil, produk, dan pengaturan tetap.
 export async function POST(request: Request) {
   return denganKonteks(async ({ businessId, db }) => {
     await bacaJson(request, z.object({ konfirmasi: z.literal("HAPUS") }));

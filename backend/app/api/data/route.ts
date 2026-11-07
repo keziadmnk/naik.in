@@ -1,7 +1,5 @@
 import { denganKonteks } from "@/lib/server/rute";
 
-// GET /api/data — seluruh data aplikasi untuk pengguna yang masuk, dalam bentuk
-// yang langsung dipakai store frontend (frontend/src/state/store.tsx).
 
 const tgl = (d: Date | string | null) => (d ? (typeof d === "string" ? d.slice(0, 10) : new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)) : null);
 

@@ -1,6 +1,5 @@
 import type { Kategori, Kelompok } from "./types";
 
-// Kategori bawaan. Di database: tabel `categories` dengan business_id NULL (kategori sistem).
 export const KATEGORI_BAWAAN: Kategori[] = [
   { id: "penjualan", nama: "Penjualan", arah: "masuk", kelompok: "penjualan" },
   { id: "pemasukan-lain", nama: "Pemasukan lain (bukan penjualan)", arah: "masuk", kelompok: "pemasukan_lain" },
@@ -12,7 +11,6 @@ export const KATEGORI_BAWAAN: Kategori[] = [
   { id: "ongkir", nama: "Ongkir & transport", arah: "keluar", kelompok: "operasional" },
   { id: "peralatan", nama: "Peralatan", arah: "keluar", kelompok: "operasional" },
   { id: "admin", nama: "Admin, pulsa & lainnya", arah: "keluar", kelompok: "operasional" },
-  { id: "pribadi", nama: "Pribadi / rumah tangga", arah: "keluar", kelompok: "pribadi" },
 ];
 
 export const NAMA_KELOMPOK: Record<Kelompok, string> = {

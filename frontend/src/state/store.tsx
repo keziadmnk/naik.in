@@ -11,14 +11,9 @@ import { keApi } from "./sinkron";
 
 export type { ProdukLabel } from "../data/demo";
 
-// Dua mode penyimpanan:
-// - server: setelah masuk & backend tersedia, data dimuat dari GET /api/data dan setiap
-//   perubahan dikirim ke API (lihat ./sinkron.ts). localStorage hanya sebagai cache.
-// - lokal: backend tidak tersedia / belum masuk → data contoh di browser (mode demo).
 
 export type Keadaan = {
   versi: 1;
-  /** true = data berasal dari database (mode server) */
   server: boolean;
   profil: ProfilUsaha;
   kategoriTambahan: Kategori[];
@@ -40,7 +35,6 @@ export type Keadaan = {
 export type PengaturanKur = {
   cicilanLama: number;
   konservatif: boolean;
-  /** null = pakai nilai awal (Pengaturan → uang dapur keluarga, atau rata-rata pengeluaran pribadi) */
   kebutuhanRT: number | null;
 };
 
@@ -58,7 +52,6 @@ export type SimulasiTersimpan = {
   diLaporan: boolean;
 };
 
-/** Rincian tambahan simulasi yang disimpan ke tabel loan_simulations. */
 export type DetailSimulasi = Record<string, unknown>;
 
 const AWAL: Keadaan = {
@@ -74,7 +67,6 @@ const AWAL: Keadaan = {
   biayaRutin: [
     { id: "b1", nama: "Sewa kios", jenis: "usaha", nominalBulanan: 800_000 },
     { id: "b2", nama: "Listrik & air usaha", jenis: "usaha", nominalBulanan: 350_000 },
-    { id: "b3", nama: "Uang dapur keluarga (minimal)", jenis: "rumah_tangga", nominalBulanan: 2_000_000 },
   ],
   pengingat: { harian: true, jam: "20:00", mingguan: true },
   demo: { akunKosong: false, dataTigaBulan: false, modeOffline: false },
@@ -98,7 +90,6 @@ function muat(): Keadaan {
   }
 }
 
-/** Bentuk respons GET /api/data. */
 export type DataServer = {
   punyaUsaha: boolean;
   profil: ProfilUsaha;
@@ -167,7 +158,6 @@ function reducer(s: Keadaan, a: Aksi): Keadaan {
       return { ...s, pengingat: { ...s.pengingat, ...a.pengingat } };
     case "demo": {
       const demo = { ...s.demo, ...a.demo };
-      // Akun kosong & data 3 bulan saling meniadakan
       if (a.demo.akunKosong) demo.dataTigaBulan = false;
       if (a.demo.dataTigaBulan) demo.akunKosong = false;
       return { ...s, demo, ringkasanAi: null };
@@ -196,7 +186,6 @@ function reducer(s: Keadaan, a: Aksi): Keadaan {
       return {
         ...s,
         tambahan: [], diubah: {}, dihapus: [], temuanDitindak: [], hariLibur: [], ringkasanAi: null,
-        // Mode lokal: data contoh disembunyikan lewat saklar "akun kosong"
         demo: s.server ? s.demo : { ...s.demo, akunKosong: true, dataTigaBulan: false },
       };
     case "muatServer": {
@@ -236,7 +225,6 @@ function useNilai(keadaan: Keadaan, kirim: (a: Aksi) => void, sinkron: StatusSin
   return useMemo(() => {
     const kategori = [...KATEGORI_BAWAAN, ...keadaan.kategoriTambahan];
     const dihapus = new Set(keadaan.dihapus);
-    // Mode lokal: data contoh + tambahan pengguna. Mode server: semua dari database.
     const semua = keadaan.server
       ? filterDemo(keadaan.tambahan, keadaan.demo)
       : [...filterDemo(transaksiDemo(), keadaan.demo), ...keadaan.tambahan];
@@ -245,8 +233,6 @@ function useNilai(keadaan: Keadaan, kirim: (a: Aksi) => void, sinkron: StatusSin
       .map((t) => (keadaan.diubah[t.id] ? { ...t, ...keadaan.diubah[t.id] } : t))
       .sort((a, b) => a.tanggal.localeCompare(b.tanggal) || a.id.localeCompare(b.id));
     const hariIni = HARI_INI_DEMO;
-    // Deteksi anomali ("Perlu Dicek") dinonaktifkan atas permintaan pengguna:
-    // tidak ada transaksi yang ditandai, semua transaksi di riwayat dihitung.
     const temuan: Temuan[] = [];
     const perluDicek = new Set<string>();
     return { ...keadaan, kategori, transaksi, temuan, perluDicek, hariIni, kirim, sinkron, muatUlang };
@@ -268,21 +254,18 @@ export function TokoProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(KUNCI, JSON.stringify(keadaan));
     } catch {
-      /* penyimpanan tidak tersedia (mode privat) — aplikasi tetap jalan */
     }
   }, [keadaan]);
 
   const kirim = useCallback((a: Aksi) => {
     const sebelum = terkini.current;
     dispatch(a);
-    // Perbarui rujukan segera agar aksi berikutnya di tick yang sama melihat keadaan terbaru
     terkini.current = reducer(sebelum, a);
     if (!sebelum.server) return;
     const tugas = keApi(a, sebelum);
     if (!tugas) return;
     tertunda.current += 1;
     setSinkron({ status: "menyimpan" });
-    // Antrean berurutan: perubahan sampai ke server sesuai urutan dilakukan
     antrian.current = antrian.current.then(async () => {
       const hasil = await tugas();
       tertunda.current -= 1;
@@ -291,7 +274,6 @@ export function TokoProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  /** Muat data dari server. true bila berhasil (mode server aktif). */
   const muatUlang = useCallback(async () => {
     const res = await panggil<DataServer>("GET", "/api/data");
     if (res.ok && res.profil) {
@@ -301,12 +283,10 @@ export function TokoProvider({ children }: { children: ReactNode }) {
       setSinkron({ status: "idle" });
       return true;
     }
-    // Sesi habis: jangan tampilkan data server milik pengguna sebelumnya
     if (res.status === 401 && terkini.current.server) dispatch({ type: "keluar" });
     return false;
   }, []);
 
-  // Status sinkron terbaca di DOM (untuk uji & debugging) + cegah menutup tab saat masih menyimpan
   useEffect(() => {
     document.body.dataset.sinkron = sinkron.status;
   }, [sinkron.status]);
@@ -319,7 +299,6 @@ export function TokoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Hanya bila pernah masuk di browser ini (cookie sesi berlaku 30 hari)
     if (sudahMasuk() || terkini.current.server) void muatUlang();
   }, [muatUlang]);
 
@@ -339,7 +318,6 @@ export function tandaiMasuk(masuk: boolean) {
     if (masuk) localStorage.setItem(KUNCI_MASUK, "1");
     else localStorage.removeItem(KUNCI_MASUK);
   } catch {
-    /* abaikan */
   }
 }
 function sudahMasuk(): boolean {
@@ -350,7 +328,6 @@ function sudahMasuk(): boolean {
   }
 }
 
-/** ID baru berformat UUID — sama di browser dan database. */
 export const idBaru = (): string =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()

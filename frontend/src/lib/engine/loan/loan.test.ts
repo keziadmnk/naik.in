@@ -6,7 +6,7 @@ import {
   susunTindakan, zonaSlider, type Kapasitas,
 } from ".";
 
-const TOL = 5; // toleransi Rp5
+const TOL = 5;
 const dekat = (aktual: number, harapan: number, tol = TOL) => expect(Math.abs(aktual - harapan)).toBeLessThanOrEqual(tol);
 
 const data = siapkanData(transaksiDemo(), KATEGORI_BAWAAN, HARI_INI_DEMO);
@@ -94,7 +94,6 @@ describe("status & cadangan", () => {
   });
   it("Rp30 juta 6% 12 bulan → Merah (rasio 46,9%)", () => {
     const n = nilai(BU_SARI, 30_000_000, 12);
-    // Spesifikasi: "sekitar 2.581.986" (dibulatkan dari 1,5 × 1.721.324); nilai anuitas tepat 2.581.993.
     dekat(n.cicilanBaru, 2_581_986, 10);
     expect(Math.round(n.rasioRata * 1000) / 10).toBe(46.9);
     expect(n.status).toBe("merah");
@@ -172,9 +171,7 @@ describe("rekomendasi tindakan", () => {
     });
     expect(t.map((x) => x.jenis)).toEqual(["cadangan", "turunkan_plafon", "perpanjang_tenor", "pisahkan_rekening", "siapkan_syarat"]);
     dekat(t[0].angka.target as number, 2_613_975, 15);
-    // 24 bulan: cicilan 886.412 > batas aman 850.000 → masih Kuning; 36 bulan baru Hijau
     expect(t.find((x) => x.jenis === "perpanjang_tenor")!.angka.tenor).toBe(36);
-    // Rp10 juta masih KUR Super Mikro (3%): cicilan 846.937 ≤ batas aman → Hijau
     expect(t.find((x) => x.jenis === "turunkan_plafon")!.angka.plafon).toBe(10_000_000);
   });
   it("kelengkapan < 90% dan laba turun 3 bulan beruntun", () => {
