@@ -1,17 +1,19 @@
-# dependencies
-/node_modules
-/.pnp
+# dependencies (frontend/ & backend/)
+node_modules/
+.pnp
 .pnp.js
 .yarn/install-state.gz
 
 # testing & results
-/coverage
-/test-results
+coverage/
+test-results/
 
-# next.js build output
-/.next/
-/out/
-/build
+# build output
+.next/
+out/
+dist/
+build/
+.vite/
 
 # environment files (PENTING: Jangan pernah push file berisi password / credentials!)
 .env

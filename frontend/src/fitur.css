@@ -1,0 +1,667 @@
+/* =====================================================================
+   Label Produk
+   ===================================================================== */
+.nk-label-produk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.nk-produk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--garis);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--navy);
+  font: 600 13.5px var(--judul);
+  cursor: pointer;
+}
+.nk-produk-chip em {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--teks-2);
+  font: 600 11.5px var(--judul);
+  font-style: normal;
+}
+.nk-produk-chip.aktif {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+.nk-produk-chip.aktif em {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.nk-label-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.nk-label-form,
+.nk-label-hasil {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+.nk-label-form .nk-card-head,
+.nk-label-hasil .nk-card-head {
+  margin-bottom: 0;
+}
+.nk-shell textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--garis-2);
+  border-radius: 10px;
+  color: var(--navy);
+  font: 400 14px "Inter", sans-serif;
+  resize: vertical;
+  outline: none;
+}
+.nk-shell textarea:focus {
+  border-color: var(--aksen);
+  box-shadow: 0 0 0 3px rgba(91, 101, 220, 0.16);
+}
+.nk-foto-kemasan {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--cream);
+}
+.nk-foto-daftar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.nk-foto-daftar img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--garis);
+}
+.nk-foto-tambah {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  min-width: 96px;
+  height: 96px;
+  padding: 8px 12px;
+  border: 1.5px dashed var(--aksen-muda);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--aksen);
+  font: 600 12px var(--judul);
+  text-align: center;
+  cursor: pointer;
+}
+.nk-foto-tambah:hover {
+  border-color: var(--aksen);
+}
+.nk-foto-aksi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.nk-foto-aksi small {
+  color: var(--teks-3);
+  font-size: 12px;
+}
+.nk-pesan-ai {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.nk-pesan-ai.ok {
+  background: var(--tint);
+  color: var(--navy);
+}
+.nk-pesan-ai.info {
+  background: var(--kuning-bg);
+  color: var(--kuning);
+}
+.nk-label-isian {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nk-label-isian li {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--garis);
+  border-radius: 14px;
+}
+.nk-label-isian li.nonaktif {
+  background: var(--cream);
+}
+.nk-label-isian-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nk-label-isian-head .nomor {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: var(--tint);
+  color: var(--aksen);
+  font: 700 12px var(--judul);
+}
+.nk-label-isian-head b {
+  flex: 1;
+  font: 600 14px var(--judul);
+}
+.nk-tidak-berlaku {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--teks-2);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.nk-label-isian-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 8px;
+}
+.nk-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.nk-hint.ok {
+  color: var(--hijau);
+}
+.nk-hint.kurang {
+  color: var(--kuning);
+}
+.nk-label-simpan {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.nk-label-skor {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.nk-label-skor h3 {
+  font: 800 22px var(--judul) !important;
+}
+.teks-hijau {
+  color: #2a7a59;
+}
+.teks-kuning {
+  color: #9a6a0f;
+}
+.teks-merah {
+  color: #b23a2a;
+}
+.nk-badge.status-abu {
+  background: var(--tint);
+  color: var(--teks-2);
+}
+.nk-label-tabel td small {
+  display: block;
+  margin-top: 2px;
+  color: var(--teks-3);
+  font-size: 12px;
+}
+.nk-label-tabel td b {
+  font: 600 13.5px var(--judul);
+}
+.nk-klaim {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--merah-bg);
+}
+.nk-klaim > b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--merah);
+  font: 700 14px var(--judul);
+}
+.nk-klaim p {
+  margin: 0;
+  font-size: 13.5px;
+}
+.nk-klaim mark {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: #f8d3cc;
+  color: var(--navy);
+}
+.nk-klaim div small {
+  color: var(--teks-2);
+  font-size: 12.5px;
+}
+.nk-saran-label b {
+  font: 700 14px var(--judul);
+}
+.nk-saran-label ol {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--teks-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.nk-draf-label {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--garis);
+}
+.nk-draf-label .nk-card-head > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+.nk-draf-aksi {
+  display: flex;
+  gap: 8px;
+}
+.nk-draf-label pre {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--cream);
+  font: 500 13px/1.6 "Inter", sans-serif;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* =====================================================================
+   Laporan
+   ===================================================================== */
+.nk-laporan-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nk-laporan-opsi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--teks-2);
+  font: 600 13px var(--judul);
+}
+.nk-laporan-opsi .nk-chip {
+  cursor: pointer;
+}
+.nk-laporan-opsi .nk-chip input {
+  width: 14px;
+  height: 14px;
+}
+.nk-laporan-opsi .nk-chip.mati {
+  background: #fff;
+  color: var(--teks-3);
+}
+.nk-dokumen {
+  display: grid;
+  gap: 22px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 44px;
+  border: 1px solid var(--garis);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(18, 32, 86, 0.08);
+  color: var(--navy);
+  font-size: 13.5px;
+}
+.nk-dok-kop {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 3px solid var(--navy);
+}
+.nk-dok-logo {
+  font: 800 18px var(--judul);
+  letter-spacing: -0.02em;
+}
+.nk-dok-logo span {
+  color: var(--aksen);
+}
+.nk-dok-kop h1 {
+  margin: 8px 0 2px;
+  font: 800 26px var(--judul);
+  letter-spacing: -0.02em;
+}
+.nk-dok-kop p {
+  margin: 0;
+  color: var(--teks-2);
+}
+.nk-dok-kop dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 12px;
+  align-content: start;
+  margin: 0;
+  font-size: 12.5px;
+}
+.nk-dok-kop dt {
+  color: var(--teks-3);
+}
+.nk-dok-kop dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+.nk-dok-profil {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 20px;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: var(--cream);
+}
+.nk-dok-profil div {
+  display: grid;
+  gap: 2px;
+}
+.nk-dok-profil small,
+.nk-dok-angka small {
+  color: var(--teks-3);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.nk-dok-profil b {
+  font: 700 14px var(--judul);
+}
+.nk-dok-bagian {
+  display: grid;
+  gap: 12px;
+  break-inside: avoid;
+}
+.nk-dok-bagian h2 {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--garis-2);
+  font: 800 16px var(--judul);
+}
+.nk-dok-bagian > p {
+  margin: 0;
+  color: var(--teks-2);
+}
+.nk-dok-angka {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.nk-dok-angka.tiga {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.nk-dok-angka div {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border: 1px solid var(--garis);
+  border-radius: 10px;
+}
+.nk-dok-angka b {
+  font: 800 17px var(--judul);
+}
+.nk-dok-angka b.negatif {
+  color: var(--merah);
+}
+.nk-dok-angka span {
+  color: var(--teks-2);
+  font-size: 12px;
+}
+.nk-dok-catatan {
+  margin: 0;
+  color: var(--teks-3) !important;
+  font-size: 12px;
+  font-style: italic;
+}
+.nk-dok-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.nk-dok-tabel th {
+  padding: 8px 8px;
+  background: var(--navy);
+  color: #fff;
+  font: 600 11.5px var(--judul);
+  text-align: right;
+  white-space: nowrap;
+}
+.nk-dok-tabel th:first-child,
+.nk-dok-tabel td:first-child {
+  text-align: left;
+}
+.nk-dok-tabel td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--garis);
+  text-align: right;
+  white-space: nowrap;
+}
+.nk-dok-tabel tbody tr:nth-child(even) td {
+  background: #fafaf7;
+}
+.nk-dok-tabel td.tebal {
+  font-weight: 700;
+}
+.nk-dok-tabel td.negatif {
+  color: var(--merah);
+}
+.nk-dok-tabel td.kosong {
+  color: var(--teks-3);
+  font-style: italic;
+  text-align: left;
+}
+.nk-dok-tabel td.kelompok {
+  color: var(--teks-3);
+  font-size: 11.5px;
+  text-align: left;
+}
+.nk-dok-tabel tfoot td {
+  border-top: 2px solid var(--navy);
+  border-bottom: 0;
+  font-weight: 700;
+}
+.nk-dok-tabel.ringkas td {
+  white-space: normal;
+}
+.nk-dok-tabel.ringkas th {
+  text-align: left;
+}
+.nk-dok-tabel.ringkas td {
+  text-align: left;
+}
+.nk-dok-legenda {
+  display: flex;
+  gap: 16px;
+  color: var(--teks-2);
+  font-size: 12px;
+}
+.nk-dok-legenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nk-dok-legenda i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.nk-lap-grafik {
+  max-height: 220px;
+}
+.nk-dok-poin {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--teks);
+  line-height: 1.55;
+}
+.nk-dok-kaki {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--garis-2);
+  color: var(--teks-2);
+  font-size: 12px;
+}
+.nk-dok-kaki p {
+  margin: 0;
+}
+.nk-dok-kaki span {
+  color: var(--teks-3);
+}
+
+@media (max-width: 1023px) {
+  .nk-label-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .nk-label-isian-input {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .nk-label-skor {
+    flex-direction: column;
+    text-align: center;
+  }
+  .nk-draf-label .nk-card-head {
+    flex-direction: column;
+  }
+  .nk-dokumen {
+    padding: 20px 16px;
+  }
+  .nk-dok-kop {
+    flex-direction: column;
+  }
+  .nk-dok-kop dd {
+    text-align: left;
+  }
+  .nk-dok-profil,
+  .nk-dok-angka,
+  .nk-dok-angka.tiga {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .nk-dok-tabel {
+    display: block;
+    overflow-x: auto;
+  }
+  .nk-laporan-toolbar .nk-btn {
+    width: 100%;
+  }
+}
+
+/* ---------- Status sinkronisasi database ---------- */
+.nk-sinkron-galat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 32px;
+  background: var(--merah-bg);
+  color: var(--merah);
+  font-size: 13px;
+  font-weight: 500;
+}
+.nk-sinkron-galat span {
+  flex: 1;
+  min-width: 200px;
+}
+.nk-mode-lokal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 32px;
+  background: var(--tint);
+  color: var(--teks-2);
+  font-size: 12.5px;
+}
+@media (max-width: 767px) {
+  .nk-sinkron-galat,
+  .nk-mode-lokal {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ---------- Cetak / Simpan PDF ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+  html,
+  body,
+  .nk-shell {
+    background: #fff !important;
+  }
+  .nk-sidebar,
+  .nk-topbar,
+  .nk-bottomnav,
+  .nk-fab,
+  .nk-offline,
+  .nk-mode-lokal,
+  .nk-sinkron-galat,
+  .nk-laporan-toolbar,
+  .nk-no-print,
+  .nk-toast {
+    display: none !important;
+  }
+  .nk-main {
+    margin: 0 !important;
+  }
+  .nk-konten {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .nk-dokumen {
+    max-width: none;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    font-size: 11.5px;
+  }
+  .nk-dokumen,
+  .nk-dokumen * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .nk-dok-bagian,
+  .nk-dok-angka div,
+  .nk-dok-tabel tr {
+    break-inside: avoid;
+  }
+  .nk-dok-tabel {
+    display: table;
+  }
+}

@@ -1,0 +1,5717 @@
+{
+ "keterangan": "Dihasilkan oleh frontend/scripts/export-demo.ts — jangan diedit manual.",
+ "hariIni": "2026-11-06",
+ "profil": {
+  "namaPemilik": "Ibu Sari Wulandari",
+  "email": "demo@naik.in",
+  "telepon": "0812-6634-2190",
+  "namaUsaha": "Keripik Balado Bu Sari",
+  "kategoriUsaha": "Makanan & Minuman",
+  "kota": "Padang",
+  "mulaiUsaha": "2024-09-06"
+ },
+ "biayaRutin": [
+  {
+   "nama": "Sewa kios",
+   "jenis": "usaha",
+   "nominalBulanan": 800000
+  },
+  {
+   "nama": "Listrik & air usaha",
+   "jenis": "usaha",
+   "nominalBulanan": 350000
+  },
+  {
+   "nama": "Uang dapur keluarga (minimal)",
+   "jenis": "rumah_tangga",
+   "nominalBulanan": 2000000
+  }
+ ],
+ "transaksi": [
+  {
+   "tanggal": "2026-05-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 288000
+  },
+  {
+   "tanggal": "2026-05-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 236000
+  },
+  {
+   "tanggal": "2026-05-04",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 596500
+  },
+  {
+   "tanggal": "2026-05-04",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 411500
+  },
+  {
+   "tanggal": "2026-05-04",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 361000
+  },
+  {
+   "tanggal": "2026-05-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 383000
+  },
+  {
+   "tanggal": "2026-05-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 313000
+  },
+  {
+   "tanggal": "2026-05-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1155000
+  },
+  {
+   "tanggal": "2026-05-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 319000
+  },
+  {
+   "tanggal": "2026-05-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 234000
+  },
+  {
+   "tanggal": "2026-05-06",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 155500
+  },
+  {
+   "tanggal": "2026-05-06",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 639000
+  },
+  {
+   "tanggal": "2026-05-06",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 285000
+  },
+  {
+   "tanggal": "2026-05-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 393500
+  },
+  {
+   "tanggal": "2026-05-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 322000
+  },
+  {
+   "tanggal": "2026-05-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 456000
+  },
+  {
+   "tanggal": "2026-05-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 373500
+  },
+  {
+   "tanggal": "2026-05-08",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 677000
+  },
+  {
+   "tanggal": "2026-05-08",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 190000
+  },
+  {
+   "tanggal": "2026-05-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 457000
+  },
+  {
+   "tanggal": "2026-05-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 335000
+  },
+  {
+   "tanggal": "2026-05-09",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 223500
+  },
+  {
+   "tanggal": "2026-05-10",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 382500
+  },
+  {
+   "tanggal": "2026-05-10",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 280500
+  },
+  {
+   "tanggal": "2026-05-10",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 187500
+  },
+  {
+   "tanggal": "2026-05-10",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 615500
+  },
+  {
+   "tanggal": "2026-05-10",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-05-11",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 222500
+  },
+  {
+   "tanggal": "2026-05-11",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 182000
+  },
+  {
+   "tanggal": "2026-05-11",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 400000
+  },
+  {
+   "tanggal": "2026-05-11",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 281000
+  },
+  {
+   "tanggal": "2026-05-11",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 361000
+  },
+  {
+   "tanggal": "2026-05-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 282500
+  },
+  {
+   "tanggal": "2026-05-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 231500
+  },
+  {
+   "tanggal": "2026-05-13",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 214500
+  },
+  {
+   "tanggal": "2026-05-13",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 157500
+  },
+  {
+   "tanggal": "2026-05-13",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 105000
+  },
+  {
+   "tanggal": "2026-05-13",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 475000
+  },
+  {
+   "tanggal": "2026-05-13",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 285000
+  },
+  {
+   "tanggal": "2026-05-14",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 281000
+  },
+  {
+   "tanggal": "2026-05-14",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 229500
+  },
+  {
+   "tanggal": "2026-05-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 264500
+  },
+  {
+   "tanggal": "2026-05-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 216000
+  },
+  {
+   "tanggal": "2026-05-15",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 397000
+  },
+  {
+   "tanggal": "2026-05-15",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 190000
+  },
+  {
+   "tanggal": "2026-05-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 525000
+  },
+  {
+   "tanggal": "2026-05-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 301000
+  },
+  {
+   "tanggal": "2026-05-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 221000
+  },
+  {
+   "tanggal": "2026-05-16",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 147000
+  },
+  {
+   "tanggal": "2026-05-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 267000
+  },
+  {
+   "tanggal": "2026-05-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 195500
+  },
+  {
+   "tanggal": "2026-05-17",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 130500
+  },
+  {
+   "tanggal": "2026-05-17",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 455500
+  },
+  {
+   "tanggal": "2026-05-17",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-05-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 361500
+  },
+  {
+   "tanggal": "2026-05-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 295500
+  },
+  {
+   "tanggal": "2026-05-18",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 666500
+  },
+  {
+   "tanggal": "2026-05-18",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 416500
+  },
+  {
+   "tanggal": "2026-05-18",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 361000
+  },
+  {
+   "tanggal": "2026-05-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 394000
+  },
+  {
+   "tanggal": "2026-05-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 322000
+  },
+  {
+   "tanggal": "2026-05-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 323500
+  },
+  {
+   "tanggal": "2026-05-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 237000
+  },
+  {
+   "tanggal": "2026-05-20",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 158000
+  },
+  {
+   "tanggal": "2026-05-20",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 579500
+  },
+  {
+   "tanggal": "2026-05-20",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 285000
+  },
+  {
+   "tanggal": "2026-05-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 411000
+  },
+  {
+   "tanggal": "2026-05-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 336500
+  },
+  {
+   "tanggal": "2026-05-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 425500
+  },
+  {
+   "tanggal": "2026-05-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 348500
+  },
+  {
+   "tanggal": "2026-05-22",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 678000
+  },
+  {
+   "tanggal": "2026-05-22",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 190000
+  },
+  {
+   "tanggal": "2026-05-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 393000
+  },
+  {
+   "tanggal": "2026-05-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 288500
+  },
+  {
+   "tanggal": "2026-05-23",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 192000
+  },
+  {
+   "tanggal": "2026-05-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 414000
+  },
+  {
+   "tanggal": "2026-05-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 303500
+  },
+  {
+   "tanggal": "2026-05-24",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 202000
+  },
+  {
+   "tanggal": "2026-05-24",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 635500
+  },
+  {
+   "tanggal": "2026-05-24",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 355000
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 290500
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 687500
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 416500
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 361000
+  },
+  {
+   "tanggal": "2026-05-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 420000
+  },
+  {
+   "tanggal": "2026-05-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 344000
+  },
+  {
+   "tanggal": "2026-05-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 281000
+  },
+  {
+   "tanggal": "2026-05-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 332000
+  },
+  {
+   "tanggal": "2026-05-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 243500
+  },
+  {
+   "tanggal": "2026-05-27",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 162500
+  },
+  {
+   "tanggal": "2026-05-27",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 610000
+  },
+  {
+   "tanggal": "2026-05-27",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 285000
+  },
+  {
+   "tanggal": "2026-05-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 422500
+  },
+  {
+   "tanggal": "2026-05-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 345500
+  },
+  {
+   "tanggal": "2026-05-29",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 431500
+  },
+  {
+   "tanggal": "2026-05-29",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 353000
+  },
+  {
+   "tanggal": "2026-05-29",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 601500
+  },
+  {
+   "tanggal": "2026-05-29",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 190000
+  },
+  {
+   "tanggal": "2026-05-30",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 410500
+  },
+  {
+   "tanggal": "2026-05-30",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 301000
+  },
+  {
+   "tanggal": "2026-05-30",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 201000
+  },
+  {
+   "tanggal": "2026-05-31",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 419500
+  },
+  {
+   "tanggal": "2026-05-31",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 307500
+  },
+  {
+   "tanggal": "2026-05-31",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 205500
+  },
+  {
+   "tanggal": "2026-05-31",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 660500
+  },
+  {
+   "tanggal": "2026-05-31",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-06-01",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 363500
+  },
+  {
+   "tanggal": "2026-06-01",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 297000
+  },
+  {
+   "tanggal": "2026-06-01",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 739000
+  },
+  {
+   "tanggal": "2026-06-01",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 490000
+  },
+  {
+   "tanggal": "2026-06-01",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 368500
+  },
+  {
+   "tanggal": "2026-06-02",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 454000
+  },
+  {
+   "tanggal": "2026-06-02",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 371000
+  },
+  {
+   "tanggal": "2026-06-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 345500
+  },
+  {
+   "tanggal": "2026-06-03",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 253500
+  },
+  {
+   "tanggal": "2026-06-03",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 169000
+  },
+  {
+   "tanggal": "2026-06-03",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 737500
+  },
+  {
+   "tanggal": "2026-06-03",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 291000
+  },
+  {
+   "tanggal": "2026-06-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 416500
+  },
+  {
+   "tanggal": "2026-06-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 341000
+  },
+  {
+   "tanggal": "2026-06-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 561500
+  },
+  {
+   "tanggal": "2026-06-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 459500
+  },
+  {
+   "tanggal": "2026-06-05",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 725500
+  },
+  {
+   "tanggal": "2026-06-05",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 194000
+  },
+  {
+   "tanggal": "2026-06-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1430000
+  },
+  {
+   "tanggal": "2026-06-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 564500
+  },
+  {
+   "tanggal": "2026-06-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 414000
+  },
+  {
+   "tanggal": "2026-06-06",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 276000
+  },
+  {
+   "tanggal": "2026-06-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 464000
+  },
+  {
+   "tanggal": "2026-06-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 340500
+  },
+  {
+   "tanggal": "2026-06-07",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 227000
+  },
+  {
+   "tanggal": "2026-06-07",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 806500
+  },
+  {
+   "tanggal": "2026-06-07",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 116000
+  },
+  {
+   "tanggal": "2026-06-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 43000
+  },
+  {
+   "tanggal": "2026-06-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 35500
+  },
+  {
+   "tanggal": "2026-06-08",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 63000
+  },
+  {
+   "tanggal": "2026-06-08",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 20000
+  },
+  {
+   "tanggal": "2026-06-08",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 232000
+  },
+  {
+   "tanggal": "2026-06-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 50000
+  },
+  {
+   "tanggal": "2026-06-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 41000
+  },
+  {
+   "tanggal": "2026-06-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 49000
+  },
+  {
+   "tanggal": "2026-06-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 40000
+  },
+  {
+   "tanggal": "2026-06-12",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 60000
+  },
+  {
+   "tanggal": "2026-06-12",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 183500
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 220500
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 180500
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 400000
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 252000
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 368000
+  },
+  {
+   "tanggal": "2026-06-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 650000
+  },
+  {
+   "tanggal": "2026-06-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 208000
+  },
+  {
+   "tanggal": "2026-06-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 170500
+  },
+  {
+   "tanggal": "2026-06-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 207000
+  },
+  {
+   "tanggal": "2026-06-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 151500
+  },
+  {
+   "tanggal": "2026-06-17",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 101000
+  },
+  {
+   "tanggal": "2026-06-17",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 374000
+  },
+  {
+   "tanggal": "2026-06-17",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 290500
+  },
+  {
+   "tanggal": "2026-06-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 234000
+  },
+  {
+   "tanggal": "2026-06-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 191000
+  },
+  {
+   "tanggal": "2026-06-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 256500
+  },
+  {
+   "tanggal": "2026-06-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 209500
+  },
+  {
+   "tanggal": "2026-06-19",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 386000
+  },
+  {
+   "tanggal": "2026-06-19",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 194000
+  },
+  {
+   "tanggal": "2026-06-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 267500
+  },
+  {
+   "tanggal": "2026-06-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 196000
+  },
+  {
+   "tanggal": "2026-06-20",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 131000
+  },
+  {
+   "tanggal": "2026-06-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 235500
+  },
+  {
+   "tanggal": "2026-06-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 172500
+  },
+  {
+   "tanggal": "2026-06-21",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 115000
+  },
+  {
+   "tanggal": "2026-06-21",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 386500
+  },
+  {
+   "tanggal": "2026-06-21",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 116500
+  },
+  {
+   "tanggal": "2026-06-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 431000
+  },
+  {
+   "tanggal": "2026-06-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 353000
+  },
+  {
+   "tanggal": "2026-06-22",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 798000
+  },
+  {
+   "tanggal": "2026-06-22",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 507000
+  },
+  {
+   "tanggal": "2026-06-22",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 368500
+  },
+  {
+   "tanggal": "2026-06-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 457500
+  },
+  {
+   "tanggal": "2026-06-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 374500
+  },
+  {
+   "tanggal": "2026-06-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 390000
+  },
+  {
+   "tanggal": "2026-06-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 286000
+  },
+  {
+   "tanggal": "2026-06-24",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 190500
+  },
+  {
+   "tanggal": "2026-06-24",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 782000
+  },
+  {
+   "tanggal": "2026-06-24",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 291000
+  },
+  {
+   "tanggal": "2026-06-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 498000
+  },
+  {
+   "tanggal": "2026-06-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 407500
+  },
+  {
+   "tanggal": "2026-06-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 520000
+  },
+  {
+   "tanggal": "2026-06-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 513000
+  },
+  {
+   "tanggal": "2026-06-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 419500
+  },
+  {
+   "tanggal": "2026-06-26",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 738000
+  },
+  {
+   "tanggal": "2026-06-26",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 194000
+  },
+  {
+   "tanggal": "2026-06-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 485500
+  },
+  {
+   "tanggal": "2026-06-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 356000
+  },
+  {
+   "tanggal": "2026-06-27",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 237500
+  },
+  {
+   "tanggal": "2026-06-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 514000
+  },
+  {
+   "tanggal": "2026-06-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 377000
+  },
+  {
+   "tanggal": "2026-06-28",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 251500
+  },
+  {
+   "tanggal": "2026-06-28",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 797500
+  },
+  {
+   "tanggal": "2026-06-28",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 116000
+  },
+  {
+   "tanggal": "2026-06-29",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 580500
+  },
+  {
+   "tanggal": "2026-06-29",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 474500
+  },
+  {
+   "tanggal": "2026-06-29",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 1064500
+  },
+  {
+   "tanggal": "2026-06-29",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 173000
+  },
+  {
+   "tanggal": "2026-06-29",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 154500
+  },
+  {
+   "tanggal": "2026-06-30",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 648500
+  },
+  {
+   "tanggal": "2026-06-30",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 530500
+  },
+  {
+   "tanggal": "2026-06-30",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 122000
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 308500
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 226000
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 151000
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 631000
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 295500
+  },
+  {
+   "tanggal": "2026-07-01",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 257500
+  },
+  {
+   "tanggal": "2026-07-02",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 371000
+  },
+  {
+   "tanggal": "2026-07-02",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 303500
+  },
+  {
+   "tanggal": "2026-07-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 381000
+  },
+  {
+   "tanggal": "2026-07-03",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 312000
+  },
+  {
+   "tanggal": "2026-07-03",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 608500
+  },
+  {
+   "tanggal": "2026-07-03",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 203500
+  },
+  {
+   "tanggal": "2026-07-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 417500
+  },
+  {
+   "tanggal": "2026-07-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 306000
+  },
+  {
+   "tanggal": "2026-07-04",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 204500
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 400000
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 293000
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 195500
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 577000
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 135500
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 81000
+  },
+  {
+   "tanggal": "2026-07-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1540000
+  },
+  {
+   "tanggal": "2026-07-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 345500
+  },
+  {
+   "tanggal": "2026-07-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 282500
+  },
+  {
+   "tanggal": "2026-07-06",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 705000
+  },
+  {
+   "tanggal": "2026-07-06",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 429000
+  },
+  {
+   "tanggal": "2026-07-06",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 360500
+  },
+  {
+   "tanggal": "2026-07-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 430500
+  },
+  {
+   "tanggal": "2026-07-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 352500
+  },
+  {
+   "tanggal": "2026-07-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 348000
+  },
+  {
+   "tanggal": "2026-07-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 255500
+  },
+  {
+   "tanggal": "2026-07-08",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 170000
+  },
+  {
+   "tanggal": "2026-07-08",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 638000
+  },
+  {
+   "tanggal": "2026-07-08",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 284500
+  },
+  {
+   "tanggal": "2026-07-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 442000
+  },
+  {
+   "tanggal": "2026-07-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 361500
+  },
+  {
+   "tanggal": "2026-07-10",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 477000
+  },
+  {
+   "tanggal": "2026-07-10",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 390500
+  },
+  {
+   "tanggal": "2026-07-10",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 607000
+  },
+  {
+   "tanggal": "2026-07-10",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 189500
+  },
+  {
+   "tanggal": "2026-07-11",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 417000
+  },
+  {
+   "tanggal": "2026-07-11",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 306000
+  },
+  {
+   "tanggal": "2026-07-11",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 204000
+  },
+  {
+   "tanggal": "2026-07-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 373000
+  },
+  {
+   "tanggal": "2026-07-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 273500
+  },
+  {
+   "tanggal": "2026-07-12",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 182500
+  },
+  {
+   "tanggal": "2026-07-12",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 684000
+  },
+  {
+   "tanggal": "2026-07-12",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-07-13",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 238500
+  },
+  {
+   "tanggal": "2026-07-13",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 195500
+  },
+  {
+   "tanggal": "2026-07-13",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 441500
+  },
+  {
+   "tanggal": "2026-07-13",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 279500
+  },
+  {
+   "tanggal": "2026-07-13",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 360500
+  },
+  {
+   "tanggal": "2026-07-14",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 263000
+  },
+  {
+   "tanggal": "2026-07-14",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 215000
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 207000
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 151500
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 101000
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 425500
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 284500
+  },
+  {
+   "tanggal": "2026-07-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 700000
+  },
+  {
+   "tanggal": "2026-07-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 285500
+  },
+  {
+   "tanggal": "2026-07-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 233500
+  },
+  {
+   "tanggal": "2026-07-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 303000
+  },
+  {
+   "tanggal": "2026-07-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 247500
+  },
+  {
+   "tanggal": "2026-07-17",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 453500
+  },
+  {
+   "tanggal": "2026-07-17",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 189500
+  },
+  {
+   "tanggal": "2026-07-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 277500
+  },
+  {
+   "tanggal": "2026-07-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 203500
+  },
+  {
+   "tanggal": "2026-07-18",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 135500
+  },
+  {
+   "tanggal": "2026-07-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 270000
+  },
+  {
+   "tanggal": "2026-07-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 198000
+  },
+  {
+   "tanggal": "2026-07-19",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 131500
+  },
+  {
+   "tanggal": "2026-07-19",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 396000
+  },
+  {
+   "tanggal": "2026-07-19",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-07-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 373000
+  },
+  {
+   "tanggal": "2026-07-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 305500
+  },
+  {
+   "tanggal": "2026-07-20",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 661500
+  },
+  {
+   "tanggal": "2026-07-20",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 429000
+  },
+  {
+   "tanggal": "2026-07-20",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 360500
+  },
+  {
+   "tanggal": "2026-07-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 396500
+  },
+  {
+   "tanggal": "2026-07-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 324500
+  },
+  {
+   "tanggal": "2026-07-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 322500
+  },
+  {
+   "tanggal": "2026-07-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 236500
+  },
+  {
+   "tanggal": "2026-07-22",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 157500
+  },
+  {
+   "tanggal": "2026-07-22",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 661500
+  },
+  {
+   "tanggal": "2026-07-22",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 284500
+  },
+  {
+   "tanggal": "2026-07-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 408000
+  },
+  {
+   "tanggal": "2026-07-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 333500
+  },
+  {
+   "tanggal": "2026-07-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 403000
+  },
+  {
+   "tanggal": "2026-07-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 330000
+  },
+  {
+   "tanggal": "2026-07-24",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 647500
+  },
+  {
+   "tanggal": "2026-07-24",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 189500
+  },
+  {
+   "tanggal": "2026-07-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 492000
+  },
+  {
+   "tanggal": "2026-07-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 361000
+  },
+  {
+   "tanggal": "2026-07-25",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 240500
+  },
+  {
+   "tanggal": "2026-07-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 560000
+  },
+  {
+   "tanggal": "2026-07-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 417500
+  },
+  {
+   "tanggal": "2026-07-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 306000
+  },
+  {
+   "tanggal": "2026-07-26",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 204000
+  },
+  {
+   "tanggal": "2026-07-26",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 663500
+  },
+  {
+   "tanggal": "2026-07-26",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-07-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 376000
+  },
+  {
+   "tanggal": "2026-07-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 308000
+  },
+  {
+   "tanggal": "2026-07-27",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 609000
+  },
+  {
+   "tanggal": "2026-07-27",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 317000
+  },
+  {
+   "tanggal": "2026-07-27",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 257500
+  },
+  {
+   "tanggal": "2026-07-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 427000
+  },
+  {
+   "tanggal": "2026-07-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 349000
+  },
+  {
+   "tanggal": "2026-07-29",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 405500
+  },
+  {
+   "tanggal": "2026-07-29",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 297500
+  },
+  {
+   "tanggal": "2026-07-29",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 198500
+  },
+  {
+   "tanggal": "2026-07-29",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 663000
+  },
+  {
+   "tanggal": "2026-07-29",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 203000
+  },
+  {
+   "tanggal": "2026-07-30",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 506000
+  },
+  {
+   "tanggal": "2026-07-30",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 414000
+  },
+  {
+   "tanggal": "2026-07-31",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 478000
+  },
+  {
+   "tanggal": "2026-07-31",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 391000
+  },
+  {
+   "tanggal": "2026-07-31",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 677000
+  },
+  {
+   "tanggal": "2026-07-31",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 135500
+  },
+  {
+   "tanggal": "2026-07-31",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 81000
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 351000
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 257500
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 171500
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 679500
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 110500
+  },
+  {
+   "tanggal": "2026-08-01",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 144000
+  },
+  {
+   "tanggal": "2026-08-02",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 297000
+  },
+  {
+   "tanggal": "2026-08-02",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 218000
+  },
+  {
+   "tanggal": "2026-08-02",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 145500
+  },
+  {
+   "tanggal": "2026-08-02",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 114000
+  },
+  {
+   "tanggal": "2026-08-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 364000
+  },
+  {
+   "tanggal": "2026-08-03",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 297500
+  },
+  {
+   "tanggal": "2026-08-03",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 644500
+  },
+  {
+   "tanggal": "2026-08-03",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 408500
+  },
+  {
+   "tanggal": "2026-08-03",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 343500
+  },
+  {
+   "tanggal": "2026-08-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 363000
+  },
+  {
+   "tanggal": "2026-08-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 297000
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 330500
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 242500
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 161500
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 660000
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 271000
+  },
+  {
+   "tanggal": "2026-08-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1320000
+  },
+  {
+   "tanggal": "2026-08-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 353000
+  },
+  {
+   "tanggal": "2026-08-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 289000
+  },
+  {
+   "tanggal": "2026-08-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 417500
+  },
+  {
+   "tanggal": "2026-08-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 341500
+  },
+  {
+   "tanggal": "2026-08-07",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 598500
+  },
+  {
+   "tanggal": "2026-08-07",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 180500
+  },
+  {
+   "tanggal": "2026-08-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 409500
+  },
+  {
+   "tanggal": "2026-08-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 300000
+  },
+  {
+   "tanggal": "2026-08-08",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 200000
+  },
+  {
+   "tanggal": "2026-08-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 430000
+  },
+  {
+   "tanggal": "2026-08-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 315000
+  },
+  {
+   "tanggal": "2026-08-09",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 210000
+  },
+  {
+   "tanggal": "2026-08-09",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 606500
+  },
+  {
+   "tanggal": "2026-08-09",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 108500
+  },
+  {
+   "tanggal": "2026-08-10",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 305000
+  },
+  {
+   "tanggal": "2026-08-10",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 249500
+  },
+  {
+   "tanggal": "2026-08-10",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 669500
+  },
+  {
+   "tanggal": "2026-08-10",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 408500
+  },
+  {
+   "tanggal": "2026-08-10",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 343500
+  },
+  {
+   "tanggal": "2026-08-11",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 366000
+  },
+  {
+   "tanggal": "2026-08-11",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 299500
+  },
+  {
+   "tanggal": "2026-08-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 357000
+  },
+  {
+   "tanggal": "2026-08-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 262000
+  },
+  {
+   "tanggal": "2026-08-12",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 174500
+  },
+  {
+   "tanggal": "2026-08-12",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 600000
+  },
+  {
+   "tanggal": "2026-08-12",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 271000
+  },
+  {
+   "tanggal": "2026-08-13",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 361500
+  },
+  {
+   "tanggal": "2026-08-13",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 295500
+  },
+  {
+   "tanggal": "2026-08-14",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 415500
+  },
+  {
+   "tanggal": "2026-08-14",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 339500
+  },
+  {
+   "tanggal": "2026-08-14",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 624000
+  },
+  {
+   "tanggal": "2026-08-14",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 180500
+  },
+  {
+   "tanggal": "2026-08-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 436500
+  },
+  {
+   "tanggal": "2026-08-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 320500
+  },
+  {
+   "tanggal": "2026-08-15",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 213500
+  },
+  {
+   "tanggal": "2026-08-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 600000
+  },
+  {
+   "tanggal": "2026-08-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 416500
+  },
+  {
+   "tanggal": "2026-08-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 305500
+  },
+  {
+   "tanggal": "2026-08-16",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 203500
+  },
+  {
+   "tanggal": "2026-08-16",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 616000
+  },
+  {
+   "tanggal": "2026-08-16",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 108500
+  },
+  {
+   "tanggal": "2026-08-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 200500
+  },
+  {
+   "tanggal": "2026-08-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 164000
+  },
+  {
+   "tanggal": "2026-08-17",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 388500
+  },
+  {
+   "tanggal": "2026-08-17",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 264000
+  },
+  {
+   "tanggal": "2026-08-17",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 343500
+  },
+  {
+   "tanggal": "2026-08-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 212500
+  },
+  {
+   "tanggal": "2026-08-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 174000
+  },
+  {
+   "tanggal": "2026-08-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 179000
+  },
+  {
+   "tanggal": "2026-08-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 131500
+  },
+  {
+   "tanggal": "2026-08-19",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 87500
+  },
+  {
+   "tanggal": "2026-08-19",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 408000
+  },
+  {
+   "tanggal": "2026-08-19",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 271000
+  },
+  {
+   "tanggal": "2026-08-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 262000
+  },
+  {
+   "tanggal": "2026-08-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 214000
+  },
+  {
+   "tanggal": "2026-08-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 298000
+  },
+  {
+   "tanggal": "2026-08-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 244000
+  },
+  {
+   "tanggal": "2026-08-21",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 415500
+  },
+  {
+   "tanggal": "2026-08-21",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 180500
+  },
+  {
+   "tanggal": "2026-08-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 297000
+  },
+  {
+   "tanggal": "2026-08-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 217500
+  },
+  {
+   "tanggal": "2026-08-22",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 145000
+  },
+  {
+   "tanggal": "2026-08-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 276000
+  },
+  {
+   "tanggal": "2026-08-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 202500
+  },
+  {
+   "tanggal": "2026-08-23",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 134500
+  },
+  {
+   "tanggal": "2026-08-23",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 410000
+  },
+  {
+   "tanggal": "2026-08-23",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 108500
+  },
+  {
+   "tanggal": "2026-08-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 333500
+  },
+  {
+   "tanggal": "2026-08-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 272500
+  },
+  {
+   "tanggal": "2026-08-24",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 628500
+  },
+  {
+   "tanggal": "2026-08-24",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 410000
+  },
+  {
+   "tanggal": "2026-08-24",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 343000
+  },
+  {
+   "tanggal": "2026-08-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 372500
+  },
+  {
+   "tanggal": "2026-08-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 305000
+  },
+  {
+   "tanggal": "2026-08-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 480000
+  },
+  {
+   "tanggal": "2026-08-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 281500
+  },
+  {
+   "tanggal": "2026-08-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 206500
+  },
+  {
+   "tanggal": "2026-08-26",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 137000
+  },
+  {
+   "tanggal": "2026-08-26",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 592500
+  },
+  {
+   "tanggal": "2026-08-26",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 271000
+  },
+  {
+   "tanggal": "2026-08-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 380000
+  },
+  {
+   "tanggal": "2026-08-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 311000
+  },
+  {
+   "tanggal": "2026-08-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 459500
+  },
+  {
+   "tanggal": "2026-08-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 375500
+  },
+  {
+   "tanggal": "2026-08-28",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 643000
+  },
+  {
+   "tanggal": "2026-08-28",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 180500
+  },
+  {
+   "tanggal": "2026-08-29",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 431500
+  },
+  {
+   "tanggal": "2026-08-29",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 316500
+  },
+  {
+   "tanggal": "2026-08-29",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 210500
+  },
+  {
+   "tanggal": "2026-08-30",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 425500
+  },
+  {
+   "tanggal": "2026-08-30",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 312000
+  },
+  {
+   "tanggal": "2026-08-30",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 207500
+  },
+  {
+   "tanggal": "2026-08-30",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 653500
+  },
+  {
+   "tanggal": "2026-08-30",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 108500
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 461500
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 377500
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 396000
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 64500
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 72000
+  },
+  {
+   "tanggal": "2026-08-31",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 56500
+  },
+  {
+   "tanggal": "2026-09-01",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 431000
+  },
+  {
+   "tanggal": "2026-09-01",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 353000
+  },
+  {
+   "tanggal": "2026-09-01",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 811500
+  },
+  {
+   "tanggal": "2026-09-01",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 407000
+  },
+  {
+   "tanggal": "2026-09-01",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 296500
+  },
+  {
+   "tanggal": "2026-09-02",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 328500
+  },
+  {
+   "tanggal": "2026-09-02",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 241000
+  },
+  {
+   "tanggal": "2026-09-02",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 160500
+  },
+  {
+   "tanggal": "2026-09-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 399000
+  },
+  {
+   "tanggal": "2026-09-03",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 326000
+  },
+  {
+   "tanggal": "2026-09-03",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 832000
+  },
+  {
+   "tanggal": "2026-09-03",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 234000
+  },
+  {
+   "tanggal": "2026-09-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 452500
+  },
+  {
+   "tanggal": "2026-09-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 370000
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 531000
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 389000
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 259500
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 855500
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 156000
+  },
+  {
+   "tanggal": "2026-09-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1155000
+  },
+  {
+   "tanggal": "2026-09-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 470500
+  },
+  {
+   "tanggal": "2026-09-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 345000
+  },
+  {
+   "tanggal": "2026-09-06",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 229500
+  },
+  {
+   "tanggal": "2026-09-06",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 93500
+  },
+  {
+   "tanggal": "2026-09-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 440500
+  },
+  {
+   "tanggal": "2026-09-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 360500
+  },
+  {
+   "tanggal": "2026-09-07",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 746500
+  },
+  {
+   "tanggal": "2026-09-07",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 514500
+  },
+  {
+   "tanggal": "2026-09-07",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 346000
+  },
+  {
+   "tanggal": "2026-09-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 506500
+  },
+  {
+   "tanggal": "2026-09-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 414500
+  },
+  {
+   "tanggal": "2026-09-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 419000
+  },
+  {
+   "tanggal": "2026-09-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 307000
+  },
+  {
+   "tanggal": "2026-09-09",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 205000
+  },
+  {
+   "tanggal": "2026-09-09",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 830000
+  },
+  {
+   "tanggal": "2026-09-09",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 273000
+  },
+  {
+   "tanggal": "2026-09-10",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 435500
+  },
+  {
+   "tanggal": "2026-09-10",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 356500
+  },
+  {
+   "tanggal": "2026-09-11",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 482500
+  },
+  {
+   "tanggal": "2026-09-11",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 394500
+  },
+  {
+   "tanggal": "2026-09-11",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 808500
+  },
+  {
+   "tanggal": "2026-09-11",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 182000
+  },
+  {
+   "tanggal": "2026-09-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 593500
+  },
+  {
+   "tanggal": "2026-09-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 435000
+  },
+  {
+   "tanggal": "2026-09-12",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 290000
+  },
+  {
+   "tanggal": "2026-09-13",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 470500
+  },
+  {
+   "tanggal": "2026-09-13",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 345000
+  },
+  {
+   "tanggal": "2026-09-13",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 229500
+  },
+  {
+   "tanggal": "2026-09-13",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 776000
+  },
+  {
+   "tanggal": "2026-09-13",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 109000
+  },
+  {
+   "tanggal": "2026-09-14",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 204000
+  },
+  {
+   "tanggal": "2026-09-14",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 167000
+  },
+  {
+   "tanggal": "2026-09-14",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 428000
+  },
+  {
+   "tanggal": "2026-09-14",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 260000
+  },
+  {
+   "tanggal": "2026-09-14",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 346000
+  },
+  {
+   "tanggal": "2026-09-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 216000
+  },
+  {
+   "tanggal": "2026-09-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 177000
+  },
+  {
+   "tanggal": "2026-09-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 525000
+  },
+  {
+   "tanggal": "2026-09-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 217000
+  },
+  {
+   "tanggal": "2026-09-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 159000
+  },
+  {
+   "tanggal": "2026-09-16",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 106000
+  },
+  {
+   "tanggal": "2026-09-16",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 400500
+  },
+  {
+   "tanggal": "2026-09-16",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 273000
+  },
+  {
+   "tanggal": "2026-09-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 251000
+  },
+  {
+   "tanggal": "2026-09-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 205500
+  },
+  {
+   "tanggal": "2026-09-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 276000
+  },
+  {
+   "tanggal": "2026-09-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 225500
+  },
+  {
+   "tanggal": "2026-09-18",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 399000
+  },
+  {
+   "tanggal": "2026-09-18",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 182000
+  },
+  {
+   "tanggal": "2026-09-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 296000
+  },
+  {
+   "tanggal": "2026-09-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 217000
+  },
+  {
+   "tanggal": "2026-09-19",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 145000
+  },
+  {
+   "tanggal": "2026-09-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 231500
+  },
+  {
+   "tanggal": "2026-09-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 169500
+  },
+  {
+   "tanggal": "2026-09-20",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 113000
+  },
+  {
+   "tanggal": "2026-09-20",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 368500
+  },
+  {
+   "tanggal": "2026-09-20",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 109000
+  },
+  {
+   "tanggal": "2026-09-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 189000
+  },
+  {
+   "tanggal": "2026-09-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 155000
+  },
+  {
+   "tanggal": "2026-09-21",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 414500
+  },
+  {
+   "tanggal": "2026-09-21",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 251500
+  },
+  {
+   "tanggal": "2026-09-21",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 346000
+  },
+  {
+   "tanggal": "2026-09-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 238500
+  },
+  {
+   "tanggal": "2026-09-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 195500
+  },
+  {
+   "tanggal": "2026-09-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 199500
+  },
+  {
+   "tanggal": "2026-09-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 146500
+  },
+  {
+   "tanggal": "2026-09-23",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 97500
+  },
+  {
+   "tanggal": "2026-09-23",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 351500
+  },
+  {
+   "tanggal": "2026-09-23",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 273000
+  },
+  {
+   "tanggal": "2026-09-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 224000
+  },
+  {
+   "tanggal": "2026-09-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 183000
+  },
+  {
+   "tanggal": "2026-09-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 286500
+  },
+  {
+   "tanggal": "2026-09-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 234000
+  },
+  {
+   "tanggal": "2026-09-25",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 392000
+  },
+  {
+   "tanggal": "2026-09-25",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 182000
+  },
+  {
+   "tanggal": "2026-09-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 420000
+  },
+  {
+   "tanggal": "2026-09-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 280000
+  },
+  {
+   "tanggal": "2026-09-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 205500
+  },
+  {
+   "tanggal": "2026-09-26",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 136500
+  },
+  {
+   "tanggal": "2026-09-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 222500
+  },
+  {
+   "tanggal": "2026-09-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 163000
+  },
+  {
+   "tanggal": "2026-09-27",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 108500
+  },
+  {
+   "tanggal": "2026-09-27",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 385500
+  },
+  {
+   "tanggal": "2026-09-27",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 109000
+  },
+  {
+   "tanggal": "2026-09-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 416500
+  },
+  {
+   "tanggal": "2026-09-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 341000
+  },
+  {
+   "tanggal": "2026-09-28",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 580000
+  },
+  {
+   "tanggal": "2026-09-28",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 191500
+  },
+  {
+   "tanggal": "2026-09-28",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 218000
+  },
+  {
+   "tanggal": "2026-09-29",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 481500
+  },
+  {
+   "tanggal": "2026-09-29",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 394000
+  },
+  {
+   "tanggal": "2026-09-30",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 384500
+  },
+  {
+   "tanggal": "2026-09-30",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 282000
+  },
+  {
+   "tanggal": "2026-09-30",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 188000
+  },
+  {
+   "tanggal": "2026-09-30",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 596000
+  },
+  {
+   "tanggal": "2026-09-30",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 172000
+  },
+  {
+   "tanggal": "2026-10-01",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 364500
+  },
+  {
+   "tanggal": "2026-10-01",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 298500
+  },
+  {
+   "tanggal": "2026-10-01",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 814500
+  },
+  {
+   "tanggal": "2026-10-01",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 265500
+  },
+  {
+   "tanggal": "2026-10-01",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 211500
+  },
+  {
+   "tanggal": "2026-10-02",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 460500
+  },
+  {
+   "tanggal": "2026-10-02",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 376500
+  },
+  {
+   "tanggal": "2026-10-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 436000
+  },
+  {
+   "tanggal": "2026-10-03",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 320000
+  },
+  {
+   "tanggal": "2026-10-03",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 213000
+  },
+  {
+   "tanggal": "2026-10-03",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 817000
+  },
+  {
+   "tanggal": "2026-10-03",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 167000
+  },
+  {
+   "tanggal": "2026-10-04",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 430000
+  },
+  {
+   "tanggal": "2026-10-04",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 315000
+  },
+  {
+   "tanggal": "2026-10-04",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 210000
+  },
+  {
+   "tanggal": "2026-10-04",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 111500
+  },
+  {
+   "tanggal": "2026-10-04",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 67000
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 419500
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 343000
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 745000
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 482500
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 370500
+  },
+  {
+   "tanggal": "2026-10-05",
+   "uraian": "Belanja dapur rumah",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 1155000
+  },
+  {
+   "tanggal": "2026-10-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 395000
+  },
+  {
+   "tanggal": "2026-10-06",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 323000
+  },
+  {
+   "tanggal": "2026-10-07",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 344500
+  },
+  {
+   "tanggal": "2026-10-07",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 253000
+  },
+  {
+   "tanggal": "2026-10-07",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 168500
+  },
+  {
+   "tanggal": "2026-10-07",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 740500
+  },
+  {
+   "tanggal": "2026-10-07",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 292500
+  },
+  {
+   "tanggal": "2026-10-08",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 421500
+  },
+  {
+   "tanggal": "2026-10-08",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 344500
+  },
+  {
+   "tanggal": "2026-10-09",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 488500
+  },
+  {
+   "tanggal": "2026-10-09",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 399500
+  },
+  {
+   "tanggal": "2026-10-09",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 721000
+  },
+  {
+   "tanggal": "2026-10-09",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 195000
+  },
+  {
+   "tanggal": "2026-10-10",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 544500
+  },
+  {
+   "tanggal": "2026-10-10",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 399500
+  },
+  {
+   "tanggal": "2026-10-10",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 266500
+  },
+  {
+   "tanggal": "2026-10-11",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 500000
+  },
+  {
+   "tanggal": "2026-10-11",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 366500
+  },
+  {
+   "tanggal": "2026-10-11",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 244500
+  },
+  {
+   "tanggal": "2026-10-11",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 758000
+  },
+  {
+   "tanggal": "2026-10-11",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 117000
+  },
+  {
+   "tanggal": "2026-10-12",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 243000
+  },
+  {
+   "tanggal": "2026-10-12",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 199000
+  },
+  {
+   "tanggal": "2026-10-12",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 439500
+  },
+  {
+   "tanggal": "2026-10-12",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 293500
+  },
+  {
+   "tanggal": "2026-10-12",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 370500
+  },
+  {
+   "tanggal": "2026-10-13",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 257000
+  },
+  {
+   "tanggal": "2026-10-13",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 210000
+  },
+  {
+   "tanggal": "2026-10-14",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 235500
+  },
+  {
+   "tanggal": "2026-10-14",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 172500
+  },
+  {
+   "tanggal": "2026-10-14",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 115000
+  },
+  {
+   "tanggal": "2026-10-14",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 453000
+  },
+  {
+   "tanggal": "2026-10-14",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 292500
+  },
+  {
+   "tanggal": "2026-10-15",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 309500
+  },
+  {
+   "tanggal": "2026-10-15",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 253500
+  },
+  {
+   "tanggal": "2026-10-15",
+   "uraian": "Uang saku anak",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Tunai",
+   "nominal": 525000
+  },
+  {
+   "tanggal": "2026-10-16",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 291500
+  },
+  {
+   "tanggal": "2026-10-16",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 238500
+  },
+  {
+   "tanggal": "2026-10-16",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 488500
+  },
+  {
+   "tanggal": "2026-10-16",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 195000
+  },
+  {
+   "tanggal": "2026-10-17",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 279000
+  },
+  {
+   "tanggal": "2026-10-17",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 204500
+  },
+  {
+   "tanggal": "2026-10-17",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 136500
+  },
+  {
+   "tanggal": "2026-10-18",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 287500
+  },
+  {
+   "tanggal": "2026-10-18",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 210500
+  },
+  {
+   "tanggal": "2026-10-18",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 140500
+  },
+  {
+   "tanggal": "2026-10-18",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 421500
+  },
+  {
+   "tanggal": "2026-10-18",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 117000
+  },
+  {
+   "tanggal": "2026-10-19",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 447000
+  },
+  {
+   "tanggal": "2026-10-19",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 366000
+  },
+  {
+   "tanggal": "2026-10-19",
+   "uraian": "Beli cabai merah & bawang",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 793000
+  },
+  {
+   "tanggal": "2026-10-19",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 485500
+  },
+  {
+   "tanggal": "2026-10-19",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 370500
+  },
+  {
+   "tanggal": "2026-10-20",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 439000
+  },
+  {
+   "tanggal": "2026-10-20",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 359000
+  },
+  {
+   "tanggal": "2026-10-21",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 377000
+  },
+  {
+   "tanggal": "2026-10-21",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 276500
+  },
+  {
+   "tanggal": "2026-10-21",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 184000
+  },
+  {
+   "tanggal": "2026-10-21",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 658000
+  },
+  {
+   "tanggal": "2026-10-21",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 292500
+  },
+  {
+   "tanggal": "2026-10-22",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 477000
+  },
+  {
+   "tanggal": "2026-10-22",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 390500
+  },
+  {
+   "tanggal": "2026-10-23",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 498500
+  },
+  {
+   "tanggal": "2026-10-23",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 407500
+  },
+  {
+   "tanggal": "2026-10-23",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 764500
+  },
+  {
+   "tanggal": "2026-10-23",
+   "uraian": "Ongkir pesanan",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 195000
+  },
+  {
+   "tanggal": "2026-10-24",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 463500
+  },
+  {
+   "tanggal": "2026-10-24",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 340000
+  },
+  {
+   "tanggal": "2026-10-24",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 227000
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 454000
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 333000
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 221500
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Beli singkong 30 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 767500
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Pulsa & biaya admin QRIS",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "QRIS",
+   "nominal": 117000
+  },
+  {
+   "tanggal": "2026-10-25",
+   "uraian": "Kebutuhan rumah tangga",
+   "arah": "keluar",
+   "kategori": "pribadi",
+   "metode": "Transfer",
+   "nominal": 420000
+  },
+  {
+   "tanggal": "2026-10-26",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 285000
+  },
+  {
+   "tanggal": "2026-10-26",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 233500
+  },
+  {
+   "tanggal": "2026-10-26",
+   "uraian": "Beli minyak goreng 2 jeriken",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 385500
+  },
+  {
+   "tanggal": "2026-10-26",
+   "uraian": "Plastik & stiker kemasan",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 125000
+  },
+  {
+   "tanggal": "2026-10-26",
+   "uraian": "Upah bantu goreng",
+   "arah": "keluar",
+   "kategori": "gaji",
+   "metode": "Tunai",
+   "nominal": 233500
+  },
+  {
+   "tanggal": "2026-10-27",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 309000
+  },
+  {
+   "tanggal": "2026-10-27",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 252500
+  },
+  {
+   "tanggal": "2026-10-28",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 238500
+  },
+  {
+   "tanggal": "2026-10-28",
+   "uraian": "Penjualan tunai di kios",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 174500
+  },
+  {
+   "tanggal": "2026-10-28",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 116500
+  },
+  {
+   "tanggal": "2026-10-28",
+   "uraian": "Beli singkong & bumbu balado",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 381000
+  },
+  {
+   "tanggal": "2026-10-28",
+   "uraian": "Isi ulang gas LPG",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 184500
+  },
+  {
+   "tanggal": "2026-11-02",
+   "uraian": "Penjualan tunai di pasar",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 1250000
+  },
+  {
+   "tanggal": "2026-11-02",
+   "uraian": "Beli cabai merah 5 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 425000
+  },
+  {
+   "tanggal": "2026-11-03",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 980000
+  },
+  {
+   "tanggal": "2026-11-03",
+   "uraian": "Beli beras 10 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Tunai",
+   "nominal": 145000
+  },
+  {
+   "tanggal": "2026-11-03",
+   "uraian": "Beli tepung terigu 25 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 287500
+  },
+  {
+   "tanggal": "2026-11-03",
+   "uraian": "Beli tepung terigu 25 kg",
+   "arah": "keluar",
+   "kategori": "bahan-baku",
+   "metode": "Transfer",
+   "nominal": 287500
+  },
+  {
+   "tanggal": "2026-11-04",
+   "uraian": "Transfer dari Mas Rudi",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Transfer",
+   "nominal": 2000000
+  },
+  {
+   "tanggal": "2026-11-04",
+   "uraian": "Pesanan Shopee",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Marketplace",
+   "nominal": 1640000
+  },
+  {
+   "tanggal": "2026-11-04",
+   "uraian": "Bayar sekolah Dinda",
+   "arah": "keluar",
+   "kategori": "admin",
+   "metode": "Transfer",
+   "nominal": 350000
+  },
+  {
+   "tanggal": "2026-11-05",
+   "uraian": "Beli kompor gas 2 tungku",
+   "arah": "keluar",
+   "kategori": "peralatan",
+   "metode": "Transfer",
+   "nominal": 2400000
+  },
+  {
+   "tanggal": "2026-11-05",
+   "uraian": "Isi ulang gas LPG 2 tabung",
+   "arah": "keluar",
+   "kategori": "gas-listrik",
+   "metode": "Tunai",
+   "nominal": 420000
+  },
+  {
+   "tanggal": "2026-11-05",
+   "uraian": "Penjualan titip warung",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "Tunai",
+   "nominal": 760000
+  },
+  {
+   "tanggal": "2026-11-06",
+   "uraian": "Standing pouch 500 pcs",
+   "arah": "keluar",
+   "kategori": "kemasan",
+   "metode": "Transfer",
+   "nominal": 550000
+  },
+  {
+   "tanggal": "2026-11-06",
+   "uraian": "Penjualan QRIS harian",
+   "arah": "masuk",
+   "kategori": "penjualan",
+   "metode": "QRIS",
+   "nominal": 1120000
+  },
+  {
+   "tanggal": "2026-11-07",
+   "uraian": "Ongkir JNE pesanan Bukittinggi",
+   "arah": "keluar",
+   "kategori": "ongkir",
+   "metode": "Transfer",
+   "nominal": 85000
+  }
+ ],
+ "produk": [
+  {
+   "id": "6b1f4f0e-6c2b-4d0a-9a51-2a8e0c3d7f10",
+   "nama": "Keripik Balado 200 g",
+   "mode": "beredar",
+   "isian": {
+    "namaProduk": {
+     "nilai": "Keripik Balado Bu Sari",
+     "lokasi": "lain"
+    },
+    "daftarBahan": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "beratBersih": {
+     "nilai": "200 gr",
+     "lokasi": "lain"
+    },
+    "produsen": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "halal": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "kodeProduksi": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "kedaluwarsa": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "nomorIzin": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat"
+    },
+    "asalUsul": {
+     "nilai": "",
+     "lokasi": "tidak_terlihat",
+     "tidakBerlaku": true
+    }
+   },
+   "teksLain": "Keripik balado terenak se-Padang, 100% alami!",
+   "skor": 12.63,
+   "kategori": "Perlu dilengkapi",
+   "rincian": [
+    {
+     "kunci": "namaProduk",
+     "nama": "Nama produk",
+     "status": "Ada tapi kurang",
+     "bobot": 12,
+     "poin": 6,
+     "lokasi": "lain",
+     "catatan": [
+      "Sebaiknya ada di bagian utama label (sisi depan)."
+     ]
+    },
+    {
+     "kunci": "daftarBahan",
+     "nama": "Daftar bahan (komposisi)",
+     "status": "Tidak ada",
+     "bobot": 14,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "beratBersih",
+     "nama": "Berat bersih / isi bersih",
+     "status": "Ada tapi kurang",
+     "bobot": 12,
+     "poin": 6,
+     "lokasi": "lain",
+     "catatan": [
+      "Gunakan angka dengan satuan mg, g, kg, mL, atau L.",
+      "Sebaiknya ada di bagian utama label (sisi depan)."
+     ]
+    },
+    {
+     "kunci": "produsen",
+     "nama": "Nama & alamat produsen",
+     "status": "Tidak ada",
+     "bobot": 12,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "halal",
+     "nama": "Keterangan halal",
+     "status": "Tidak ada",
+     "bobot": 8,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "kodeProduksi",
+     "nama": "Tanggal & kode produksi",
+     "status": "Tidak ada",
+     "bobot": 10,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "kedaluwarsa",
+     "nama": "Keterangan kedaluwarsa",
+     "status": "Tidak ada",
+     "bobot": 12,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "nomorIzin",
+     "nama": "Nomor izin edar",
+     "status": "Tidak ada",
+     "bobot": 15,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    },
+    {
+     "kunci": "asalUsul",
+     "nama": "Asal usul bahan tertentu",
+     "status": "Tidak berlaku",
+     "bobot": 5,
+     "poin": 0,
+     "lokasi": "tidak_terlihat",
+     "catatan": []
+    }
+   ],
+   "klaim": [
+    {
+     "kutipan": "terenak",
+     "alasan": "Klaim superlatif memerlukan dasar yang dapat diperiksa.",
+     "saran": "Pilihan rasa yang cocok untuk menemani harimu."
+    },
+    {
+     "kutipan": "alami",
+     "alasan": "Klaim bahan atau kemurnian perlu dasar yang jelas.",
+     "saran": "Menggunakan bahan yang dipilih dengan cermat."
+    }
+   ]
+  }
+ ]
+}
